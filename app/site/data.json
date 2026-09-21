@@ -1,0 +1,352 @@
+{
+ "read_at": "2026-09-21T09:18:28+00:00",
+ "epoch": 1039,
+ "spacex": {
+  "prestocks_token_usd": 117.10561003310708,
+  "listed_token_usd": 154.62192901353816,
+  "discount": 0.2426325891791602
+ },
+ "tokens": {
+  "ANTHROPIC": {
+   "company": "Anthropic",
+   "kind": "ipo",
+   "mint": "Pren1FvFX6J3E4kXhJuCiAD5aDmGEb7qJRncwA8Lkhw",
+   "token_price": 1043.4481020308478,
+   "mark_price": 1044.68283202,
+   "premium_to_mark": -0.0011819185223563844,
+   "shares": 1638342303.1864595,
+   "token_implied_value": 1709525166736.759,
+   "crowd_value": 2227783725910.064,
+   "crowd_per_token": 1359.779163107235,
+   "crowd_value_range": [
+    2213691113490.364,
+    2251271413276.231
+   ],
+   "cap_source": "anthropic-ipo-closing-market-cap-higher-strikes",
+   "p_listing": 0.934,
+   "open_top_mass": 0.0626338329764454,
+   "brackets": [
+    {
+     "low": 0.0,
+     "high": 1250000000000.0,
+     "p": 0.01927194860813704
+    },
+    {
+     "low": 1250000000000.0,
+     "high": 1500000000000.0,
+     "p": 0.04229122055674518
+    },
+    {
+     "low": 1500000000000.0,
+     "high": 1750000000000.0,
+     "p": 0.06156316916488223
+    },
+    {
+     "low": 1750000000000.0,
+     "high": 2000000000000.0,
+     "p": 0.1659528907922912
+    },
+    {
+     "low": 2000000000000.0,
+     "high": 2250000000000.0,
+     "p": 0.2569593147751606
+    },
+    {
+     "low": 2250000000000.0,
+     "high": 2500000000000.0,
+     "p": 0.1980728051391863
+    },
+    {
+     "low": 2500000000000.0,
+     "high": 2750000000000.0,
+     "p": 0.14828693790149894
+    },
+    {
+     "low": 2750000000000.0,
+     "high": 3000000000000.0,
+     "p": 0.044967880085653104
+    },
+    {
+     "low": 3000000000000.0,
+     "high": 3750000000000.0,
+     "p": 0.0626338329764454
+    }
+   ],
+   "gap": 0.30315936217691775,
+   "timing": [
+    [
+     "September 30, 2026",
+     0.0005
+    ],
+    [
+     "October 15, 2026",
+     0.006
+    ],
+    [
+     "October 31, 2026",
+     0.0445
+    ],
+    [
+     "November 15, 2026",
+     0.345
+    ],
+    [
+     "November 30, 2026",
+     0.535
+    ],
+    [
+     "December 15, 2026",
+     0.74
+    ],
+    [
+     "December 31, 2026",
+     0.77
+    ]
+   ],
+   "ladder": [],
+   "crowd_odds_at_token_price": null,
+   "assumptions": [
+    "the open-ended top bracket ($3.0T+) is valued at $3.75T, that is 1.25 times its floor",
+    "the crowd puts 4.8% on no listing in the market's window, which is excluded from the value above rather than priced"
+   ],
+   "powers": {
+    "transfer_fee_bps": 100,
+    "next_transfer_fee_bps": null,
+    "transfer_fee_changes_at_epoch": null,
+    "paused": false,
+    "permanent_delegate": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
+    "ui_multiplier": 1.0
+   },
+   "spacex_scenario": 1029.852424050655
+  },
+  "OPENAI": {
+   "company": "OpenAI",
+   "kind": "ipo",
+   "mint": "PreweJYECqtQwBtpxHL171nL2K6umo692gTm7Q3rpgF",
+   "token_price": 1127.3205306878097,
+   "mark_price": 994.9499736867729,
+   "premium_to_mark": 0.13304242474678363,
+   "shares": 1238930297.8473837,
+   "token_implied_value": 1396671560854.5188,
+   "crowd_value": 1682178841309.8237,
+   "crowd_per_token": 1357.767135271916,
+   "crowd_value_range": [
+    1654219143576.8264,
+    1728778337531.4863
+   ],
+   "cap_source": "what-will-openais-ipo-valuation-be",
+   "p_listing": 0.9924999999999999,
+   "open_top_mass": 0.1491183879093199,
+   "brackets": [
+    {
+     "low": 0.0,
+     "high": 1000000000000.0,
+     "p": 0.17934508816120906
+    },
+    {
+     "low": 1000000000000.0,
+     "high": 1250000000000.0,
+     "p": 0.06549118387909321
+    },
+    {
+     "low": 1250000000000.0,
+     "high": 1500000000000.0,
+     "p": 0.09571788413098238
+    },
+    {
+     "low": 1500000000000.0,
+     "high": 1750000000000.0,
+     "p": 0.15214105793450883
+    },
+    {
+     "low": 1750000000000.0,
+     "high": 2000000000000.0,
+     "p": 0.22670025188916879
+    },
+    {
+     "low": 2000000000000.0,
+     "high": 2250000000000.0,
+     "p": 0.06700251889168767
+    },
+    {
+     "low": 2250000000000.0,
+     "high": 2500000000000.0,
+     "p": 0.06448362720403024
+    },
+    {
+     "low": 2500000000000.0,
+     "high": 3125000000000.0,
+     "p": 0.1491183879093199
+    }
+   ],
+   "gap": 0.2044197708734219,
+   "timing": [
+    [
+     "September 30, 2026",
+     0.0015
+    ],
+    [
+     "December 31, 2026",
+     0.0325
+    ],
+    [
+     "March 31, 2027",
+     0.23
+    ],
+    [
+     "June 30, 2027",
+     0.575
+    ]
+   ],
+   "ladder": [],
+   "crowd_odds_at_token_price": null,
+   "assumptions": [
+    "the open-ended top bracket ($2.5T+) is valued at $3.12T, that is 1.25 times its floor",
+    "15% of the crowd's probability sits in that open-ended top bracket, so the value would be 1.65T to 1.73T if it were worth 1.1 to 1.5 times its floor instead"
+   ],
+   "powers": {
+    "transfer_fee_bps": 100,
+    "next_transfer_fee_bps": null,
+    "transfer_fee_changes_at_epoch": null,
+    "paused": false,
+    "permanent_delegate": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
+    "ui_multiplier": 1.4861347
+   },
+   "spacex_scenario": 1028.32857973852
+  },
+  "ANDURIL": {
+   "company": "Anduril",
+   "kind": "valuation",
+   "mint": "PresTj4Yc2bAR197Er7wz4UUKSfqt6FryBEdAriBoQB",
+   "token_price": 157.74474744039145,
+   "mark_price": 154.83889412,
+   "premium_to_mark": 0.018766947005830703,
+   "shares": 884699057.2848972,
+   "token_implied_value": 139556629352.1585,
+   "crowd_value": null,
+   "crowd_per_token": null,
+   "crowd_value_range": null,
+   "cap_source": null,
+   "p_listing": null,
+   "open_top_mass": null,
+   "brackets": [],
+   "gap": null,
+   "timing": [],
+   "ladder": [
+    [
+     95000000000.0,
+     1.0
+    ],
+    [
+     100000000000.0,
+     1.0
+    ],
+    [
+     110000000000.0,
+     1.0
+    ],
+    [
+     125000000000.0,
+     0.695
+    ],
+    [
+     150000000000.0,
+     0.46
+    ],
+    [
+     175000000000.0,
+     0.235
+    ],
+    [
+     200000000000.0,
+     0.065
+    ]
+   ],
+   "crowd_odds_at_token_price": 0.5581676840897101,
+   "assumptions": [
+    "these markets price whether the valuation REACHES a level by 31 December, so they are touch odds, not a distribution over a final value"
+   ],
+   "powers": {
+    "transfer_fee_bps": 100,
+    "next_transfer_fee_bps": null,
+    "transfer_fee_changes_at_epoch": null,
+    "paused": false,
+    "permanent_delegate": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
+    "ui_multiplier": 1.0
+   },
+   "spacex_scenario": null
+  },
+  "NEURALINK": {
+   "company": "Neuralink",
+   "kind": "valuation",
+   "mint": "PrekqLJvJ3qVdXmBGDiexvwUTF4rLFDa6HWS4HJbw9S",
+   "token_price": 423.6411782033076,
+   "mark_price": 336.73379159,
+   "premium_to_mark": 0.2580892942254047,
+   "shares": 190495049.50516808,
+   "token_implied_value": 80701547214.26682,
+   "crowd_value": null,
+   "crowd_per_token": null,
+   "crowd_value_range": null,
+   "cap_source": null,
+   "p_listing": null,
+   "open_top_mass": null,
+   "brackets": [],
+   "gap": null,
+   "timing": [],
+   "ladder": [
+    [
+     40000000000.0,
+     1.0
+    ],
+    [
+     42500000000.0,
+     1.0
+    ],
+    [
+     45000000000.0,
+     1.0
+    ],
+    [
+     50000000000.0,
+     0.9
+    ],
+    [
+     60000000000.0,
+     0.545
+    ],
+    [
+     75000000000.0,
+     0.375
+    ],
+    [
+     100000000000.0,
+     0.044
+    ]
+   ],
+   "crowd_odds_at_token_price": 0.29951151488310734,
+   "assumptions": [
+    "these markets price whether the valuation REACHES a level by 31 December, so they are touch odds, not a distribution over a final value"
+   ],
+   "powers": {
+    "transfer_fee_bps": 100,
+    "next_transfer_fee_bps": null,
+    "transfer_fee_changes_at_epoch": null,
+    "paused": false,
+    "permanent_delegate": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
+    "ui_multiplier": 1.0
+   },
+   "spacex_scenario": null
+  }
+ },
+ "fee_change": {
+  "token": "every PreStocks token",
+  "from_bps": 50,
+  "to_bps": 100,
+  "observed_between": [
+   "2026-09-20T21:02Z",
+   "2026-09-20T22:02Z"
+  ],
+  "note": "caught by this project's own hourly snapshots, at the epoch 1039 boundary"
+ }
+}
