@@ -509,27 +509,70 @@ function renderView(){
   }
 }
 
-fetch("desk.json?"+Date.now()).then(r=>r.json()).then(async d=>{
-  DESK=d;
-  try{ CHAIN=await loadChain(Object.keys(d.tokens).filter(s=>d.tokens[s].covered));
-       CHAIN_SOURCE="read live from Solana devnet by your browser"; $("#netPill").textContent="devnet · live";
-  }catch(e){ $("#netPill").textContent="devnet"; }
-  $("#symBar").innerHTML=Object.values(d.tokens).filter(t=>t.covered).map(t=>
+/* Paint from the file first. Nothing waits on a network call that might not
+   answer, and any failure says so on the screen instead of leaving it blank. */
+async function boot(){
+  try{
+    const r = await fetch("desk.json?"+Date.now());
+    if(!r.ok) throw new Error("desk.json "+r.status);
+    DESK = await r.json();
+  }catch(e){
+    document.querySelector("#main").innerHTML =
+      `<div class="panel"><h2>Could not load the desk</h2>
+       <p class="muted">${e.message}. The data file sits beside this page, so a refresh usually fixes it.</p></div>`;
+    return;
+  }
+  const a = DESK.tokens.ANTHROPIC;
+  $("#tag").innerHTML = `${a.company} is priced at <b>${F.big(a.token_implied_value)}</b> by its token and
+    <b>${F.big(a.crowd_value)}</b> by the people betting on its IPO. SpaceX, the one that has already listed,
+    still trades <b>${Math.round(DESK.spacex.discount*100)}%</b> below its listed stock.`;
+  $("#stamp").textContent = `sources read ${new Date(DESK.read_at).toUTCString().slice(5,22)} UTC · epoch ${DESK.epoch}`;
+  $("#symBar").innerHTML = Object.values(DESK.tokens).filter(t=>t.covered).map(t=>
     `<button data-sym="${t.symbol}" class="${t.symbol===CUR?'on':''}">${t.company}
       ${t.gap!=null?`<span class="tick num ${cls(t.gap)}">${F.pct(t.gap)}</span>`:""}</button>`).join("");
-  $$("#symBar button").forEach(b=>b.onclick=()=>{CUR=b.dataset.sym;
-    $$("#symBar button").forEach(x=>x.classList.toggle("on",x===b)); renderView();});
-  const a=Object.values(d.tokens).find(t=>t.symbol==="ANTHROPIC");
-  $("#tag").innerHTML=`${a.company} is priced at <b>${F.big(a.token_implied_value)}</b> by its token and
-    <b>${F.big(a.crowd_value)}</b> by the people betting on its IPO. SpaceX, the one that has already listed,
-    still trades <b>${Math.round(d.spacex.discount*100)}%</b> below its listed stock.`;
-  $("#stamp").textContent=`sources read ${new Date(d.read_at).toUTCString().slice(5,22)} UTC · epoch ${d.epoch}`;
-  renderView();
-  const p=provider(); if(p?.isConnected&&p.publicKey){WALLET=p.publicKey.toString();
-    $("#connectBtn").textContent=F.short(WALLET);}
-});
+  $$("#symBar button").forEach(b=>b.onclick=()=>{ CUR=b.dataset.sym;
+    $$("#symBar button").forEach(x=>x.classList.toggle("on",x===b)); renderView(); });
+  renderView();                                    // the desk is usable from here
+  paintStatus();
+
+  /* Then, separately, try to read the chain. A failure only changes the badge. */
+  try{
+    CHAIN = await loadChain(Object.keys(DESK.tokens).filter(s=>DESK.tokens[s].covered));
+    CHAIN_SOURCE = "read live from Solana devnet by your browser";
+    $("#netPill").textContent = "devnet · live";
+    const cs=$("#chainStat"); if(cs) cs.innerHTML="chain <b class=\"up\">live</b>";
+    if(VIEW==="valuation"||VIEW==="verify") renderView();
+  }catch(e){ $("#netPill").textContent = "devnet · offline";
+    const cs=$("#chainStat"); if(cs) cs.innerHTML="chain <b class=\"warn\">offline</b>"; }
+
+  const p = provider();
+  if(p?.isConnected && p.publicKey){ WALLET = p.publicKey.toString();
+    $("#connectBtn").textContent = F.short(WALLET); }
+}
+boot();
 $$("#nav button").forEach(b=>b.onclick=()=>{VIEW=b.dataset.view;renderView();});
 $("#connectBtn").onclick=connect;
 $("#themeBtn").onclick=()=>{const cur=document.documentElement.getAttribute("data-theme")
   ||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
   document.documentElement.setAttribute("data-theme",cur==="dark"?"light":"dark");};
+
+/* A status bar that stays put, and number keys to move between views. */
+function paintStatus(){
+  if(!DESK) return;
+  const t=DESK.tokens, fee=t.ANTHROPIC?.powers?.transfer_fee_bps;
+  const bits=[
+    `<b>${Object.keys(t).length}</b> tokens`,
+    `anthropic <b class="${cls(t.ANTHROPIC?.gap)}">${F.pct(t.ANTHROPIC?.gap)}</b> vs crowd`,
+    `openai <b class="${cls(t.OPENAI?.gap)}">${F.pct(t.OPENAI?.gap)}</b>`,
+    `spacex conversion <b class="down">−${Math.round(DESK.spacex.discount*100)}%</b>`,
+    `transfer fee <b class="warn">${fee!=null?(fee/100).toFixed(2)+"%":"—"}</b>`,
+    `epoch <b>${DESK.epoch}</b>`,
+    `<span id="chainStat">chain …</span>`,
+  ];
+  $("#statusbar").innerHTML = bits.join('<span class="sep">│</span>');
+}
+document.addEventListener("keydown", e=>{
+  if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT") return;
+  const keys={"1":"board","2":"valuation","3":"payoff","4":"execution","5":"issuer","6":"position","7":"verify"};
+  if(keys[e.key]){ VIEW=keys[e.key]; renderView(); }
+});

@@ -22,13 +22,13 @@
     <button class="btn primary" id="connectBtn">Connect wallet</button>
   </div>
   <nav class="nav" id="nav" role="tablist">
-    <button data-view="board" aria-selected="true">Board</button>
-    <button data-view="valuation">Valuation</button>
-    <button data-view="payoff">Payoff</button>
-    <button data-view="execution">Execution</button>
-    <button data-view="issuer">Issuer risk</button>
-    <button data-view="position">Position</button>
-    <button data-view="verify">Verify</button>
+    <button data-view="board" data-key="1" aria-selected="true">Board</button>
+    <button data-view="valuation" data-key="2">Valuation</button>
+    <button data-view="payoff" data-key="3">Payoff</button>
+    <button data-view="execution" data-key="4">Execution</button>
+    <button data-view="issuer" data-key="5">Issuer risk</button>
+    <button data-view="position" data-key="6">Position</button>
+    <button data-view="verify" data-key="7">Verify</button>
   </nav>
 </header>
 
@@ -47,6 +47,7 @@
      market prices. Anthropic states that any transfer of its stock it has not approved is void, and that
      tokenised exposure may have no value.</p>
 </footer>
+<div class="statusbar" id="statusbar"></div>
 <div class="toast" id="toast"></div>
 <script src="desk.js"></script>
 </body>
