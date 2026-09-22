@@ -102,7 +102,7 @@ async function loadChain(symbols){
 /* ===================================================================== */
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
-let DESK=null, VIEW="board", CUR="ANTHROPIC", WALLET=null;
+let DESK=null, LP=null, LPCUR=null, VIEW="board", CUR="ANTHROPIC", WALLET=null;
 /* What this browser read from the markets itself, once the visitor asks it to. */
 let LIVE=null;
 const MAINNET = "https://api.mainnet-beta.solana.com";
@@ -571,6 +571,118 @@ async function showPosition(addr){
   }catch(e){ body.innerHTML=`<p class="muted">Solana did not answer just then.</p>`; }
 }
 
+/* ---------------------------------------------------------- liquidity -- */
+
+/* Net return per day against how concentrated the position is.
+
+   The line crosses zero once, and where it crosses is the whole answer: a
+   provider who knows how tightly their range sits can read off whether this
+   pool pays them. Drawn on a log scale because concentration is multiplicative.
+*/
+function lvrChart(p){
+  const W=620,H=230,L=52,R=16,T=14,B=34;
+  const pts=p.net_by_amplification.filter(d=>d.net_day!=null);
+  if(pts.length<2) return "";
+  const xs=pts.map(d=>Math.log10(d.amplification));
+  const ys=pts.map(d=>d.net_day);
+  const x0=Math.min(...xs), x1=Math.max(...xs);
+  const lo=Math.min(0,...ys), hi=Math.max(0,...ys);
+  const X=v=>L+(v-x0)/(x1-x0||1)*(W-L-R);
+  const Y=v=>T+(hi-v)/((hi-lo)||1)*(H-T-B);
+  const path=pts.map((d,i)=>`${i?"L":"M"}${X(xs[i]).toFixed(1)},${Y(ys[i]).toFixed(1)}`).join("");
+  const zeroY=Y(0);
+  const be=p.breakeven_amplification;
+  const beX=be&&be>=10**x0&&be<=10**x1?X(Math.log10(be)):null;
+  const ticks=pts.map((d,i)=>`<text class="axis" x="${X(xs[i])}" y="${H-14}" text-anchor="middle">${d.amplification}x</text>`).join("");
+  return `<figure><svg viewBox="0 0 ${W} ${H}" role="img"
+      aria-label="Net daily return to a liquidity provider against how concentrated the position is">
+    <line class="grid-line" x1="${L}" y1="${zeroY}" x2="${W-R}" y2="${zeroY}"/>
+    <text class="axis" x="${L-8}" y="${zeroY+4}" text-anchor="end">0</text>
+    <text class="axis" x="${L-8}" y="${Y(hi)+4}" text-anchor="end">${(hi*100).toFixed(2)}%</text>
+    <text class="axis" x="${L-8}" y="${Y(lo)+4}" text-anchor="end">${(lo*100).toFixed(2)}%</text>
+    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    ${pts.map((d,i)=>`<circle cx="${X(xs[i])}" cy="${Y(ys[i])}" r="3.5" fill="var(--accent)"><title>${d.amplification}x concentration, ${(d.net_day*100).toFixed(3)}% a day</title></circle>`).join("")}
+    ${beX!=null?`<line class="mark" x1="${beX}" y1="${T}" x2="${beX}" y2="${H-B}"/>
+      <text class="mark-lab" x="${Math.min(beX+6,W-90)}" y="${T+12}">pays nothing past ${Math.round(be)}x</text>`:""}
+    ${ticks}
+  </svg><figcaption>Fee income measured over ${LP.window_hours} hourly readings, less the arbitrage
+    loss at that concentration. Above the line the pool pays its providers, below it they are
+    subsidising the traders.</figcaption></figure>`;
+}
+
+function viewLiquidity(){
+  if(!LP) return `<div class="panel"><h2>Liquidity</h2>
+    <p class="muted">Reading the pool study…</p></div>`;
+  const pools=LP.pools.filter(p=>p.corroborated&&!p.never_traded);
+  const sel=pools.find(p=>p.address===LPCUR)||pools[0];
+  if(!sel) return `<div class="panel"><h2>Liquidity</h2>
+    <p class="muted">No pool has enough readings yet.</p></div>`;
+
+  const rows=pools.slice(0,14).map(p=>`<tr data-pool="${p.address}" class="${p===sel?"on":""}">
+    <td>${p.pool}</td>
+    <td class="num">${F.usd(p.tvl)}</td>
+    <td class="num">${(p.base_fee_pct||0).toFixed(2)}%</td>
+    <td class="num">${p.turnover_day.toFixed(2)}x</td>
+    <td class="num up">${F.pct(p.fee_yield_day,false,3)}</td>
+    <td class="num">${F.pct(p.sigma,false,0)}</td>
+    <td class="num">${F.pct(p.lvr_day_cpmm,false,4)}</td>
+    <td class="num ${p.breakeven_amplification>50?"up":p.breakeven_amplification>10?"warn":"down"}">
+      ${Math.round(p.breakeven_amplification)}x</td>
+    <td class="num warn">${p.days_to_recover_entry?p.days_to_recover_entry.toFixed(1)+" d":"—"}</td>
+  </tr>`).join("");
+
+  const recover=sel.days_to_recover_entry;
+  return `<div class="panel wide">
+    <h2>What a liquidity provider earns here, and what takes it back</h2>
+    <p class="muted" style="margin-top:-6px">Every pool holding one of these tokens, from
+      ${LP.window_hours} hourly readings this desk collected itself. Fee income and volatility are
+      measured. The arbitrage loss is the rate Milionis, Moallemi, Roughgarden and Zhang give for a
+      constant product pool, and since these pools concentrate their liquidity, the last column is
+      the concentration at which the income stops covering it.</p>
+    <div class="tablewrap"><table class="board">
+      <thead><tr><th>Pool</th><th>Liquidity</th><th>Fee</th><th>Turnover</th><th>Income a day</th>
+        <th>Volatility</th><th>Arbitrage loss a day</th><th>Pays nothing past</th>
+        <th>Entry paid back in</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>
+    <p class="cap">Income a day is the pool's fees over its liquidity, taken as the median across
+      every reading. It agrees with the pool's own volume times its own fee rate to within a tenth
+      on each row shown, which is the providers' share after the protocol's cut; rows where the two
+      disagree are left out rather than shown as measured.</p>
+  </div>
+  <div class="panel">
+    <h2>${sel.pool}</h2>
+    ${lvrChart(sel)}
+    <div class="rows" style="margin-top:14px">
+      <div class="row"><div class="k">Fee income a day, measured</div><div class="track"><i style="width:100%"></i></div>
+        <div class="v num up">${F.pct(sel.fee_yield_day,false,3)}</div></div>
+      <div class="row"><div class="k">That, over a year</div><div class="track"></div>
+        <div class="v num">${F.pct(sel.fee_yield_year,false,0)}</div></div>
+      <div class="row"><div class="k">Volatility, ${sel.sigma_observations} hourly returns</div><div class="track"></div>
+        <div class="v num ${sel.quantisation_dominates?"warn":""}">${F.pct(sel.sigma,false,0)}</div></div>
+      <div class="row"><div class="k">Arbitrage loss a day, spread over every price</div><div class="track"></div>
+        <div class="v num down">${F.pct(sel.lvr_day_cpmm,false,4)}</div></div>
+      <div class="row"><div class="k">Income stops covering it past</div><div class="track"></div>
+        <div class="v num"><b>${Math.round(sel.breakeven_amplification)}x</b> concentration</div></div>
+      <div class="row"><div class="k">Issuer's transfer fee, in and out</div><div class="track"></div>
+        <div class="v num warn">${F.pct(sel.entry_exit_cost,false,2)}</div></div>
+      <div class="row"><div class="k">Days of income to pay that back</div><div class="track"></div>
+        <div class="v num warn">${recover?recover.toFixed(1):"—"}</div></div>
+    </div>
+    ${sel.quantisation_dominates?`<p class="note"><b>Read that volatility carefully.</b> This pool
+      quotes in steps of ${sel.bin_step} hundredths of a percent, and its typical hourly move
+      (${F.pct(sel.sigma_hourly,false,2)}) is smaller than one step. Much of what is measured as
+      volatility is the pool jumping between bins, which overstates the arbitrage loss and so
+      understates the concentration it can carry.</p>`:""}
+    <p class="cap">The issuer can change that transfer fee, and has: this desk watched it double
+      from 0.5% to 1.0% at epoch 1039. A provider who entered before it changed pays the new one
+      on the way out.</p>
+  </div>`;
+}
+
+function wireLiquidity(){
+  $$("tr[data-pool]").forEach(r=>r.onclick=()=>{ LPCUR=r.dataset.pool; renderView(); });
+}
+
 /* ------------------------------------------------------------- routing -- */
 function viewPublish(){
   const t=DESK.tokens[CUR], m=CHAIN&&CHAIN[CUR], mine=LIVE?.tokens[CUR];
@@ -648,7 +760,8 @@ function viewPublish(){
 }
 
 const VIEWS={publish:viewPublish,board:viewBoard,valuation:viewValuation,payoff:viewPayoff,
-             execution:viewExecution,issuer:viewIssuer,position:viewPosition,verify:viewVerify};
+             execution:viewExecution,liquidity:viewLiquidity,issuer:viewIssuer,
+             position:viewPosition,verify:viewVerify};
 function renderView(){
   $$("#nav button").forEach(b=>b.setAttribute("aria-selected", b.dataset.view===VIEW));
   $("#symBar").style.display=["valuation","payoff"].includes(VIEW)?"":"none";
@@ -657,6 +770,7 @@ function renderView(){
     $$("tr[data-sym]").forEach(r=>r.onclick=()=>{CUR=r.dataset.sym;VIEW="valuation";renderView();});
   if(VIEW==="valuation") wireValuation();
   if(VIEW==="payoff") wirePayoff();
+  if(VIEW==="liquidity") wireLiquidity();
   if(VIEW==="verify") wireVerify();
   if(VIEW==="publish") wirePublish();
   if(VIEW==="position"){
@@ -692,6 +806,12 @@ async function boot(){
     $$("#symBar button").forEach(x=>x.classList.toggle("on",x===b)); renderView(); });
   renderView();                                    // the desk is usable from here
   paintStatus();
+
+  /* The liquidity study is a separate file and a separate concern, so the desk
+     does not wait for it and a missing one only empties that one tab. */
+  fetch("liquidity.json?"+Date.now()).then(r=>r.ok?r.json():null).then(j=>{
+    LP=j; if(VIEW==="liquidity") renderView();
+  }).catch(()=>{});
 
   /* Then, separately, try to read the chain. A failure only changes the badge. */
   try{

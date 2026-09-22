@@ -22,7 +22,7 @@ DOCS = os.path.join(HERE, "..", "docs")
 FILES = [
     "index.html", "app.css", "desk.css",
     "desk.js", "commit.js", "model.js", "live.js", "publish.js",
-    "desk.json", "data.json", "onchain.json", "proofs.json",
+    "desk.json", "data.json", "onchain.json", "proofs.json", "liquidity.json",
 ]
 
 TESTS = [

@@ -13,6 +13,7 @@ import vm from "vm";
 
 const desk = JSON.parse(readFileSync("site/desk.json", "utf8"));
 const chain = JSON.parse(readFileSync("site/onchain.json", "utf8"));
+const lp = JSON.parse(readFileSync("site/liquidity.json", "utf8"));
 
 /* Just enough of a browser for the view functions: they read from the DOM to
    find their controls, and the wiring is exercised separately. */
@@ -40,10 +41,11 @@ vm.runInContext(readFileSync("site/desk.js", "utf8"), sandbox, {filename: "desk.
 sandbox.__desk = desk;
 sandbox.__chain = Object.fromEntries(Object.entries(chain).filter(([k]) => k !== "_meta"));
 const setState = expr => vm.runInContext(expr, sandbox);
-setState("DESK = __desk; CHAIN = __chain;");
+sandbox.__lp = lp;
+setState("DESK = __desk; CHAIN = __chain; LP = __lp;");
 
-const VIEWS = ["board", "valuation", "payoff", "execution", "issuer", "position",
-               "publish", "verify"];
+const VIEWS = ["board", "valuation", "payoff", "execution", "liquidity", "issuer",
+               "position", "publish", "verify"];
 const WALLETS = [null, "2sujbbTjp2r5ugbjfHgUNDSwtdVfYpTiCSKPgT84CvD7"];
 
 let failures = 0, rendered = 0;
@@ -58,6 +60,9 @@ for(const symbol of Object.keys(desk.tokens)){
                                 Object.entries(desk.tokens).filter(([, t]) => t.covered))}]){
       sandbox.__live = live;
       setState("LIVE = __live");
+      /* The liquidity study loads after the desk, so both states are covered. */
+      for(const withLp of [true, false]){
+      setState(withLp ? "LP = __lp" : "LP = null");
       for(const view of VIEWS){
         try{
           const html = vm.runInContext(`VIEWS[${JSON.stringify(view)}]()`, sandbox);
@@ -69,6 +74,7 @@ for(const symbol of Object.keys(desk.tokens)){
           console.log(`  ${view} / ${symbol} / wallet ${wallet ? "connected" : "none"} / ` +
                       `${live ? "after reading" : "before reading"}: ${e.message}`);
         }
+      }
       }
     }
   }
