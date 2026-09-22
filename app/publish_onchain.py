@@ -13,7 +13,9 @@ Usage:
 """
 import argparse
 import asyncio
+import calendar
 import hashlib
+import math
 import json
 import os
 import struct
@@ -34,7 +36,7 @@ import sources as S
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROGRAM_ID = Pubkey.from_string("6jsqLJjNynJWc2g1kRNi65wiTCkoUkQ8V3p7MUiBgGgU")
 CONFIG_SEED = b"config"
-MARK_SEED = b"mark"
+MARK_SEED = b"mark.v2"
 
 
 def discriminator(name):
@@ -74,27 +76,67 @@ def to_bps(fraction):
     return max(0, min(10_000, int(round(fraction * 10_000))))
 
 
-def hash_material(token, read_at):
-    """The exact bytes the hash commits to.
+def hash_material(symbol, token, read_at, snapshot_at):
+    """The exact bytes the published hash commits to.
 
-    This is written out beside the page so a reader can recompute the hash
-    themselves and compare it with what the chain holds. A commitment nobody can
-    reproduce is decoration.
+    Written as integers joined by separators rather than as JSON, because two
+    languages must produce this identically: the keeper in Python and the page
+    in JavaScript, which disagree about how to print floats and how to order
+    nested keys. Money becomes millionths or cents, probabilities become basis
+    points, and nothing here is a float.
+
+    Two times appear. `read_at` is when the publisher read the crowd. The
+    `snapshot_at` is when the issuer's own figures were read, which a browser
+    cannot fetch for itself, so a mark says plainly how old that part is
+    instead of letting a fresh timestamp cover a stale price.
     """
-    return json.dumps({
-        "read_at": read_at,
-        "cap_source": token.get("cap_source"),
-        "token_price": token["token_price"],
-        "mark_price": token["mark_price"],
-        "crowd_value": token["crowd_value"],
-        "brackets": token.get("brackets"),
-        "timing": token.get("timing"),
-        "ladder": token.get("ladder"),
-    }, sort_keys=True, separators=(",", ":"))
+    def half_up(x, scale):
+        """Round half away from zero, as JavaScript's Math.round does.
+
+        Python rounds halves to even, so 2.5 becomes 2 here and 3 in the
+        browser. Every value below is non-negative, so adding a half and
+        taking the floor reproduces the browser exactly. One disagreement in
+        the last cent would change the hash and make an honest mark look
+        forged.
+        """
+        return str(math.floor((x or 0) * scale + 0.5))
+
+    def micro(x):
+        return half_up(x, 1_000_000)
+
+    def cents(x):
+        return half_up(x, 100)
+
+    def bps(x):
+        return half_up(x, 10_000)
+
+    brackets = ",".join(f"{cents(b['low'])}:{cents(b['high'])}:{bps(b['p'])}"
+                        for b in (token.get("brackets") or []))
+    timing = ",".join(f"{label}={bps(p)}" for label, p in (token.get("timing") or []))
+    ladder = ",".join(f"{cents(v)}={bps(p)}" for v, p in (token.get("ladder") or []))
+    return "|".join([
+        "crowdmark.v3",
+        symbol,
+        str(read_at),
+        str(snapshot_at),
+        token.get("cap_source") or "",
+        micro(token["token_price"]),
+        micro(token["mark_price"]),
+        cents(token.get("crowd_value")),
+        brackets,
+        timing,
+        ladder,
+    ])
 
 
-def sources_hash(token, read_at):
-    return hashlib.sha256(hash_material(token, read_at).encode()).digest()
+def sources_hash(symbol, token, read_at, snapshot_at):
+    """The 32 bytes the account stores, over exactly the material above.
+
+    A visitor recomputes this in the browser from the same public sources. If
+    it matches what is on chain, the mark was made from those numbers and
+    nothing else, whoever pressed publish.
+    """
+    return hashlib.sha256(hash_material(symbol, token, read_at, snapshot_at).encode()).digest()
 
 
 def next_deadline(token, read_at):
@@ -108,13 +150,15 @@ def next_deadline(token, read_at):
     label, p = max(live, key=lambda x: x[1])
     for fmt in ("%B %d, %Y", "%b %d, %Y"):
         try:
-            return int(time.mktime(time.strptime(label, fmt))), to_bps(p)
+            # UTC, not local time. The browser can publish the same mark from
+            # any timezone, and both must write the same number.
+            return calendar.timegm(time.strptime(label, fmt)), to_bps(p)
         except ValueError:
             continue
     return 0, to_bps(p)
 
 
-def publish_args(symbol, token, read_at):
+def publish_args(symbol, token, read_at, snapshot_at):
     """Borsh-encoded arguments, in the order the program declares them."""
     deadline, deadline_bps = next_deadline(token, read_at)
     low, high = token.get("crowd_value_range") or (token["crowd_value"], token["crowd_value"])
@@ -132,7 +176,7 @@ def publish_args(symbol, token, read_at):
         + struct.pack("<q", deadline)
         + struct.pack("<H", deadline_bps)
         + struct.pack("<q", read_at)
-        + sources_hash(token, read_at)
+        + sources_hash(symbol, token, read_at, snapshot_at)
     )
     return discriminator("publish") + borsh_string(symbol) + body
 
@@ -160,7 +204,7 @@ async def main():
         mark, _ = Pubkey.find_program_address([MARK_SEED, symbol.encode()], PROGRAM_ID)
         ix = Instruction(
             program_id=PROGRAM_ID,
-            data=publish_args(symbol, token, read_at),
+            data=publish_args(symbol, token, read_at, read_at),
             accounts=[
                 AccountMeta(keypair.pubkey(), is_signer=True, is_writable=True),
                 AccountMeta(config, is_signer=False, is_writable=True),
@@ -168,8 +212,9 @@ async def main():
                 AccountMeta(SYSTEM_PROGRAM_ID, is_signer=False, is_writable=False),
             ],
         )
-        proofs[symbol] = {"material": hash_material(token, read_at),
-                          "sha256": sources_hash(token, read_at).hex(),
+        # The keeper reads both halves in the same run, so the two times agree.
+        proofs[symbol] = {"material": hash_material(symbol, token, read_at, read_at),
+                          "sha256": sources_hash(symbol, token, read_at, read_at).hex(),
                           "account": str(mark)}
         if args.dry_run:
             print(f"{symbol:10} -> {mark}  "

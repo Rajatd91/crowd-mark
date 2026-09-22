@@ -27,6 +27,7 @@ pub struct PublishArgs {
 
 #[event]
 pub struct MarkPublished {
+    pub publisher: Pubkey,
     pub symbol: String,
     pub crowd_value_cents: u64,
     pub token_implied_cents: u64,
@@ -35,6 +36,10 @@ pub struct MarkPublished {
     pub published_at: i64,
 }
 
+/// Publishing is open. The program does not ask who you are, it asks whether the
+/// reading can be true: fresh, inside its own stated range, newer than the one
+/// stored, and carrying a hash of the inputs behind it. A feed only one key can
+/// refresh dies the day that key stops.
 #[derive(Accounts)]
 #[instruction(symbol: String)]
 pub struct Publish<'info> {
@@ -60,11 +65,6 @@ fn valid_symbol(symbol: &str) -> bool {
 }
 
 pub fn handle_publish(ctx: Context<Publish>, symbol: String, args: PublishArgs) -> Result<()> {
-    require_keys_eq!(
-        ctx.accounts.config.publisher,
-        ctx.accounts.publisher.key(),
-        ErrorCode::NotPublisher
-    );
     require!(valid_symbol(&symbol), ErrorCode::InvalidSymbol);
     require!(
         !args.company.is_empty() && args.company.len() <= 24,
@@ -138,6 +138,8 @@ pub fn handle_publish(ctx: Context<Publish>, symbol: String, args: PublishArgs) 
     mark.published_at = now;
     mark.published_slot = clock.slot;
     mark.sources_hash = args.sources_hash;
+    mark.last_publisher = ctx.accounts.publisher.key();
+    mark.publish_count = mark.publish_count.saturating_add(1);
     mark.bump = ctx.bumps.mark;
 
     if first_time {
@@ -145,6 +147,7 @@ pub fn handle_publish(ctx: Context<Publish>, symbol: String, args: PublishArgs) 
     }
 
     emit!(MarkPublished {
+        publisher: ctx.accounts.publisher.key(),
         symbol,
         crowd_value_cents: mark.crowd_value_cents,
         token_implied_cents: mark.token_implied_cents,

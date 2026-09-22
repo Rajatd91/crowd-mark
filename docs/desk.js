@@ -25,14 +25,18 @@ function decodeMark(bytes){
   const deadline = i64(), deadline_p = u16()/1e4;
   const read_at = i64(), published_at = i64(), slot = u64();
   const hash = [...bytes.subarray(o, o+32)].map(b=>b.toString(16).padStart(2,"0")).join("");
+  o += 32;
+  const last_publisher = bs58encode(bytes.subarray(o, o+32)); o += 32;
+  const publish_count = dv.getUint32(o, true);
   return {symbol, company, kind, token_price, token_implied, crowd, low, high,
-          per_token, p_event, open_top, deadline, deadline_p, read_at, published_at, slot, hash};
+          per_token, p_event, open_top, deadline, deadline_p, read_at, published_at, slot, hash,
+          last_publisher, publish_count};
 }
 
 async function markAddress(symbol){
   /* The account address is derived from the symbol, the same way the program does. */
   const enc = new TextEncoder();
-  const seeds = [enc.encode("mark"), enc.encode(symbol)];
+  const seeds = [enc.encode("mark.v2"), enc.encode(symbol)];
   const prog = bs58decode(PROGRAM_ID);
   for(let bump = 255; bump >= 0; bump--){
     const parts = [...seeds, new Uint8Array([bump]), prog, enc.encode("ProgramDerivedAddress")];
@@ -99,6 +103,8 @@ async function loadChain(symbols){
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 let DESK=null, VIEW="board", CUR="ANTHROPIC", WALLET=null;
+/* What this browser read from the markets itself, once the visitor asks it to. */
+let LIVE=null;
 const MAINNET = "https://api.mainnet-beta.solana.com";
 
 const F = {
@@ -115,6 +121,8 @@ const F = {
   short(a){ return a?a.slice(0,4)+"…"+a.slice(-4):""; },
   ago(ts){ const h=(Date.now()/1000-ts)/3600;
     return h<1?Math.max(1,Math.round(h*60))+" min":h.toFixed(1)+" h"; },
+  dur(secs){ const s=Math.abs(secs);
+    return s<90?Math.round(s)+" s":s<5400?Math.round(s/60)+" min":(s/3600).toFixed(1)+" h"; },
   date(t){ return (t||"").replace(/,?\s*20(\d\d)/,(m,y)=>" '"+y); }
 };
 const cls = x => x==null?"":x>0?"up":x<0?"down":"";
@@ -128,7 +136,8 @@ async function connect(){
   if(!p){ toast("No Solana wallet found. Paste an address instead."); return; }
   try{ const r=await p.connect(); WALLET=(r?.publicKey||p.publicKey).toString();
     $("#connectBtn").textContent=F.short(WALLET); $("#connectBtn").classList.remove("primary");
-    toast("Connected, read only"); if(VIEW==="position") renderView();
+    toast("Connected. You can publish to the feed.");
+    if(VIEW==="position"||VIEW==="publish") renderView();
   }catch(e){ toast("Connection cancelled"); }
 }
 async function rpc(method,params,url=MAINNET){
@@ -434,17 +443,38 @@ async function wireVerify(){
       if(!acc?.value) throw new Error("no account");
       const bytes=b64ToBytes(acc.value.data[0]);
       const m=decodeMark(bytes);
-      const proofs=await (await fetch("proofs.json?"+Date.now())).json();
-      const p=proofs.proofs?.[sym];
-      let hashLine=`<span class="muted">No published inputs to check against.</span>`;
-      if(p){
-        const digest=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(p.material));
-        const hex=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,"0")).join("");
-        const match = hex===m.hash;
-        hashLine = `<div class="kv"><span>Hash recomputed here</span><span class="num">${hex.slice(0,24)}…</span></div>
-          <div class="kv"><span>Hash stored on chain</span><span class="num">${m.hash.slice(0,24)}…</span></div>
-          <div class="kv"><span>Do they match</span><span class="${match?'up':'down'}"><b>${match?"yes":"no"}</b></span></div>`;
-      }
+      /* Rebuild the committed material here from the numbers themselves,
+         rather than hashing a string somebody else published. Which reading
+         to rebuild from is decided by the account: it stores the time its
+         inputs were read, so only a reading with that same timestamp can
+         possibly match. */
+      const {hashMaterial}=await import("./commit.js");
+      const snapAt=Math.floor(Date.parse(DESK.read_at)/1000);
+      const candidates=[];
+      if(LIVE?.tokens[sym]) candidates.push(["the reading you took in this browser",
+                                             LIVE.tokens[sym], LIVE.read_at, LIVE.snapshot_at]);
+      candidates.push(["the snapshot this page shipped with", DESK.tokens[sym], snapAt, snapAt]);
+      const pick=candidates.find(c=>c[2]===m.read_at) || candidates[candidates.length-1];
+      const [label,token,readAt,snapshotAt]=pick;
+      const material=hashMaterial(sym, token, readAt, snapshotAt);
+      const digest=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(material));
+      const hex=[...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,"0")).join("");
+      const match=hex===m.hash;
+      const sameTime=readAt===m.read_at;
+      const hashLine=`
+        <div class="kv"><span>Rebuilt from</span><span>${label}</span></div>
+        <div class="kv"><span>Inputs read at</span><span class="num">${new Date(readAt*1000).toISOString().slice(0,16).replace("T"," ")}Z</span></div>
+        <div class="kv"><span>Account says inputs read at</span><span class="num ${sameTime?"":"warn"}">${new Date(m.read_at*1000).toISOString().slice(0,16).replace("T"," ")}Z</span></div>
+        <div class="kv"><span>Hash recomputed here</span><span class="num">${hex.slice(0,24)}…</span></div>
+        <div class="kv"><span>Hash stored on chain</span><span class="num">${m.hash.slice(0,24)}…</span></div>
+        <div class="kv"><span>Do they match</span><span class="${match?'up':'down'}"><b>${match?"yes":"no"}</b></span></div>
+        ${match?`<p class="cap">So this account was built from those exact numbers, by whoever signed
+          it, and not edited afterwards.</p>`
+        :sameTime?`<p class="cap">Same reading time but a different hash. That is a real
+          disagreement and worth reporting.</p>`
+        :`<p class="cap">The account holds a reading taken at a different moment from the one
+          rebuilt here, so the hashes are not expected to match. Read the markets on the publish
+          tab and verify again, or compare against the mark published at that time.</p>`}`;
       out.innerHTML=`
         <div class="kv"><span>Account derived from the symbol</span>
           <span class="num"><a href="https://explorer.solana.com/address/${addr}?cluster=devnet" target="_blank" rel="noopener">${F.short(addr)}</a></span></div>
@@ -458,6 +488,58 @@ async function wireVerify(){
         <div class="kv"><span>Age</span><span class="num">${F.ago(m.published_at)}</span></div>
         ${hashLine}`;
     }catch(e){ out.innerHTML=`<p class="down">Could not read that account. ${e.message}</p>`; }
+  };
+}
+
+/* Read the markets from this browser and recompute every mark.
+
+   The page ships a snapshot so it has something to show at once, but a
+   snapshot is somebody else's reading, and the program will refuse a mark that
+   is not newer than the one already stored. So publishing starts here: the
+   visitor's own browser fetches the markets and runs the model over them.
+*/
+async function wireRead(){
+  const btn=$("#readBtn"); if(!btn) return;
+  btn.onclick = async () => {
+    const out=$("#readOut");
+    btn.disabled = true;
+    out.innerHTML = `<p class="muted">Asking Polymarket…</p>`;
+    try{
+      const {readLive} = await import("./live.js");
+      LIVE = await readLive(DESK, m => out.innerHTML = `<p class="muted">${m}</p>`);
+      LIVE.at = Date.now();
+      renderView();
+      toast(`Read ${Object.keys(LIVE.tokens).length} marks from source`);
+    }catch(e){
+      out.innerHTML = `<p class="down">${e.message||e}</p>`;
+      btn.disabled = false;
+    }
+  };
+}
+
+async function wirePublish(){
+  wireRead();
+  const btn=$("#pubBtn"); if(!btn||!WALLET||!LIVE?.tokens[CUR]) return;
+  btn.onclick = async () => {
+    const out=$("#pubOut"), t=LIVE.tokens[CUR];
+    btn.disabled = true;
+    const step = m => out.innerHTML = `<p class="muted">${m}…</p>`;
+    try{
+      const {publishFromWallet} = await import("./publish.js");
+      const {sig, mark} = await publishFromWallet(
+        CUR, t, LIVE.read_at, LIVE.snapshot_at, provider(), step);
+      out.innerHTML = `<div class="kv"><span>Published by</span><span class="num">${F.short(WALLET)}</span></div>
+        <div class="kv"><span>Transaction</span><span class="num">
+          <a href="https://explorer.solana.com/tx/${sig}?cluster=devnet" target="_blank" rel="noopener">${sig.slice(0,10)}…</a></span></div>
+        <div class="kv"><span>Account updated</span><span class="num">
+          <a href="https://explorer.solana.com/address/${mark}?cluster=devnet" target="_blank" rel="noopener">${F.short(mark)}</a></span></div>`;
+      toast("Published on devnet");
+      CHAIN = await loadChain(Object.keys(DESK.tokens).filter(s=>DESK.tokens[s].covered));
+      setTimeout(()=>renderView(), 1200);
+    }catch(e){
+      out.innerHTML = `<p class="down">${e.message||e}</p>`;
+      btn.disabled = false;
+    }
   };
 }
 
@@ -490,7 +572,82 @@ async function showPosition(addr){
 }
 
 /* ------------------------------------------------------------- routing -- */
-const VIEWS={board:viewBoard,valuation:viewValuation,payoff:viewPayoff,
+function viewPublish(){
+  const t=DESK.tokens[CUR], m=CHAIN&&CHAIN[CUR], mine=LIVE?.tokens[CUR];
+  if(!t.covered) return `<div class="panel"><h2>${t.company}</h2>
+    <p class="muted">Only companies the crowd prices can be published.</p></div>`;
+  const age = m ? (Date.now()/1000 - m.published_at)/3600 : null;
+
+  /* Step one. Nothing can be signed until the visitor has read the markets
+     from their own browser, because the program refuses a reading that is not
+     newer than the one already stored. */
+  const readPanel = `<div class="panel">
+    <h2>1 · Read the markets yourself</h2>
+    <p class="muted" style="margin-top:-6px">This page ships a snapshot so it has something to show
+      at once. That snapshot is somebody else's reading. Press this and your browser fetches the
+      same prediction markets directly and runs the model over them here.</p>
+    <button class="btn ${mine?"":"primary"}" id="readBtn">
+      ${mine?"Read again":"Read the markets now"}</button>
+    <div id="readOut" style="margin-top:12px">${mine?"":""}</div>
+    ${LIVE?.failed?.length?`<p class="note">${LIVE.failed.length} market${LIVE.failed.length>1?"s":""}
+      did not answer, so anything priced off ${LIVE.failed.length>1?"them":"it"} is left out rather
+      than guessed.</p>`:""}
+  </div>`;
+
+  if(!mine) return readPanel + `<div class="panel">
+    <h2>2 · Publish what you read</h2>
+    <p class="muted">Available once you have read the markets above.</p></div>`;
+
+  const moved = t.crowd_value ? mine.crowd_value / t.crowd_value - 1 : null;
+  const newer = LIVE.read_at - (m ? m.published_at : LIVE.snapshot_at);
+  const rows = [
+    ["Shipped snapshot", F.big(t.crowd_value), F.ago(LIVE.snapshot_at), ""],
+    ["On chain now", m?F.big(m.crowd):"—", m?F.ago(m.published_at):"—", age>6?"warn":""],
+    ["Your reading, just now", F.big(mine.crowd_value), "seconds ago", "hl"],
+  ];
+
+  const pubPanel = `<div class="panel">
+    <h2>2 · Publish what you read</h2>
+    <div class="rows" style="margin:4px 0 16px">
+      ${rows.map(([k,v,when,c])=>`<div class="row"><div class="k">${k}</div>
+        <div class="track"><span class="num" style="font-size:12px;color:var(--ink-3)">${when}</span></div>
+        <div class="v num ${c}">${v}</div></div>`).join("")}
+      <div class="row"><div class="k">Moved since the snapshot</div><div class="track"></div>
+        <div class="v num ${cls(moved)}">${moved==null?"—":F.pct(moved,true,2)}</div></div>
+      <div class="row"><div class="k">Newer than the stored mark by</div><div class="track"></div>
+        <div class="v num ${newer>0?"up":"down"}">${newer>0?F.dur(newer):"not newer"}</div></div>
+      <div class="row"><div class="k">Market it priced from</div><div class="track"></div>
+        <div class="v num" style="font-size:12px">${mine.cap_source||"ladder"}</div></div>
+      <div class="row"><div class="k">Times refreshed</div><div class="track"></div>
+        <div class="v num">${m?.publish_count ?? "—"}</div></div>
+      <div class="row"><div class="k">Last publisher</div><div class="track"></div>
+        <div class="v num">${m?.last_publisher?F.short(m.last_publisher):"—"}</div></div>
+    </div>
+    <button class="btn primary" id="pubBtn" ${WALLET&&newer>0?"":"disabled"}>
+      ${!WALLET?"Connect a wallet to publish"
+        :newer>0?`Publish ${t.company} as ${F.short(WALLET)}`
+        :"The stored mark is already this fresh"}</button>
+    <div id="pubOut" class="verify" style="margin-top:14px"></div>
+    <p class="cap">This sends a real transaction on devnet, signed by your key, and the account
+      changes for everyone. It costs a network fee of about five millionths of a SOL, and if the
+      wallet has none the faucet is asked once. The program refuses a reading that is stale,
+      impossible, or older than the one already stored, whoever signs it.</p>
+  </div>
+  <div class="panel">
+    <h2>What your browser used</h2>
+    <p class="muted" style="margin-top:-6px">Read here, just now, from the market itself:
+      the crowd's ${mine.kind==="ipo"?"distribution over listing-day value and its timing odds"
+      :"ladder of touch probabilities"}.</p>
+    <p class="muted">Carried from the snapshot, because prestocks.com does not answer browser
+      requests: the issuer's mark price of ${F.usd(t.mark_price,2)} and the
+      ${F.num(t.shares/1e6,1)}M shares it implies. Your reading records that snapshot's age, so
+      a fresh timestamp cannot hide an old price.</p>
+  </div>`;
+
+  return readPanel + pubPanel;
+}
+
+const VIEWS={publish:viewPublish,board:viewBoard,valuation:viewValuation,payoff:viewPayoff,
              execution:viewExecution,issuer:viewIssuer,position:viewPosition,verify:viewVerify};
 function renderView(){
   $$("#nav button").forEach(b=>b.setAttribute("aria-selected", b.dataset.view===VIEW));
@@ -501,6 +658,7 @@ function renderView(){
   if(VIEW==="valuation") wireValuation();
   if(VIEW==="payoff") wirePayoff();
   if(VIEW==="verify") wireVerify();
+  if(VIEW==="publish") wirePublish();
   if(VIEW==="position"){
     $("#goBtn").onclick=()=>showPosition($("#addr").value.trim());
     $("#addr").addEventListener("keydown",e=>{if(e.key==="Enter")showPosition($("#addr").value.trim());});
@@ -573,6 +731,7 @@ function paintStatus(){
 }
 document.addEventListener("keydown", e=>{
   if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT") return;
-  const keys={"1":"board","2":"valuation","3":"payoff","4":"execution","5":"issuer","6":"position","7":"verify"};
+  const keys={"1":"board","2":"valuation","3":"payoff","4":"execution","5":"issuer",
+              "6":"position","7":"publish","8":"verify"};
   if(keys[e.key]){ VIEW=keys[e.key]; renderView(); }
 });

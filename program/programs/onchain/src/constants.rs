@@ -4,7 +4,8 @@ use anchor_lang::prelude::*;
 pub const CONFIG_SEED: &[u8] = b"config";
 
 #[constant]
-pub const MARK_SEED: &[u8] = b"mark";
+/// Bumped when the account layout changes, since a stored account cannot grow.
+pub const MARK_SEED: &[u8] = b"mark.v2";
 
 /// A basis point scale. Any probability published must fall within it.
 #[constant]

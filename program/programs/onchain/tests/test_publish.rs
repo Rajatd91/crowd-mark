@@ -161,18 +161,31 @@ fn publishes_and_stores_exactly_what_was_sent() {
 }
 
 #[test]
-fn a_stranger_cannot_publish() {
+fn anyone_may_publish_and_the_feed_records_who_did() {
     let (mut svm, payer, program_id) = program();
     let keeper = Keypair::new();
     init(&mut svm, &payer, &program_id, keeper.pubkey());
     let now = now_of(&svm);
 
+    // A wallet nobody configured, which is the point of an open feed.
     let stranger = Keypair::new();
     svm.airdrop(&stranger.pubkey(), ONE_SOL).unwrap();
     let ix = publish_ix(&program_id, &stranger.pubkey(), "ANTHROPIC", good_args(now));
+    send(&mut svm, &[&stranger], &stranger.pubkey(), ix).expect("a stranger may publish");
+
+    let acc = svm.get_account(&mark_pda(&program_id, "ANTHROPIC")).unwrap();
+    let mut data: &[u8] = &acc.data;
+    let mark = onchain::state::Mark::try_deserialize(&mut data).unwrap();
+    assert_eq!(mark.last_publisher, stranger.pubkey(), "the feed records who refreshed it");
+    assert_eq!(mark.publish_count, 1);
+
+    // The rules still bite, whoever is signing.
+    let mut bad = good_args(now);
+    bad.p_event_bps = 10_001;
+    let ix = publish_ix(&program_id, &stranger.pubkey(), "ANTHROPIC", bad);
     assert!(
         send(&mut svm, &[&stranger], &stranger.pubkey(), ix).is_err(),
-        "a stranger must be refused"
+        "an open feed still refuses an impossible reading"
     );
 }
 

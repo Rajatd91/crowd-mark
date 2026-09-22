@@ -62,6 +62,10 @@ pub struct Mark {
     pub published_slot: u64,
     /// SHA-256 of the inputs behind this mark.
     pub sources_hash: [u8; 32],
+    /// Who last refreshed this mark, and how many times it has been refreshed.
+    /// Anyone may publish, so the feed records who did rather than who was allowed.
+    pub last_publisher: Pubkey,
+    pub publish_count: u32,
     pub bump: u8,
 }
 

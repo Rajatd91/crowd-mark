@@ -140,6 +140,10 @@ def build():
             "shares": M.implied_shares(row),
             "token_implied_value": M.token_implied_value(row),
             "covered": bool(cfg),                      # does the crowd price this one
+            "read_at": snap["iso"],
+            # The markets themselves, so the page can re-read them rather than
+            # trust the numbers beside them.
+            "sources": (cfg or {}).get("polymarket", {}),
         }
         if cfg:
             card = M.build_card(snap, sym, cfg)

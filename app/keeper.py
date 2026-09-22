@@ -44,7 +44,13 @@ def cycle():
     if not run("publish", [sys.executable, "publish_onchain.py"],
                env={"PUBLISH_RPC": devnet_rpc()}):
         return False
-    return run("read back", [sys.executable, "read_onchain.py"])
+    if not run("read back", [sys.executable, "read_onchain.py"]):
+        return False
+    # The page ships the same reading the chain now holds, so a visitor can
+    # verify a mark without waiting for the next build.
+    if not run("rebuild the desk", [sys.executable, "desk.py"]):
+        return False
+    return run("stage the site", [sys.executable, "publish_site.py"])
 
 
 def main():
