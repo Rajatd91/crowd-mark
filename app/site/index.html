@@ -4,435 +4,50 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Crowd Mark</title>
-<meta name="description" content="An on-chain reference price for companies that have not listed, derived from the prediction markets where people bet on whether and at what value they list.">
-<meta property="og:title" content="Crowd Mark">
-<meta property="og:description" content="What a pre-IPO token is worth against what the crowd betting on the company thinks.">
+<meta name="description" content="A desk for tokenised pre-IPO stock. What each token is worth against the crowd betting on the IPO, what it costs to trade, what the issuer can do to your balance, and a mark published on Solana you can verify yourself.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300..600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="desk.css">
 </head>
 <body>
-
 <header class="topbar">
   <div class="inner">
     <div class="logo"><span class="dot"></span> Crowd Mark</div>
     <span class="pill live" id="netPill">devnet</span>
     <span class="spacer"></span>
-    <button class="btn ghost" id="themeBtn" title="Switch theme" aria-label="Switch theme">◐</button>
+    <span class="stamp" id="stamp"></span>
+    <button class="btn ghost" id="themeBtn" aria-label="Switch theme">◐</button>
     <button class="btn primary" id="connectBtn">Connect wallet</button>
   </div>
+  <nav class="nav" id="nav" role="tablist">
+    <button data-view="board" aria-selected="true">Board</button>
+    <button data-view="valuation">Valuation</button>
+    <button data-view="payoff">Payoff</button>
+    <button data-view="execution">Execution</button>
+    <button data-view="issuer">Issuer risk</button>
+    <button data-view="position">Position</button>
+    <button data-view="verify">Verify</button>
+  </nav>
 </header>
 
 <div class="wrap">
-  <section class="hero">
-    <div class="eyebrow">On-chain reference price for private companies</div>
-    <h1 id="heroLine"><span class="skeleton">Loading the chain</span></h1>
-    <p id="heroSub"></p>
-  </section>
-
-  <nav class="tabs" id="tabs" role="tablist" aria-label="Company"></nav>
-
-  <div class="grid">
-    <div>
-      <section class="panel">
-        <h2 id="distTitle">What the crowd expects</h2>
-        <div class="figrow" id="figs"></div>
-        <figure><div id="chart"></div><figcaption id="chartCap"></figcaption></figure>
-        <div class="prov" id="prov"></div>
-      </section>
-
-      <section class="panel" id="scenPanel">
-        <h2>What one token pays under each outcome</h2>
-        <div class="rows" id="scen"></div>
-        <figcaption id="scenCap"></figcaption>
-      </section>
-    </div>
-
-    <div>
-      <section class="panel wallet">
-        <h2>Your position</h2>
-        <div id="walletBody">
-          <p class="empty">Connect a wallet, or paste any address, to see a holding valued
-             against the crowd and against what conversion has actually paid.</p>
-          <div class="field">
-            <input id="addr" placeholder="Paste a Solana address" spellcheck="false" autocomplete="off" aria-label="Solana address">
-            <button class="btn" id="goBtn">Show</button>
-          </div>
-          <p class="empty" style="margin-top:10px">
-            <a href="#" id="demoLink">Use an example holder</a> · read only, nothing to sign
-          </p>
-        </div>
-      </section>
-
-      <section class="panel" id="oddsPanel">
-        <h2 id="oddsTitle">Crowd odds</h2>
-        <div class="rows" id="odds"></div>
-      </section>
-
-      <section class="panel">
-        <h2>What the issuer can still do</h2>
-        <div class="chips" id="powers"></div>
-        <div class="note" id="evidence"></div>
-      </section>
-    </div>
-  </div>
+  <p class="tag" id="tag"></p>
+  <div class="symbar" id="symBar"></div>
+  <div id="main"></div>
 </div>
 
 <footer>
-  <p>Prices from Jupiter and PreStocks. Odds from Polymarket and Kalshi. Balances, transfer fees,
-     pause flags and multipliers read from Solana. Marks are published to a program on devnet and
-     read back by your browser.</p>
-  <p><b>This is information, not advice.</b> The crowd prices the company. A token is exposure to
-     that company through an issuer's holding entity, and what it pays on a listing depends on
-     conversion terms no market prices. Anthropic states that any transfer of its stock it has not
-     approved is void, and that tokenised exposure may have no value.</p>
+  <p>Prices from Jupiter and PreStocks. Odds from Polymarket and Kalshi. Balances, transfer fees, pause
+     flags, delegates and multipliers read from Solana. Marks published to a program on devnet and read
+     back by your browser.</p>
+  <p><b>Information, not advice.</b> The crowd prices the company. A token is exposure to that company
+     through an issuer's holding entity, and what it pays on a listing depends on conversion terms no
+     market prices. Anthropic states that any transfer of its stock it has not approved is void, and that
+     tokenised exposure may have no value.</p>
 </footer>
 <div class="toast" id="toast"></div>
-
-<script>
-const PROGRAM_ID = "6jsqLJjNynJWc2g1kRNi65wiTCkoUkQ8V3p7MUiBgGgU";
-const DEVNET = "https://api.devnet.solana.com";
-let CHAIN = null, CHAIN_SOURCE = "";
-
-function b64ToBytes(b64){
-  const bin = atob(b64); const out = new Uint8Array(bin.length);
-  for(let i=0;i<bin.length;i++) out[i] = bin.charCodeAt(i);
-  return out;
-}
-
-/* The Mark account, field by field, in the order the program declares them. */
-function decodeMark(bytes){
-  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  let o = 8;                                   // Anchor discriminator
-  const str = () => { const n = dv.getUint32(o, true); o += 4;
-    const v = new TextDecoder().decode(bytes.subarray(o, o+n)); o += n; return v; };
-  const u64 = () => { const v = dv.getBigUint64(o, true); o += 8; return Number(v); };
-  const i64 = () => { const v = dv.getBigInt64(o, true); o += 8; return Number(v); };
-  const u16 = () => { const v = dv.getUint16(o, true); o += 2; return v; };
-  const symbol = str(), company = str();
-  const kind = dv.getUint8(o); o += 1;
-  const token_price = u64()/1e6, token_implied = u64()/1e2, crowd = u64()/1e2;
-  const low = u64()/1e2, high = u64()/1e2, per_token = u64()/1e6;
-  const p_event = u16()/1e4, open_top = u16()/1e4;
-  const deadline = i64(), deadline_p = u16()/1e4;
-  const read_at = i64(), published_at = i64(), slot = u64();
-  const hash = [...bytes.subarray(o, o+32)].map(b=>b.toString(16).padStart(2,"0")).join("");
-  return {symbol, company, kind, token_price, token_implied, crowd, low, high,
-          per_token, p_event, open_top, deadline, deadline_p, read_at, published_at, slot, hash};
-}
-
-async function markAddress(symbol){
-  /* The account address is derived from the symbol, the same way the program does. */
-  const enc = new TextEncoder();
-  const seeds = [enc.encode("mark"), enc.encode(symbol)];
-  const prog = bs58decode(PROGRAM_ID);
-  for(let bump = 255; bump >= 0; bump--){
-    const parts = [...seeds, new Uint8Array([bump]), prog, enc.encode("ProgramDerivedAddress")];
-    const len = parts.reduce((n,p)=>n+p.length, 0);
-    const buf = new Uint8Array(len); let i = 0;
-    for(const p of parts){ buf.set(p, i); i += p.length; }
-    const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", buf));
-    if(!onCurve(hash)) return bs58encode(hash);
-  }
-}
-
-const B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-function bs58decode(s){
-  let n = 0n; for(const c of s) n = n*58n + BigInt(B58.indexOf(c));
-  const out = new Uint8Array(32);
-  for(let i = 31; i >= 0; i--){ out[i] = Number(n & 255n); n >>= 8n; }
-  return out;
-}
-function bs58encode(bytes){
-  let n = 0n; for(const b of bytes) n = (n<<8n) + BigInt(b);
-  let s = ""; while(n > 0n){ s = B58[Number(n % 58n)] + s; n /= 58n; }
-  for(const b of bytes){ if(b === 0) s = "1" + s; else break; }
-  return s;
-}
-/* An address is only a valid account address if it is NOT on the ed25519 curve. */
-function onCurve(bytes){
-  const p = (1n<<255n) - 19n;
-  const d = -121665n * modInv(121666n, p) % p;
-  let y = 0n; for(let i = 31; i >= 0; i--) y = (y<<8n) + BigInt(bytes[i]);
-  const sign = y >> 255n; y &= (1n<<255n) - 1n;
-  if(y >= p) return false;
-  const y2 = y*y % p, u = (y2 - 1n + p) % p, v = (d*y2 + 1n) % p;
-  const x2 = u * modInv(v, p) % p;
-  let x = modPow(x2, (p+3n)/8n, p);
-  if((x*x - x2) % p !== 0n){
-    x = x * modPow(2n, (p-1n)/4n, p) % p;
-    if((x*x - x2 + p*p) % p !== 0n) return false;
-  }
-  if(x === 0n && sign) return false;
-  return true;
-}
-function modPow(b,e,m){ let r=1n; b%=m; while(e>0n){ if(e&1n) r=r*b%m; b=b*b%m; e>>=1n; } return r; }
-function modInv(a,m){ return modPow(((a%m)+m)%m, m-2n, m); }
-
-async function loadChain(symbols){
-  const addresses = {};
-  for(const s of symbols) addresses[s] = await markAddress(s);
-  const r = await fetch(DEVNET, {method:"POST", headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({jsonrpc:"2.0", id:1, method:"getMultipleAccounts",
-      params:[Object.values(addresses), {encoding:"base64", commitment:"confirmed"}]})});
-  const j = await r.json();
-  if(j.error) throw new Error(j.error.message);
-  const out = {};
-  Object.keys(addresses).forEach((s, i) => {
-    const acc = j.result.value[i];
-    if(!acc) return;
-    out[s] = {...decodeMark(b64ToBytes(acc.data[0])), account: addresses[s]};
-  });
-  return out;
-}
-
-
-const $ = s => document.querySelector(s);
-let DATA=null, CUR="ANTHROPIC", WALLET=null;
-
-const F = {
-  big(x){ if(x==null) return "n/a";
-    if(Math.abs(x)>=1e12) return "$"+(x/1e12).toFixed(2)+"T";
-    if(Math.abs(x)>=1e9) return "$"+(x/1e9).toFixed(0)+"B";
-    return "$"+Math.round(x).toLocaleString(); },
-  usd(x,d=0){ return x==null?"n/a":"$"+x.toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d}); },
-  pct(x,s=true){ return x==null?"n/a":(s&&x>0?"+":"")+(x*100).toFixed(1)+"%"; },
-  odds(x){ return x==null?"n/a":Math.round(x*100)+"%"; },
-  date(t){ return t.replace(/,?\s*20(\d\d)/,(m,y)=>" '"+y); },
-  short(a){ return a ? a.slice(0,4)+"…"+a.slice(-4) : ""; },
-  ago(ts){ const h=(Date.now()/1000-ts)/3600;
-    return h<1 ? Math.max(1,Math.round(h*60))+" min ago" : h.toFixed(1)+" h ago"; }
-};
-
-function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("on");
-  setTimeout(()=>t.classList.remove("on"), 2600); }
-
-/* ------------------------------------------------------------ wallet ---- */
-function walletProvider(){
-  if(window.phantom?.solana?.isPhantom) return window.phantom.solana;
-  if(window.solflare?.isSolflare) return window.solflare;
-  if(window.solana) return window.solana;
-  return null;
-}
-async function connect(){
-  const p = walletProvider();
-  if(!p){ toast("No Solana wallet found. Paste an address instead."); $("#addr").focus(); return; }
-  try{
-    const res = await p.connect();
-    WALLET = (res?.publicKey || p.publicKey).toString();
-    $("#connectBtn").textContent = F.short(WALLET);
-    $("#connectBtn").classList.remove("primary");
-    toast("Connected, read only");
-    showPosition(WALLET);
-  }catch(e){ toast("Connection cancelled"); }
-}
-
-/* ------------------------------------------------------------- charts --- */
-function distChart(t){
-  const W=720,H=248,m={t:30,r:14,b:34,l:14}, bs=t.brackets;
-  if(!bs||!bs.length) return "";
-  const lo=bs[0].low, hi=bs[bs.length-1].high, span=hi-lo||1;
-  const x=v=>m.l+((v-lo)/span)*(W-m.l-m.r);
-  const pmax=Math.max(...bs.map(b=>b.p)), y=p=>H-m.b-(p/pmax)*(H-m.t-m.b);
-  let g="",bars="",ticks="";
-  for(let i=0;i<=4;i++){ const yy=m.t+(H-m.t-m.b)*i/4;
-    g+=`<line class="grid-line" x1="${m.l}" y1="${yy}" x2="${W-m.r}" y2="${yy}"/>`; }
-  bs.forEach(b=>{ const x0=x(b.low)+1.4,x1=x(b.high)-1.4,yy=y(b.p);
-    bars+=`<rect class="bar" x="${x0}" y="${yy}" width="${Math.max(1,x1-x0)}" height="${Math.max(1,H-m.b-yy)}" rx="3">
-      <title>${(b.low/1e12).toFixed(2)}T to ${(b.high/1e12).toFixed(2)}T, ${Math.round(b.p*100)}%</title></rect>`; });
-  const step = span>2.4e12?0.5e12:0.25e12;
-  for(let v=Math.ceil(lo/step)*step; v<=hi; v+=step)
-    ticks+=`<text class="axis" x="${x(v)}" y="${H-m.b+16}" text-anchor="middle">$${(v/1e12).toFixed(2)}T</text>`;
-  let marks="";
-  [[t.token_implied_value,"tok","token says"],[t.crowd_value,"","crowd average"]].forEach(([v,cls,lab],i)=>{
-    if(v<lo||v>hi) return;
-    const xx=x(v), flip=xx>W*.6;
-    marks+=`<line class="mark ${cls}" x1="${xx}" y1="${m.t-10}" x2="${xx}" y2="${H-m.b}"/>
-      <text class="mark-lab ${cls}" x="${flip?xx-8:xx+8}" y="${m.t-14+i*0}" text-anchor="${flip?"end":"start"}">${lab} ${F.big(v)}</text>`;
-  });
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Crowd probability by listing value for ${t.company}">${g}${bars}${ticks}${marks}
-    <line class="grid-line" x1="${m.l}" y1="${H-m.b}" x2="${W-m.r}" y2="${H-m.b}"/></svg>`;
-}
-function ladderChart(t){
-  const W=720,H=228,m={t:26,r:14,b:34,l:14};
-  const r=t.ladder.filter(v=>v[1]<0.995);
-  if(!r.length) return "";
-  const lo=Math.min(...r.map(v=>v[0]))*.93, hi=Math.max(...r.map(v=>v[0]))*1.05;
-  const x=v=>m.l+((v-lo)/(hi-lo))*(W-m.l-m.r), y=p=>H-m.b-p*(H-m.t-m.b);
-  let g="",path="",dots="",ticks="";
-  for(let i=0;i<=4;i++){ const yy=m.t+(H-m.t-m.b)*i/4;
-    g+=`<line class="grid-line" x1="${m.l}" y1="${yy}" x2="${W-m.r}" y2="${yy}"/>
-        <text class="axis" x="${m.l}" y="${yy-4}" opacity=".7">${100-i*25}%</text>`; }
-  r.forEach((v,i)=>{ path+=(i?" L":"M")+x(v[0])+" "+y(v[1]);
-    dots+=`<circle cx="${x(v[0])}" cy="${y(v[1])}" r="4.5" fill="var(--accent)" stroke="var(--panel)" stroke-width="2">
-      <title>${F.big(v[0])}, ${Math.round(v[1]*100)}%</title></circle>`;
-    ticks+=`<text class="axis" x="${x(v[0])}" y="${H-m.b+16}" text-anchor="middle">${F.big(v[0])}</text>`; });
-  let mark="";
-  const tv=t.token_implied_value;
-  if(tv>=lo&&tv<=hi){ const flip=x(tv)>W*.6;
-    mark=`<line class="mark tok" x1="${x(tv)}" y1="${m.t-8}" x2="${x(tv)}" y2="${H-m.b}"/>
-      <text class="mark-lab tok" x="${flip?x(tv)-8:x(tv)+8}" y="${m.t-12}" text-anchor="${flip?"end":"start"}">token says ${F.big(tv)}</text>`; }
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Odds ${t.company} reaches each valuation">${g}
-    <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>${dots}${ticks}${mark}
-    <line class="grid-line" x1="${m.l}" y1="${H-m.b}" x2="${W-m.r}" y2="${H-m.b}"/></svg>`;
-}
-
-/* -------------------------------------------------------------- render -- */
-function render(sym){
-  CUR=sym; const t=DATA.tokens[sym], p=t.powers, m=CHAIN&&CHAIN[sym];
-  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.sym===sym));
-
-  if(t.kind==="ipo"){
-    $("#heroLine").innerHTML = `${t.company}'s token prices the company at <b>${F.big(t.token_implied_value)}</b>.
-      The crowd betting on the IPO prices it at <b>${F.big(t.crowd_value)}</b>.`;
-    $("#heroSub").textContent = `A gap of ${F.pct(t.gap)}. SpaceX, the one of these companies that has `
-      + `already listed, still trades ${Math.round(DATA.spacex.discount*100)}% below its listed stock, `
-      + `which is most of the gap explained.`;
-    $("#distTitle").textContent = "What the crowd expects on listing day";
-    $("#figs").innerHTML = `
-      <div class="fig"><div class="lab">Token price</div><div class="val num">${F.usd(t.token_price)}</div>
-        <div class="sub">issuer's mark ${F.usd(t.mark_price)} <span class="num ${t.premium_to_mark>=0?'up':'down'}">${F.pct(t.premium_to_mark)}</span></div></div>
-      <div class="fig hl"><div class="lab">Crowd value per token</div><div class="val num">${F.usd(t.crowd_per_token)}</div>
-        <div class="sub"><span class="num ${t.gap>=0?'up':'down'}">${F.pct(t.gap)}</span> against the token</div></div>
-      <div class="fig"><div class="lab">Odds it lists at all</div><div class="val num">${F.odds(t.p_listing)}</div>
-        <div class="sub">inside the market's window</div></div>`;
-    $("#chart").innerHTML = distChart(t);
-    $("#chartCap").textContent = `Each bar is the crowd's probability that ${t.company} closes its first day inside that range. The blue line is what the token's own price implies.`;
-    const live=(t.timing||[]).filter(v=>v[1]>0.02&&v[1]<0.985).slice(-5);
-    $("#oddsPanel").style.display = live.length?"":"none";
-    $("#oddsTitle").textContent = "Crowd odds of listing by a date";
-    $("#odds").innerHTML = live.map(([l,pr])=>`<div class="row"><div class="k">by ${F.date(l)}</div>
-      <div class="track"><i style="width:${Math.round(pr*100)}%"></i></div>
-      <div class="v num">${F.odds(pr)}</div></div>`).join("");
-  } else {
-    $("#heroLine").innerHTML = `${t.company}'s token prices the company at <b>${F.big(t.token_implied_value)}</b>.
-      The crowd gives <b>${F.odds(t.crowd_odds_at_token_price)}</b> odds it gets there this year.`;
-    $("#heroSub").textContent = `No market prices a ${t.company} listing, so this is the crowd's view of the private valuation instead.`;
-    $("#distTitle").textContent = "What the crowd expects by 31 December";
-    $("#figs").innerHTML = `
-      <div class="fig"><div class="lab">Token price</div><div class="val num">${F.usd(t.token_price)}</div>
-        <div class="sub">issuer's mark ${F.usd(t.mark_price)} <span class="num ${t.premium_to_mark>=0?'up':'down'}">${F.pct(t.premium_to_mark)}</span></div></div>
-      <div class="fig hl"><div class="lab">Odds of reaching the token's value</div>
-        <div class="val num">${F.odds(t.crowd_odds_at_token_price)}</div><div class="sub">by 31 December</div></div>`;
-    $("#chart").innerHTML = ladderChart(t);
-    $("#chartCap").textContent = `Each point is the crowd's probability that ${t.company}'s valuation reaches that level by 31 December. Touch odds, not a forecast of where it ends.`;
-    $("#oddsPanel").style.display = "none";
-  }
-
-  $("#scenPanel").style.display = t.crowd_per_token ? "" : "none";
-  if(t.crowd_per_token){
-    const rows=[["Trading at today",t.token_price,""],["At the crowd's value",t.crowd_per_token,"q"]];
-    if(t.spacex_scenario) rows.push([`If conversion pays like SpaceX's did`,t.spacex_scenario,"w"]);
-    const max=Math.max(...rows.map(r=>r[1]));
-    let html=rows.map(([k,v,c])=>`<div class="row"><div class="k">${k}</div>
-      <div class="track"><i class="${c}" style="width:${Math.round(v/max*100)}%"></i></div>
-      <div class="v num">${F.usd(v,2)}</div></div>`).join("");
-    const fee=t.powers.transfer_fee_bps;
-    if(fee!=null) html+=`<div class="row"><div class="k">Cost to move one token, at ${(fee/100).toFixed(2)}%</div>
-      <div class="track"></div><div class="v num warn">−${F.usd(t.token_price*fee/1e4,2)}</div></div>`;
-    $("#scen").innerHTML=html;
-    $("#scenCap").textContent = "The SpaceX line is measured, not assumed. It is what that token trades at against its listed stock right now.";
-  }
-
-  const chips=[];
-  if(p.transfer_fee_bps!=null) chips.push([`charges ${(p.transfer_fee_bps/100).toFixed(2)}% on every transfer`, p.transfer_fee_bps>=100]);
-  if(p.paused===true) chips.push(["transfers are paused right now", true]);
-  else if(p.paused===false) chips.push(["can pause all transfers", false]);
-  if(p.permanent_delegate) chips.push(["can move your balance through a permanent delegate", false]);
-  if(p.ui_multiplier&&p.ui_multiplier!==1) chips.push([`displays your balance at ${p.ui_multiplier}× after a split`, false]);
-  $("#powers").innerHTML = chips.map(([c,alarm])=>`<span class="chip ${alarm?'alarm':''}">${c}</span>`).join("");
-  $("#evidence").innerHTML = `<b>These powers get used.</b> On 20 September the fee on every PreStocks token
-    doubled from 0.50% to 1.00% at a Solana epoch boundary. This project's own hourly snapshots caught it
-    between 21:02 and 22:02 UTC. Holders were not told.`;
-
-  $("#prov").innerHTML = m
-    ? `Published on Solana in slot <b>${(m.slot||0).toLocaleString()}</b>, ${F.ago(m.published_at)}
-       ${((Date.now()/1000-m.published_at)/3600>6)?'<span class="warn">(stale, the program flags anything over six hours)</span>':''}.
-       Account <a href="https://explorer.solana.com/address/${m.account}?cluster=devnet" target="_blank" rel="noopener">${F.short(m.account)}</a>,
-       inputs hashed to <code>${(m.hash||m.sources_hash||"").slice(0,12)}</code>.
-       ${CHAIN_SOURCE?`<br>${CHAIN_SOURCE[0].toUpperCase()+CHAIN_SOURCE.slice(1)}.`:""}
-       ${t.assumptions?.length?`<br>${t.assumptions[0]}`:""}`
-    : `Not published on chain yet.`;
-
-  if(WALLET) showPosition(WALLET);
-}
-
-/* ------------------------------------------------------------ position -- */
-async function rpc(method, params){
-  const r=await fetch(DEVNET_MAINNET,{method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({jsonrpc:"2.0",id:1,method,params})});
-  const j=await r.json(); if(j.error) throw new Error(j.error.message); return j.result;
-}
-const DEVNET_MAINNET = "https://api.mainnet-beta.solana.com";   // the tokens live on mainnet
-
-async function showPosition(addr){
-  const body=$("#walletBody");
-  if(!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(addr)){ toast("That does not look like a Solana address"); return; }
-  body.innerHTML = `<p class="empty"><span class="skeleton">Reading the chain…</span></p>`;
-  try{
-    const res=await rpc("getTokenAccountsByOwner",[addr,
-      {programId:"TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"},{encoding:"jsonParsed"}]);
-    const byMint={}; for(const [s,t] of Object.entries(DATA.tokens)) byMint[t.mint]=s;
-    const held={};
-    for(const a of res.value){ const i=a.account.data.parsed.info, s=byMint[i.mint];
-      if(!s) continue; const ui=parseFloat(i.tokenAmount.uiAmountString||"0");
-      if(ui>0) held[s]=(held[s]||0)+ui; }
-    const syms=Object.keys(held);
-    let html = `<p class="empty">${F.short(addr)} · <a href="#" id="clearBtn">clear</a></p>`;
-    if(!syms.length){
-      html += `<p class="empty" style="margin-top:10px">This wallet holds none of the four tokens.</p>`;
-    } else {
-      html += syms.map(s=>{
-        const t=DATA.tokens[s], amt=held[s], fee=t.powers.transfer_fee_bps;
-        let rows=`<div class="kv"><span>Worth today</span><span class="num">${F.usd(amt*t.token_price,2)}</span></div>`;
-        if(t.crowd_per_token) rows+=`<div class="kv"><span>At the crowd's value</span><span class="num ${t.gap>=0?'up':'down'}">${F.usd(amt*t.crowd_per_token,2)}</span></div>`;
-        if(t.spacex_scenario) rows+=`<div class="kv"><span>If conversion pays like SpaceX's did</span><span class="num warn">${F.usd(amt*t.spacex_scenario,2)}</span></div>`;
-        if(fee!=null) rows+=`<div class="kv"><span>Cost to move it once</span><span class="num warn">−${F.usd(amt*t.token_price*fee/1e4,2)}</span></div>`;
-        return `<div class="holding"><div class="name">${t.company} · <span class="num">${amt.toLocaleString(undefined,{maximumFractionDigits:2})}</span></div>${rows}</div>`;
-      }).join("");
-    }
-    body.innerHTML = html;
-    $("#clearBtn").onclick = e => { e.preventDefault(); location.reload(); };
-  }catch(e){
-    body.innerHTML = `<p class="empty">Solana did not answer just then. <a href="#" onclick="location.reload();return false">Try again</a>.</p>`;
-  }
-}
-
-/* ---------------------------------------------------------------- boot -- */
-$("#connectBtn").onclick = connect;
-$("#themeBtn").onclick = () => {
-  const now = document.documentElement.getAttribute("data-theme")
-    || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-  document.documentElement.setAttribute("data-theme", now === "dark" ? "light" : "dark");
-};
-$("#goBtn").onclick = () => showPosition($("#addr").value.trim());
-$("#addr").addEventListener("keydown", e => { if(e.key==="Enter") showPosition($("#addr").value.trim()); });
-$("#demoLink").onclick = e => { e.preventDefault();
-  $("#addr").value="2sujbbTjp2r5ugbjfHgUNDSwtdVfYpTiCSKPgT84CvD7"; showPosition($("#addr").value); };
-
-fetch("data.json?"+Date.now()).then(r=>r.json()).then(async d=>{
-  DATA=d;
-  DATA.spacex_days = Math.round((Date.now()-Date.parse("2026-06-12"))/864e5);
-  try{
-    CHAIN = await loadChain(Object.keys(d.tokens));
-    CHAIN_SOURCE = "read live from Solana devnet by your browser";
-    $("#netPill").textContent = "devnet · live";
-  }catch(e){
-    try{ CHAIN = await (await fetch("onchain.json?"+Date.now())).json();
-         CHAIN_SOURCE = "from the keeper's last read, because no endpoint answered here";
-         $("#netPill").textContent = "devnet · cached"; }
-    catch(_){ CHAIN=null; $("#netPill").textContent="devnet"; }
-  }
-  $("#tabs").innerHTML = Object.entries(d.tokens).map(([s,t])=>{
-    const g = t.gap!=null ? `<span class="tick num">${F.pct(t.gap)}</span>` : "";
-    return `<button role="tab" data-sym="${s}">${t.company}${g}</button>`;}).join("");
-  document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>render(b.dataset.sym));
-  render("ANTHROPIC");
-  const p = walletProvider();
-  if(p?.isConnected && p.publicKey){ WALLET = p.publicKey.toString();
-    $("#connectBtn").textContent = F.short(WALLET); showPosition(WALLET); }
-});
-</script>
+<script src="desk.js"></script>
 </body>
 </html>

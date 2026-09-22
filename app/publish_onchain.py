@@ -74,9 +74,14 @@ def to_bps(fraction):
     return max(0, min(10_000, int(round(fraction * 10_000))))
 
 
-def sources_hash(token, read_at):
-    """A hash of the inputs behind a mark, so a reader can check it later."""
-    material = json.dumps({
+def hash_material(token, read_at):
+    """The exact bytes the hash commits to.
+
+    This is written out beside the page so a reader can recompute the hash
+    themselves and compare it with what the chain holds. A commitment nobody can
+    reproduce is decoration.
+    """
+    return json.dumps({
         "read_at": read_at,
         "cap_source": token.get("cap_source"),
         "token_price": token["token_price"],
@@ -85,8 +90,11 @@ def sources_hash(token, read_at):
         "brackets": token.get("brackets"),
         "timing": token.get("timing"),
         "ladder": token.get("ladder"),
-    }, sort_keys=True, separators=(",", ":")).encode()
-    return hashlib.sha256(material).digest()
+    }, sort_keys=True, separators=(",", ":"))
+
+
+def sources_hash(token, read_at):
+    return hashlib.sha256(hash_material(token, read_at).encode()).digest()
 
 
 def next_deadline(token, read_at):
@@ -140,6 +148,7 @@ async def main():
     read_at = int(time.mktime(time.strptime(data["read_at"][:19], "%Y-%m-%dT%H:%M:%S")))
     read_at -= time.timezone if not time.daylight else time.altzone
 
+    proofs = {}
     keypair = Keypair.from_bytes(bytes(json.load(open(args.keypair))))
     client = AsyncClient(args.rpc)
     config, _ = Pubkey.find_program_address([CONFIG_SEED], PROGRAM_ID)
@@ -159,6 +168,9 @@ async def main():
                 AccountMeta(SYSTEM_PROGRAM_ID, is_signer=False, is_writable=False),
             ],
         )
+        proofs[symbol] = {"material": hash_material(token, read_at),
+                          "sha256": sources_hash(token, read_at).hex(),
+                          "account": str(mark)}
         if args.dry_run:
             print(f"{symbol:10} -> {mark}  "
                   f"crowd {to_cents(token['crowd_value'])/1e14:.2f}T  "
@@ -169,6 +181,8 @@ async def main():
             [ix], keypair.pubkey(), blockhash), blockhash)
         sig = (await client.send_transaction(tx)).value
         print(f"{symbol:10} published in {sig}")
+    with open(os.path.join(HERE, "site", "proofs.json"), "w") as f:
+        json.dump({"read_at": read_at, "proofs": proofs}, f, indent=1)
     await client.close()
     return 0
 
