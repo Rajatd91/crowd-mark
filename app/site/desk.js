@@ -573,17 +573,18 @@ async function showPosition(addr){
 
 /* ---------------------------------------------------------- liquidity -- */
 
-/* Net return per day against how concentrated the position is.
+/* Net return per day against how wide the provider places their range.
 
-   The line crosses zero once, and where it crosses is the whole answer: a
-   provider who knows how tightly their range sits can read off whether this
-   pool pays them. Drawn on a log scale because concentration is multiplicative.
+   The line crosses zero once, and where it crosses is the whole answer: place
+   liquidity wider than that and the pool pays, tighter and the traders are
+   being subsidised. Drawn on a log scale because range widths are chosen
+   multiplicatively, not in even steps.
 */
 function lvrChart(p){
   const W=620,H=230,L=52,R=16,T=14,B=34;
-  const pts=p.net_by_amplification.filter(d=>d.net_day!=null);
+  const pts=(p.net_by_width||[]).filter(d=>d.net_day!=null);
   if(pts.length<2) return "";
-  const xs=pts.map(d=>Math.log10(d.amplification));
+  const xs=pts.map(d=>Math.log10(d.half_width));
   const ys=pts.map(d=>d.net_day);
   const x0=Math.min(...xs), x1=Math.max(...xs);
   const lo=Math.min(0,...ys), hi=Math.max(0,...ys);
@@ -591,23 +592,23 @@ function lvrChart(p){
   const Y=v=>T+(hi-v)/((hi-lo)||1)*(H-T-B);
   const path=pts.map((d,i)=>`${i?"L":"M"}${X(xs[i]).toFixed(1)},${Y(ys[i]).toFixed(1)}`).join("");
   const zeroY=Y(0);
-  const be=p.breakeven_amplification;
+  const be=p.breakeven_half_width;
   const beX=be&&be>=10**x0&&be<=10**x1?X(Math.log10(be)):null;
-  const ticks=pts.map((d,i)=>`<text class="axis" x="${X(xs[i])}" y="${H-14}" text-anchor="middle">${d.amplification}x</text>`).join("");
+  const ticks=pts.map((d,i)=>`<text class="axis" x="${X(xs[i])}" y="${H-14}" text-anchor="middle">${d.half_width<0.1?(d.half_width*100).toFixed(1):(d.half_width*100).toFixed(0)}%</text>`).join("");
   return `<figure><svg viewBox="0 0 ${W} ${H}" role="img"
-      aria-label="Net daily return to a liquidity provider against how concentrated the position is">
+      aria-label="Net daily return to a liquidity provider against how wide their range is">
     <line class="grid-line" x1="${L}" y1="${zeroY}" x2="${W-R}" y2="${zeroY}"/>
     <text class="axis" x="${L-8}" y="${zeroY+4}" text-anchor="end">0</text>
     <text class="axis" x="${L-8}" y="${Y(hi)+4}" text-anchor="end">${(hi*100).toFixed(2)}%</text>
     <text class="axis" x="${L-8}" y="${Y(lo)+4}" text-anchor="end">${(lo*100).toFixed(2)}%</text>
     <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2"/>
-    ${pts.map((d,i)=>`<circle cx="${X(xs[i])}" cy="${Y(ys[i])}" r="3.5" fill="var(--accent)"><title>${d.amplification}x concentration, ${(d.net_day*100).toFixed(3)}% a day</title></circle>`).join("")}
+    ${pts.map((d,i)=>`<circle cx="${X(xs[i])}" cy="${Y(ys[i])}" r="3.5" fill="var(--accent)"><title>placed within ${(d.half_width*100).toFixed(1)}% of the price, ${(d.net_day*100).toFixed(3)}% a day</title></circle>`).join("")}
     ${beX!=null?`<line class="mark" x1="${beX}" y1="${T}" x2="${beX}" y2="${H-B}"/>
-      <text class="mark-lab" x="${Math.min(beX+6,W-90)}" y="${T+12}">pays nothing past ${Math.round(be)}x</text>`:""}
+      <text class="mark-lab" x="${Math.min(beX+6,W-150)}" y="${T+12}">pays nothing tighter than ${(be*100).toFixed(2)}%</text>`:""}
     ${ticks}
-  </svg><figcaption>Fee income measured over ${LP.window_hours} hourly readings, less the arbitrage
-    loss at that concentration. Above the line the pool pays its providers, below it they are
-    subsidising the traders.</figcaption></figure>`;
+  </svg><figcaption>Fee income measured over ${LP.window_hours} hourly readings, less the arbitrage loss
+    for a position placed within that much of the price. Above the line the pool pays its
+    providers, below it they are subsidising the traders.</figcaption></figure>`;
 }
 
 function viewLiquidity(){
@@ -626,8 +627,8 @@ function viewLiquidity(){
     <td class="num up">${F.pct(p.fee_yield_day,false,3)}</td>
     <td class="num">${F.pct(p.sigma,false,0)}</td>
     <td class="num">${F.pct(p.lvr_day_cpmm,false,4)}</td>
-    <td class="num ${p.breakeven_amplification>50?"up":p.breakeven_amplification>10?"warn":"down"}">
-      ${Math.round(p.breakeven_amplification)}x</td>
+    <td class="num ${!p.breakeven_half_width?"down":p.breakeven_half_width<0.03?"up":p.breakeven_half_width<0.15?"warn":"down"}">
+      ${p.breakeven_half_width?"±"+(p.breakeven_half_width*100).toFixed(2)+"%":"never"}</td>
     <td class="num warn">${p.days_to_recover_entry?p.days_to_recover_entry.toFixed(1)+" d":"—"}</td>
   </tr>`).join("");
 
@@ -637,11 +638,12 @@ function viewLiquidity(){
     <p class="muted" style="margin-top:-6px">Every pool holding one of these tokens, from
       ${LP.window_hours} hourly readings this desk collected itself. Fee income and volatility are
       measured. The arbitrage loss is the rate Milionis, Moallemi, Roughgarden and Zhang give for a
-      constant product pool, and since these pools concentrate their liquidity, the last column is
-      the concentration at which the income stops covering it.</p>
+      constant product pool, raised for a concentrated position by the closed form in the same
+      paper. The column that matters is the last but one: place liquidity tighter than that around
+      the price and the fees no longer cover what arbitrage takes.</p>
     <div class="tablewrap"><table class="board">
       <thead><tr><th>Pool</th><th>Liquidity</th><th>Fee</th><th>Turnover</th><th>Income a day</th>
-        <th>Volatility</th><th>Arbitrage loss a day</th><th>Pays nothing past</th>
+        <th>Volatility</th><th>Arbitrage loss a day</th><th>Must stay wider than</th>
         <th>Entry paid back in</th></tr></thead>
       <tbody>${rows}</tbody></table></div>
     <p class="cap">Income a day is the pool's fees over its liquidity, taken as the median across
@@ -661,8 +663,10 @@ function viewLiquidity(){
         <div class="v num ${sel.quantisation_dominates?"warn":""}">${F.pct(sel.sigma,false,0)}</div></div>
       <div class="row"><div class="k">Arbitrage loss a day, spread over every price</div><div class="track"></div>
         <div class="v num down">${F.pct(sel.lvr_day_cpmm,false,4)}</div></div>
-      <div class="row"><div class="k">Income stops covering it past</div><div class="track"></div>
-        <div class="v num"><b>${Math.round(sel.breakeven_amplification)}x</b> concentration</div></div>
+      <div class="row"><div class="k">Income covers the loss only wider than</div><div class="track"></div>
+        <div class="v num"><b>${sel.breakeven_half_width?"±"+(sel.breakeven_half_width*100).toFixed(2)+"%":"no width works"}</b></div></div>
+      <div class="row"><div class="k">That is how many times the full range loss</div><div class="track"></div>
+        <div class="v num">${Math.round(sel.breakeven_amplification)}x</div></div>
       <div class="row"><div class="k">Issuer's transfer fee, in and out</div><div class="track"></div>
         <div class="v num warn">${F.pct(sel.entry_exit_cost,false,2)}</div></div>
       <div class="row"><div class="k">Days of income to pay that back</div><div class="track"></div>
@@ -672,7 +676,7 @@ function viewLiquidity(){
       quotes in steps of ${sel.bin_step} hundredths of a percent, and its typical hourly move
       (${F.pct(sel.sigma_hourly,false,2)}) is smaller than one step. Much of what is measured as
       volatility is the pool jumping between bins, which overstates the arbitrage loss and so
-      understates the concentration it can carry.</p>`:""}
+      makes the width above wider than it really needs to be.</p>`:""}
     <p class="cap">The issuer can change that transfer fee, and has: this desk watched it double
       from 0.5% to 1.0% at epoch 1039. A provider who entered before it changed pays the new one
       on the way out.</p>

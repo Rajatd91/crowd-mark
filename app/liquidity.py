@@ -18,11 +18,18 @@ Roughgarden and Zhang (2022), "Automated Market Making and Loss Versus
 Rebalancing", give that rate as sigma squared over eight per unit of pool value
 for a constant product pool.
 
-These are concentrated pools, not constant product ones, so that rate is
-amplified by however tightly the liquidity sits around the price. That factor is
-not estimated here and it is not assumed either: it is swept, and what this
-reports is the amplification at which each pool stops paying its providers. A
-reader who knows how concentrated a position is can read the answer off.
+These are concentrated pools, not constant product ones. The same paper gives
+the concentrated case in closed form, so the amplification is derived rather
+than assumed: for liquidity placed between P/(1+w) and P(1+w), the loss per
+dollar is larger than the constant product rate by exactly
+
+    A(w) = 1 / (1 - (1+w) ** -0.5)
+
+which follows from their Example 4, where the loss is unchanged but the pool
+value is only 2L sqrt(P) (1 - (1+w) ** -0.5). So what this reports for each pool
+is the width at which its fee income stops covering its arbitrage loss. Place
+liquidity wider than that and the pool pays; tighter and the traders are being
+subsidised.
 
 Usage:
     python3 liquidity.py
@@ -41,8 +48,31 @@ SNAPSHOTS = os.path.join(HERE, "..", "collector", "data", "*", "*.json.gz")
 HOURS_PER_YEAR = 24 * 365
 MIN_SNAPSHOTS = 24        # a day of hourly readings before a pool is reported
 MIN_TVL = 5_000.0         # below this a fee yield is noise, not a return
-# The sweep. 1 is a pool spread over every price; higher is tighter.
-AMPLIFICATION = [1, 2, 5, 10, 25, 50, 100, 250]
+# Half-widths a provider would actually choose, as a fraction of the price.
+WIDTHS = [0.005, 0.01, 0.02, 0.05, 0.10, 0.25, 0.50, 1.00]
+
+
+def amplification(w):
+    """How much more a position of half-width w loses than a full-range one.
+
+    From Milionis, Moallemi, Roughgarden and Zhang (2022), Example 4: a range
+    order loses the same absolute amount per unit of liquidity as a constant
+    product pool, but holds less value, so the loss per dollar is larger in
+    exactly that proportion. A full-range position is w to infinity, where this
+    tends to 1.
+    """
+    return 1.0 / (1.0 - (1.0 + w) ** -0.5)
+
+
+def breakeven_width(ratio):
+    """The half-width at which income exactly covers the loss.
+
+    Inverts the amplification above. A ratio at or below 1 means the pool does
+    not pay even spread over every price, so there is no width that works.
+    """
+    if ratio is None or ratio <= 1:
+        return None
+    return (1.0 - 1.0 / ratio) ** -2 - 1.0
 
 
 def read_series():
@@ -136,10 +166,11 @@ def summarise(points, transfer_fee_bps):
     # per day, per dollar of liquidity. The cited rate is per year.
     lvr_day = (sigma ** 2 / 8) / 365 if sigma else None
 
-    # Where fee income stops covering it. Reported as the amplification, not as
-    # a verdict, because how concentrated a given position is, is the
-    # provider's own choice.
+    # How many times the full-range loss this pool's income can carry, and the
+    # range width that corresponds to. The width is the useful form: it is the
+    # thing a provider chooses when they open a position.
     breakeven_amp = (fee_yield_day / lvr_day) if (fee_yield_day and lvr_day) else None
+    be_width = breakeven_width(breakeven_amp)
 
     # The issuer's own cut. Charged on the token leg entering the position and
     # again leaving it, so a provider pays it twice before earning anything.
@@ -171,14 +202,16 @@ def summarise(points, transfer_fee_bps):
         "corroborated": bool(agreement and 0.75 <= agreement <= 1.05),
         "lvr_day_cpmm": lvr_day,
         "breakeven_amplification": breakeven_amp,
+        "breakeven_half_width": be_width,
         "transfer_fee_bps": transfer_fee_bps,
         "entry_exit_cost": entry_exit_cost,
         "days_to_recover_entry": days_to_recover,
-        "net_by_amplification": [
-            {"amplification": a,
-             "lvr_day": lvr_day * a if lvr_day else None,
-             "net_day": fee_yield_day - lvr_day * a if (fee_yield_day and lvr_day) else None}
-            for a in AMPLIFICATION
+        "net_by_width": [
+            {"half_width": w,
+             "amplification": amplification(w),
+             "lvr_day": lvr_day * amplification(w),
+             "net_day": fee_yield_day - lvr_day * amplification(w)}
+            for w in WIDTHS
         ] if (fee_yield_day and lvr_day) else [],
     }
 
@@ -204,25 +237,28 @@ def build():
         "usable": len(good),
         "snapshots_read": n_files,
         "pools": pools,
-        "amplification_sweep": AMPLIFICATION,
+        "widths": WIDTHS,
         "note": ("Fee income, turnover and volatility are measured from our own hourly "
                  "snapshots. The arbitrage loss is modelled at the rate Milionis, Moallemi, "
                  "Roughgarden and Zhang (2022) give for a constant product pool, and the "
-                 "amplification that concentration adds is swept rather than assumed."),
+                 "amplification that concentration adds is derived from their Example 4, "
+                 "not assumed."),
     }
     with open(os.path.join(HERE, "site", "liquidity.json"), "w") as f:
         json.dump(out, f, indent=1)
 
     print(f"  {len(pools)} pools, {window_hours} hourly readings each at most")
     print(f"  {len(good)} of them with income and volume agreeing, and some trading")
-    head = f"{'pool':<20}{'TVL':>10}{'fee/day':>9}{'sigma':>7}{'LVR/day':>9}{'breaks at':>11}{'entry':>8}"
+    head = (f"{'pool':<20}{'TVL':>10}{'fee/day':>9}{'sigma':>7}{'LVR/day':>9}"
+            f"{'breaks at':>11}{'entry':>8}")
     print(head)
     for p in good[:12]:
+        w = p["breakeven_half_width"]
         print(f"{p['pool'][:19]:<20}{p['tvl']:>10,.0f}"
               f"{p['fee_yield_day']*100:>8.3f}%"
               f"{(p['sigma'] or 0)*100:>6.0f}%"
               f"{(p['lvr_day_cpmm'] or 0)*100:>8.4f}%"
-              f"{(p['breakeven_amplification'] or 0):>10.0f}x"
+              f"{(f'{w*100:.2f}%' if w else 'never'):>11}"
               f"{p['entry_exit_cost']*100:>7.2f}%")
     return out
 
