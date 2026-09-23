@@ -119,8 +119,13 @@ main{max-width:1560px;margin:0 auto;padding:16px 18px 80px}
 }
 @media(max-width:700px){ main{padding:12px 12px 80px} }
 /* Nothing may scroll the page sideways. Wide content scrolls inside its own
-   panel instead, which is what .scroll is for. */
-html,body{max-width:100%;overflow-x:hidden}
+   panel instead, which is what .scroll is for.
+
+   Clip, not hidden: overflow-x:hidden turns the page into a scroll container,
+   and a sticky header then sticks to that container rather than to the window,
+   which left the top bar scrolled half out of view. Clip trims the same
+   overflow without creating the container. */
+html,body{max-width:100%;overflow-x:clip}
 
 .grid{display:grid;gap:14px}
 .g-2{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
