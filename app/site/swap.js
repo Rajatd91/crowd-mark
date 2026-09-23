@@ -93,6 +93,26 @@ export async function usdcBalance(owner){
   return balanceOf(owner, USDC);
 }
 
+/* A wallet with USDC, used only to rehearse a trade for someone who has none.
+
+   Nothing is signed for it and nothing is spent. It exists so that a visitor
+   or a judge with an empty wallet can still watch a real transaction clear,
+   which is the entire point of a dry run.
+*/
+export const REHEARSAL_WALLET = "2sujbbTjp2r5ugbjfHgUNDSwtdVfYpTiCSKPgT84CvD7";
+
+/* Turn a simulation failure into something a person can act on. */
+export function explain(err){
+  const text = JSON.stringify(err || "");
+  if(text.includes("AccountNotFound"))
+    return "this wallet has no USDC account to spend from";
+  if(text.includes("6001"))
+    return "the price moved further than the slippage allowed";
+  if(text.includes("InsufficientFunds") || text.includes("0x1"))
+    return "this wallet does not hold enough to cover it";
+  return null;
+}
+
 /* Run the trade against live mainnet state without spending anything.
 
    These tokens only exist on mainnet, so there is no testnet on which to try

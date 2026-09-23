@@ -37,6 +37,7 @@ const S = {
   ticks: 0,          // updates seen since the page opened
   state: "starting",
   amount: "100",     // what the visitor is thinking of spending
+  usdc: null,        // what the connected wallet can actually spend
   slippage: null,    // what this token's transfer fee forces it to be
   quote: null,       // a real Jupiter quote for that amount
   pricedAt: null,    // when this browser last got a token price of its own
@@ -880,6 +881,7 @@ function viewBuy(){
         <input id="amt" inputmode="decimal" value="${S.amount}">
         <div class="quick">${[25, 100, 500].map(a =>
           `<button class="btn sm" data-amt="${a}">$${a}</button>`).join("")}</div>
+        <div class="cap" id="usdc" style="padding:8px 0 0"></div>
       </div>
       <div class="gets" id="gets">
         ${q ? `
@@ -941,6 +943,20 @@ function wireBuy(){
   const dry = $("#dryBtn");
   if(dry && S.quote) dry.onclick = doDryRun;
   if(!S.quote && parseFloat(S.amount) > 0) getQuote(parseFloat(S.amount));
+  if(S.wallet && S.usdc == null) readUsdc();
+}
+
+/* What the connected wallet can actually spend, so the screen says so before
+   anyone presses a button rather than after the chain refuses. */
+async function readUsdc(){
+  try{
+    const {usdcBalance} = await import("./swap.js");
+    S.usdc = await usdcBalance(S.wallet);
+  }catch(e){ S.usdc = null; }
+  const el = $("#usdc");
+  if(el) el.innerHTML = S.usdc == null ? ""
+    : S.usdc > 0 ? `You hold <b>${F.usd(S.usdc)}</b> of USDC`
+    : `<span class="warn">This wallet holds no USDC.</span> The dry run still works.`;
 }
 
 /* A real quote, not an estimate from the shipped price. */
@@ -1664,6 +1680,7 @@ async function connect(){
   try{
     const r = await p.connect();
     S.wallet = (r?.publicKey || p.publicKey).toString();
+    S.usdc = null;
     $("#connectBtn").textContent = F.short(S.wallet);
     toast("Connected. You can publish to the feed.");
     if(S.view === "proof") render();
