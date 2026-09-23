@@ -826,6 +826,16 @@ function verdict(t){
     <b class="${cls(gap)}">${F.pct(gap, true, 1)}</b> away. After what it costs to get in and out
     that is <b class="${cls(net)}">${F.pct(net, true, 1)}</b>.`;
 
+  /* How much money is actually behind the number. A distribution priced by a
+     few thousand dollars is an opinion with a decimal point on it, and saying
+     so is the difference between a tool and a slogan. */
+  const resting = (S.ev?.markets || []).reduce((a, m) => a + (m.liquidity || 0), 0);
+  if(S.ev && resting > 0 && resting < 25000){
+    catches.push(`Only <b>${F.big(resting)}</b> of orders are resting on this market. A
+      distribution priced that thinly moves on a single bet, so treat the figure above as an
+      indication rather than a market price.`);
+  }
+
   if(px && adjusted){
     catches.unshift(`<b>The only company here that has already listed still trades
       ${F.pct(px.discount, false, 1)} below its listed stock.</b> Conversion has not paid what the
