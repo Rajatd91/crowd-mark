@@ -76,7 +76,7 @@ function fakeEvent(sym){
   };
 }
 
-const VIEWNAMES = ["live", "value", "cost", "proof"];
+const VIEWNAMES = ["buy", "yours", "why", "chain"];
 let failures = 0, done = 0;
 
 for(const sym of Object.keys(desk.tokens)){
@@ -93,6 +93,10 @@ for(const sym of Object.keys(desk.tokens)){
             .filter(([, t]) => t.covered))} : null;
         for(const withLp of [true, false]){
           S.lp = withLp ? lp : null;
+          /* Before a quote comes back and after, since the buy button and the
+             figures beside it both depend on one. */
+          S.quote = withLp ? null : {dollars: 100, tokens: 0.0956,
+            perToken: 1046.02, impact: 0.0003, route: ["Kipseli"], raw: {}};
           for(const view of VIEWNAMES){
             S.view = view;
             try{

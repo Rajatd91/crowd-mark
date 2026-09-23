@@ -26,7 +26,7 @@ const S = {
   news: null,        // headlines shipped with the page
   chain: null,       // marks read back from Solana
   sym: "ANTHROPIC",
-  view: "live",
+  view: "buy",
   ev: null,          // the Polymarket event for the selected company
   pick: 0,           // which bracket is showing its book
   book: null,
@@ -36,6 +36,8 @@ const S = {
   live: null,        // this browser's own reading, once taken
   ticks: 0,          // updates seen since the page opened
   state: "starting",
+  amount: "100",     // what the visitor is thinking of spending
+  quote: null,       // a real Jupiter quote for that amount
   pricedAt: null,    // when this browser last got a token price of its own
   snapshotAge: null, // how old the shipped figures are
 };
@@ -133,7 +135,7 @@ async function openCompany(sym){
     tape.watch(ids);
     loadBracket(0);
     loadNews(sym);
-    valuationHistory().then(h => { S.history = h; if(S.view === "live") paintHistory(); });
+    valuationHistory().then(h => { S.history = h; if(S.view === "why") paintHistory(); });
   }catch(e){
     setState("market unavailable");
     toast("Polymarket did not answer. " + e.message);
@@ -151,7 +153,7 @@ async function loadBracket(i){
       P.loadTrades(m.conditionId, 40).catch(() => []),
     ]);
     S.book = book; S.trades = trades;
-    if(S.view === "live"){ paintBook(); paintTrades(); }
+    if(S.view === "why"){ paintBook(); paintTrades(); }
   }catch(e){ /* the ladder simply stays as it was */ }
 }
 
@@ -260,11 +262,11 @@ function railClass(t){
 }
 
 function shell(){
-  const tabs = [["live","Live"],["value","Value"],["cost","Cost"],["proof","Proof"]];
+  const tabs = [["buy","Buy"],["yours","Yours"],["why","Why"],["chain","Chain"]];
   const toks = Object.values(S.desk.tokens);
   return `
   <header class="top">
-    <div class="bar">
+    <div class="toprow">
       <div class="brand"><span class="led" id="led"></span> Crowd Mark</div>
       <span class="state"><b id="stateTxt">starting</b> · <span id="tickCount">0</span> updates</span>
       <span class="state" id="ages"></span>
@@ -321,7 +323,7 @@ function wireShell(){
   $("#tourBtn").onclick = startTour;
   document.addEventListener("keydown", e => {
     if(e.target.matches("input,select,textarea")) return;
-    const keys = {1:"live",2:"value",3:"cost",4:"proof"};
+    const keys = {1:"buy",2:"yours",3:"why",4:"chain"};
     if(keys[e.key]){ S.view = keys[e.key]; syncHash(); render(); }
   });
 }
@@ -520,7 +522,7 @@ function paintTrades(){
 /* A quote change, straight from the socket, put at the top of the tape. */
 function pushTick(ev){
   const el = $("#tape");
-  if(!el || S.view !== "live") return;
+  if(!el || S.view !== "why") return;
   const m = S.ev?.markets.find(x => x.yesId === ev.asset);
   const row = document.createElement("div");
   /* Dimmer than a fill, and labelled, because this is an order appearing or
@@ -698,6 +700,314 @@ function payoff(brackets, shares, price, draws = 20000){
   return {median: at(0.5), p10: at(0.10), p90: at(0.90),
           mean: out.reduce((a, b) => a + b, 0) / draws,
           below: below / draws, draws};
+}
+
+
+/* ===================================================================== buy ==
+
+   The one screen this app is for. A verdict, what it would cost, and a button.
+   Everything that justifies the verdict lives one tab away, because a person
+   deciding whether to spend a hundred dollars needs an answer first and the
+   working afterwards.
+*/
+
+/* The verdict, and the reasons it might be wrong, in the same breath.
+
+   A headline on its own would be a recommendation, which this is not entitled
+   to give: the gap is real but so is the cost of reaching it, and so is what
+   the issuer can do to a holder afterwards. So the catches are part of the
+   verdict rather than a footnote under it.
+*/
+function verdict(t){
+  const trip = (t.round_trip || []).find(r => r.cost != null) || null;
+  const exit = trip?.cost ?? null;
+  const catches = [];
+
+  if(trip){
+    catches.push(`Buying <b>${F.usd(trip.size, 0)}</b> and selling straight back costs
+      <b>${F.pct(exit, false, 2)}</b>, so the gap has to beat that before it is worth anything to
+      you. Larger amounts cost more, and the Yours tab has the rest.`);
+  }
+  const card = liveCard();
+  const brackets = card?.brackets?.length ? card.brackets : (t.brackets || []);
+  const sim = brackets.length && t.shares ? payoff(brackets, t.shares, t.token_price) : null;
+  if(sim){
+    catches.push(`Sampling the crowd's own odds, it ends below what you would pay today
+      <b>${F.odds(sim.below)}</b> of the time. The average is above, the outcomes are spread.`);
+  }
+  const fee = t.powers?.transfer_fee_bps;
+  const issuer = [];
+  if(fee) issuer.push(`takes ${(fee/100).toFixed(2)}% every time the token moves`);
+  if(t.powers?.freeze_authority) issuer.push("can freeze your account");
+  if(t.powers?.permanent_delegate) issuer.push("can move your tokens without asking");
+  if(issuer.length) catches.push(`The issuer ${issuer.join(", ")}.`);
+
+  const gap = t.gap;
+  if(!t.covered || gap == null){
+    return {word: "No independent price", tone: "warn", gap: null, sim, exit,
+      line: `Nobody runs a market on what ${esc(t.company)} is worth, so the only figure anyone
+        can quote is the issuer's own, and the issuer is the party selling you the token.`,
+      catches};
+  }
+  const net = exit != null ? gap - exit : gap;
+  const word = net > 0.10 ? "Looks cheap" : net < -0.10 ? "Looks dear" : "Looks about right";
+  const tone = net > 0.10 ? "up" : net < -0.10 ? "down" : "mid";
+  const line = `The token costs <b>${F.usd(t.token_price)}</b>. People betting real money on
+    ${esc(t.company)}'s listing price it at <b>${F.usd(t.crowd_per_token)}</b> a token, which is
+    <b class="${cls(gap)}">${F.pct(gap, true, 1)}</b> away. After what it costs to get in and out
+    that is <b class="${cls(net)}">${F.pct(net, true, 1)}</b>.`;
+  return {word, tone, gap, net, sim, exit, line, catches};
+}
+
+function viewBuy(){
+  const t = S.desk.tokens[S.sym];
+  const v = verdict(t);
+  const q = S.quote;
+
+  return `
+  <div class="card verdict ${v.tone}" id="tour-verdict">
+    <div class="vhead">
+      <div>
+        <div class="vco">${esc(t.company)}</div>
+        <div class="vword ${v.tone}">${v.word}</div>
+      </div>
+      <div class="vnums">
+        <div class="fig"><span class="k">You would pay</span>
+          <span class="v">${F.usd(t.token_price)}</span>
+          <span class="s">a token, right now</span></div>
+        ${t.crowd_per_token ? `<div class="fig"><span class="k">The crowd says</span>
+          <span class="v ${cls(v.gap)}">${F.usd(t.crowd_per_token)}</span>
+          <span class="s">rebuilt live from their bets</span></div>` : ""}
+      </div>
+    </div>
+    <p class="vline">${v.line}</p>
+    ${v.catches.length ? `<div class="catches">
+      <div class="clab">Before you do</div>
+      ${v.catches.map(c => `<p>${c}</p>`).join("")}
+    </div>` : ""}
+    <p class="cap">Every figure here is read in this browser as you look at it.
+      <a href="#${S.sym.toLowerCase()}/why" id="whyLink">Show me where they come from</a>.</p>
+  </div>
+
+  <div class="card" style="margin-top:14px" id="tour-buy">
+    <h2>Buy it <span class="r">on Solana, with your own wallet</span></h2>
+    <div class="buybox">
+      <div class="amt">
+        <label for="amt">Amount in USDC</label>
+        <input id="amt" inputmode="decimal" value="${S.amount}">
+        <div class="quick">${[25, 100, 500].map(a =>
+          `<button class="btn sm" data-amt="${a}">$${a}</button>`).join("")}</div>
+      </div>
+      <div class="gets" id="gets">
+        ${q ? `
+          <div class="row"><span class="k">You get</span>
+            <span class="v">${F.num(q.tokens, 6)} ${esc(S.sym)}</span></div>
+          <div class="row"><span class="k">Price you pay per token</span>
+            <span class="v">${F.usd(q.perToken)}</span></div>
+          <div class="row"><span class="k">Slippage and pool impact</span>
+            <span class="v ${q.impact > 0.01 ? "warn" : ""}">${F.pct(q.impact, false, 3)}</span></div>
+          <div class="row"><span class="k">Route</span>
+            <span class="v" style="font-size:11px">${esc(q.route.join(" then ") || "direct")}</span></div>
+          ${t.crowd_per_token ? `<div class="row"><span class="k">Worth at the crowd's number</span>
+            <span class="v ${cls(v.gap)}">${F.usd(q.tokens * t.crowd_per_token)}</span></div>` : ""}
+        ` : `<p class="cap">Enter an amount to get a real quote.</p>`}
+      </div>
+    </div>
+    <div class="field">
+      <button class="btn key big" id="buyBtn" ${S.wallet && q ? "" : "disabled"}>
+        ${!S.wallet ? "Connect a wallet to buy"
+          : q ? `Buy ${F.usd(q.dollars, 0)} of ${esc(t.company)}` : "Enter an amount"}</button>
+    </div>
+    <div id="buyOut" class="cap"></div>
+    <p class="cap"><b>This is mainnet and it spends real money.</b> The route comes from Jupiter,
+      your wallet signs and broadcasts it, and nothing of ours ever touches your keys or your
+      balance. Nobody here takes a fee.</p>
+  </div>`;
+}
+
+function wireBuy(){
+  const amt = $("#amt");
+  if(!amt) return;
+  const requote = () => {
+    const dollars = parseFloat(amt.value);
+    if(!(dollars > 0)){ S.quote = null; render(); return; }
+    S.amount = amt.value;
+    getQuote(dollars);
+  };
+  amt.addEventListener("change", requote);
+  amt.addEventListener("keydown", e => { if(e.key === "Enter") requote(); });
+  $$("button[data-amt]").forEach(b => b.onclick = () => {
+    amt.value = b.dataset.amt; S.amount = b.dataset.amt; getQuote(+b.dataset.amt);
+  });
+  const link = $("#whyLink");
+  if(link) link.onclick = e => { e.preventDefault(); S.view = "why"; syncHash(); render(); };
+
+  const btn = $("#buyBtn");
+  if(btn && S.wallet && S.quote) btn.onclick = doBuy;
+  if(!S.quote && parseFloat(S.amount) > 0) getQuote(parseFloat(S.amount));
+}
+
+/* A real quote, not an estimate from the shipped price. */
+async function getQuote(dollars){
+  const t = S.desk.tokens[S.sym];
+  const box = $("#gets");
+  if(box) box.innerHTML = `<p class="cap">Asking Jupiter for a route…</p>`;
+  try{
+    const {quote} = await import("./swap.js");
+    const q = await quote(t.mint, dollars);
+    const tokens = q.outRaw / 10 ** 9;          // these mints carry nine decimals
+    S.quote = {dollars: q.inDollars, tokens, perToken: q.inDollars / tokens,
+               impact: q.impact, route: q.route, raw: q.raw};
+    if(S.view === "buy") render();
+  }catch(e){
+    S.quote = null;
+    if(box) box.innerHTML = `<p class="cap down">${esc(e.message)}</p>`;
+  }
+}
+
+async function doBuy(){
+  const t = S.desk.tokens[S.sym], out = $("#buyOut"), btn = $("#buyBtn");
+  btn.disabled = true;
+  const step = m => out.innerHTML = `<span class="mid">${esc(m)}…</span>`;
+  try{
+    const {buy, usdcBalance} = await import("./swap.js");
+    step("Checking your balance");
+    const have = await usdcBalance(S.wallet);
+    if(have < S.quote.dollars){
+      throw new Error(`This wallet holds ${F.usd(have)} of USDC and the trade needs ` +
+                      `${F.usd(S.quote.dollars)}.`);
+    }
+    const {signature} = await buy(t.mint, S.quote.dollars, providerOf(), step);
+    out.innerHTML = `<b class="up">Done.</b> You now hold
+      ${F.num(S.quote.tokens, 6)} ${esc(S.sym)}.
+      <a href="https://explorer.solana.com/tx/${signature}" target="_blank"
+         rel="noopener">See the transaction</a>.`;
+    toast("Bought on Solana");
+    S.quote = null;
+  }catch(e){
+    out.innerHTML = `<span class="down">${esc(e.message || e)}</span>`;
+    btn.disabled = false;
+  }
+}
+
+/* =================================================================== yours == */
+function viewYours(){
+  const t = S.desk.tokens[S.sym];
+  const rt = t.round_trip || [];
+  const pw = t.powers || {};
+  const pools = (S.lp?.pools || []).filter(p =>
+    p.symbol === S.sym && p.corroborated && !p.never_traded);
+
+  return `
+  <div class="card">
+    <h2>What a wallet holds</h2>
+    <div class="field">
+      <input id="addr" placeholder="Paste any Solana address" value="${S.wallet || ""}">
+      <button class="btn" id="goBtn">Look</button>
+    </div>
+    <div id="posOut" class="rows"></div>
+    ${S.wallet ? "" : `<p class="cap">Connect a wallet above and this fills in by itself.</p>`}
+  </div>
+
+  <div class="grid g-2" style="margin-top:14px">
+    <div class="card">
+      <h2>What it costs to get out of ${esc(t.company)}</h2>
+      <div class="rows">
+        ${rt.map(r => `<div class="row"><span class="k">In and straight back out at ${F.usd(r.size, 0)}</span>
+          <span class="v ${r.cost > 0.03 ? "down" : "warn"}">${
+            r.cost != null ? F.pct(r.cost, false, 2) : "no route"}</span></div>`).join("")}
+        <div class="row"><span class="k">Liquidity behind it</span>
+          <span class="v">${F.big(t.depth?.liquidity)}</span></div>
+        <div class="row"><span class="k">Traded in 24 hours</span>
+          <span class="v">${F.big(t.depth?.volume24h)}</span></div>
+        <div class="row"><span class="k">People holding it</span>
+          <span class="v">${F.num(t.depth?.holders)}</span></div>
+      </div>
+      <p class="cap">Real quotes from Jupiter in both directions, including the pool's own price
+        impact and the issuer's transfer fee. Not a modelled spread.</p>
+    </div>
+
+    <div class="card">
+      <h2>What the issuer can do to your balance</h2>
+      <div class="chips">
+        <span class="chip ${pw.transfer_fee_bps ? "hot" : "ok"}">transfer fee ${
+          pw.transfer_fee_bps != null ? (pw.transfer_fee_bps / 100).toFixed(2) + "%" : "none"}</span>
+        <span class="chip ${pw.freeze_authority ? "hot" : "ok"}">${
+          pw.freeze_authority ? "can freeze your account" : "cannot freeze"}</span>
+        <span class="chip ${pw.permanent_delegate ? "hot" : "ok"}">${
+          pw.permanent_delegate ? "can move your tokens" : "no delegate"}</span>
+        <span class="chip ${pw.paused ? "hot" : "ok"}">${
+          pw.paused ? "transfers paused" : "not paused"}</span>
+      </div>
+      ${(S.desk.fee_history || []).length > 1 ? `<div class="rows" style="border-top:1px solid var(--line)">
+        ${S.desk.fee_history.map(f => `<div class="row">
+          <span class="k">${new Date(f.at).toUTCString().slice(5, 16)}</span>
+          <span class="v ${f.bps > 50 ? "down" : ""}">${(f.bps / 100).toFixed(2)}%</span></div>`).join("")}
+      </div>
+      <p class="cap">Not theoretical. This desk was watching when the fee changed, and recorded
+        it.</p>` : `<p class="cap">Read from the mint on Solana, not from the issuer's website.</p>`}
+    </div>
+  </div>
+
+  ${pools.length ? `<div class="card" style="margin-top:14px">
+    <h2>Or provide liquidity instead <span class="r">${S.lp.window_hours} hourly readings</span></h2>
+    <div class="rows">
+      ${pools.slice(0, 3).map(p => `
+        <div class="row"><span class="k">${esc(p.pool)} at ${(p.base_fee_pct || 0).toFixed(2)}%
+          in ${p.bin_step} step bins earns</span>
+          <span class="v up">${F.pct(p.fee_yield_day, false, 3)} a day</span></div>
+        <div class="row"><span class="k">but loses to arbitrage</span>
+          <span class="v down">${F.pct(p.lvr_day_cpmm, false, 4)} a day</span></div>
+        <div class="row"><span class="k">so stay wider than</span>
+          <span class="v">${p.breakeven_half_width
+            ? "±" + (p.breakeven_half_width * 100).toFixed(2) + "%" : "no width works"}</span></div>
+      `).join("")}
+    </div>
+    <p class="cap">Fee income and volatility measured from our own hourly readings. The arbitrage
+      loss is the rate Milionis, Moallemi, Roughgarden and Zhang give for a constant product pool,
+      raised for a concentrated position by the closed form in the same paper.</p>
+  </div>` : ""}
+
+  <div class="card" style="margin-top:14px">
+    <h2>Every token on the board</h2>
+    <div class="scroll"><table>
+      <colgroup><col style="width:17%"><col style="width:12%"><col style="width:12%"><col style="width:12%">
+        <col style="width:11%"><col style="width:12%"><col style="width:12%"><col style="width:12%"></colgroup>
+      <thead><tr><th>Token</th><th class="num">Price</th><th class="num">Issuer mark</th>
+        <th class="num">Crowd</th><th class="num">Gap</th><th class="num">Liquidity</th>
+        <th class="num">Exit $10k</th><th class="num">Fee</th></tr></thead>
+      <tbody>${Object.values(S.desk.tokens).map(x => `
+        <tr data-pick data-sym="${x.symbol}" class="${x.symbol === S.sym ? "on" : ""}">
+          <td>${esc(x.company)}</td>
+          <td class="num">${F.usd(x.token_price)}</td>
+          <td class="num">${F.usd(x.mark_price)}</td>
+          <td class="num">${x.crowd_per_token ? F.usd(x.crowd_per_token) : "—"}</td>
+          <td class="num ${cls(x.gap)}">${x.gap != null ? F.pct(x.gap) : "—"}</td>
+          <td class="num">${F.big(x.depth?.liquidity)}</td>
+          <td class="num warn">${x.round_trip?.[1]?.cost != null
+            ? F.pct(x.round_trip[1].cost, false, 2) : "—"}</td>
+          <td class="num ${x.powers?.transfer_fee_bps ? "warn" : ""}">${
+            x.powers?.transfer_fee_bps != null
+              ? (x.powers.transfer_fee_bps / 100).toFixed(2) + "%" : "—"}</td>
+        </tr>`).join("")}</tbody>
+    </table></div>
+  </div>`;
+}
+
+function wireYours(){
+  $$("tr[data-sym]").forEach(r => r.onclick = () => { openCompany(r.dataset.sym); syncHash(); });
+  const go = $("#goBtn");
+  if(go) go.onclick = () => position($("#addr").value.trim());
+  const addr = $("#addr");
+  if(addr) addr.addEventListener("keydown", e => {
+    if(e.key === "Enter") position(e.target.value.trim());
+  });
+  if(S.wallet) position(S.wallet);
+}
+
+/* ===================================================================== why == */
+function viewWhy(){
+  return viewLive() + viewValue();
 }
 
 /* =================================================================== value == */
@@ -1027,8 +1337,8 @@ function viewProof(){
   </div>`;
 }
 
-const VIEWS = {live: viewLive, value: viewValue, cost: viewCost, proof: viewProof};
-const WIRE = {live: wireLive, cost: wireCost, proof: wireProof};
+const VIEWS = {buy: viewBuy, yours: viewYours, why: viewWhy, chain: viewProof};
+const WIRE = {buy: wireBuy, yours: wireYours, why: wireLive, chain: wireProof};
 
 /* ==================================================================== tour == */
 const TOUR = [
@@ -1181,7 +1491,7 @@ function syncHash(){
   if(location.hash !== want) history.replaceState(null, "", want);
 }
 function readHash(){
-  const m = /^#([a-z]+)\/?(live|value|cost|proof)?$/i.exec(location.hash || "");
+  const m = /^#([a-z]+)\/?(buy|yours|why|chain)?$/i.exec(location.hash || "");
   if(!m) return;
   const sym = m[1].toUpperCase();
   if(S.desk.tokens[sym]) S.sym = sym;
@@ -1203,7 +1513,7 @@ async function boot(){
   fetch("liquidity.json?" + Date.now()).then(r => r.ok ? r.json() : null)
     .then(j => { S.lp = j; if(S.view === "cost") render(); }).catch(() => {});
   fetch("news.json?" + Date.now()).then(r => r.ok ? r.json() : null)
-    .then(j => { S.news = j; if(S.view === "live") loadNews(S.sym); }).catch(() => {});
+    .then(j => { S.news = j; if(S.view === "why") loadNews(S.sym); }).catch(() => {});
 
   /* A price is the one figure that must not be old, so the browser refreshes
      it itself rather than serving whatever the snapshot was built with. */
@@ -1225,7 +1535,7 @@ async function boot(){
   });
 
   tape.on("status", s => setState(s.state));
-  tape.on("book", () => { if(S.view === "live") paintBook(); });
+  tape.on("book", () => { if(S.view === "why") paintBook(); });
   tape.on("price", ev => {
     S.ticks++;
     const c = $("#tickCount"); if(c) c.textContent = S.ticks;
@@ -1253,7 +1563,7 @@ function onTick(ev){
     ? (ev.bestBid + ev.bestAsk)/2 : ev.price;
   const moved = setPrice(m, mid);
   pushTick(ev);
-  if(S.view !== "live") return;
+  if(S.view !== "why") return;
   if(m.yesId === S.ev.markets[S.pick]?.yesId) paintBook();
   if(moved) repaintDist();
 }
