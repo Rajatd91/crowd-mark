@@ -53,6 +53,8 @@ def cycle():
     # The pool study grows by one reading an hour, so it is rebuilt too.
     if not run("restudy the pools", [sys.executable, "liquidity.py"]):
         return False
+    # Headlines, fetched slowly enough that the news index never refuses us.
+    run("fetch headlines", [sys.executable, "news.py"])
     return run("stage the site", [sys.executable, "publish_site.py"])
 
 

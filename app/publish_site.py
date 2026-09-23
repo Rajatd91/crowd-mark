@@ -20,14 +20,17 @@ DOCS = os.path.join(HERE, "..", "docs")
 
 # Everything index.html loads, directly or through an import.
 FILES = [
-    "index.html", "app.css", "desk.css",
-    "desk.js", "commit.js", "model.js", "live.js", "publish.js",
-    "desk.json", "data.json", "onchain.json", "proofs.json", "liquidity.json",
+    "index.html", "terminal.css",
+    # The terminal and the modules it loads, some of them only on demand.
+    "terminal.js", "poly.js", "news.js", "chain.js",
+    "commit.js", "model.js", "live.js", "publish.js",
+    # What it ships with, so the first screen is never empty.
+    "desk.json", "onchain.json", "liquidity.json", "news.json",
 ]
 
 TESTS = [
     ("the two models agree", ["node", "conformance_model.mjs"]),
-    ("every view renders", ["node", "conformance_views.mjs"]),
+    ("every screen renders", ["node", "conformance_terminal.mjs"]),
     ("the chain verifies from the page", ["node", "conformance_chain.mjs"]),
 ]
 

@@ -4,53 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Crowd Mark</title>
-<meta name="description" content="A desk for tokenised pre-IPO stock. What each token is worth against the crowd betting on the IPO, what it costs to trade, what the issuer can do to your balance, and a mark published on Solana you can verify yourself.">
+<meta name="description" content="A terminal for tokenised pre-IPO stock. It reads the prediction markets live in your browser, rebuilds what the crowd says each company is worth as the bets change, shows what a round trip costs and what the issuer can do to your balance, and publishes a mark on Solana that anyone can refresh and verify.">
+<meta name="color-scheme" content="dark">
+<meta property="og:title" content="Crowd Mark">
+<meta property="og:description" content="What the crowd says a private company is worth, rebuilt live from real bets, and published where nobody can quietly edit it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300..600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="app.css">
-<link rel="stylesheet" href="desk.css">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="terminal.css">
 </head>
 <body>
-<header class="topbar">
-  <div class="inner">
-    <div class="logo"><span class="dot"></span> Crowd Mark</div>
-    <span class="pill live" id="netPill">devnet</span>
-    <span class="spacer"></span>
-    <span class="stamp" id="stamp"></span>
-    <button class="btn ghost" id="themeBtn" aria-label="Switch theme">◐</button>
-    <button class="btn primary" id="connectBtn">Connect wallet</button>
-  </div>
-  <nav class="nav" id="nav" role="tablist">
-    <button data-view="board" data-key="1" aria-selected="true">Board</button>
-    <button data-view="valuation" data-key="2">Valuation</button>
-    <button data-view="payoff" data-key="3">Payoff</button>
-    <button data-view="execution" data-key="4">Execution</button>
-    <button data-view="liquidity" data-key="5">Liquidity</button>
-    <button data-view="issuer" data-key="6">Issuer risk</button>
-    <button data-view="position" data-key="7">Position</button>
-    <button data-view="publish" data-key="8">Publish</button>
-    <button data-view="verify" data-key="9">Verify</button>
-  </nav>
-</header>
-
-<div class="wrap">
-  <p class="tag" id="tag"></p>
-  <div class="symbar" id="symBar"></div>
-  <div id="main"></div>
-</div>
-
-<footer>
-  <p>Prices from Jupiter and PreStocks. Odds from Polymarket and Kalshi. Balances, transfer fees, pause
-     flags, delegates and multipliers read from Solana. Marks published to a program on devnet and read
-     back by your browser.</p>
-  <p><b>Information, not advice.</b> The crowd prices the company. A token is exposure to that company
-     through an issuer's holding entity, and what it pays on a listing depends on conversion terms no
-     market prices. Anthropic states that any transfer of its stock it has not approved is void, and that
-     tokenised exposure may have no value.</p>
-</footer>
-<div class="statusbar" id="statusbar"></div>
-<div class="toast" id="toast"></div>
-<script src="desk.js"></script>
+<noscript>
+  <main style="padding:40px;max-width:60ch;font-family:system-ui;color:#e9ecf1">
+    <h1>Crowd Mark</h1>
+    <p>This terminal reads live prediction markets and the Solana chain in your browser, so it
+      needs JavaScript switched on. Nothing is computed on a server, which is the point.</p>
+  </main>
+</noscript>
+<script type="module" src="terminal.js"></script>
 </body>
 </html>
