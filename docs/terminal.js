@@ -198,8 +198,16 @@ async function loadNews(sym){
   const wasRefused = (S.news?.refused || []).includes(sym);
   paintNews(shipped, S.news?.read_at ?? null, false, wasRefused);
   try{
+    /* Merged, not replaced. The live query is one narrow ask and can come back
+       with less than the snapshot already holds, and dropping headlines the
+       reader could see a second ago is worse than showing nothing new. */
     const fresh = await headlines(sym, 10);
-    if(fresh.length) paintNews(fresh, Date.now(), true);
+    if(!fresh.length) return;
+    const seen = new Set(fresh.map(a => a.title.slice(0, 60).toLowerCase()));
+    const merged = fresh.concat(shipped.filter(a =>
+      !seen.has((a.title || "").slice(0, 60).toLowerCase())));
+    merged.sort((a, b) => asMs(b.at) - asMs(a.at));
+    paintNews(merged.slice(0, 12), Date.now(), true);
   }catch(e){ /* the shipped ones stay */ }
 }
 
@@ -863,7 +871,8 @@ function viewCost(){
       <h2>If you provide liquidity instead</h2>
       ${pools.length ? `<div class="rows">
         ${pools.slice(0,3).map(p => `
-          <div class="row"><span class="k">${esc(p.pool)} earns</span>
+          <div class="row"><span class="k">${esc(p.pool)} at ${(p.base_fee_pct||0).toFixed(2)}%
+            in ${p.bin_step} step bins earns</span>
             <span class="v up">${F.pct(p.fee_yield_day,false,3)} a day</span></div>
           <div class="row"><span class="k">but loses to arbitrage</span>
             <span class="v down">${F.pct(p.lvr_day_cpmm,false,4)} a day</span></div>

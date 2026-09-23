@@ -42,6 +42,13 @@ NAME = {"ANTHROPIC": "Anthropic", "OPENAI": "OpenAI", "ANDURIL": "Anduril",
         "NEURALINK": "Neuralink", "SPACEX": "SpaceX", "POLYMARKET": "Polymarket",
         "FIGUREAI": "Figure", "XAI": "xAI"}
 
+# Below this, the narrow query has told us almost nothing, and a rail with one
+# headline on it is not worth the space. The company's name on its own is asked
+# instead, and the headline must still name the company, so what comes back is
+# about it rather than about its industry.
+THIN = 4
+BROAD = {k: f'"{v}"' for k, v in NAME.items()}
+
 
 def fetch(query):
     """One query, retried while the service says it is busy.
@@ -107,7 +114,16 @@ def build():
         if articles is None:
             refused.append(symbol)
             continue
-        out[symbol] = tidy(articles, NAME[symbol])[:12]
+        found = tidy(articles, NAME[symbol])
+        if len(found) < THIN:
+            time.sleep(GAP)
+            wider = fetch(BROAD[symbol])
+            if wider:
+                seen = {a["title"][:60].lower() for a in found}
+                found += [a for a in tidy(wider, NAME[symbol])
+                          if a["title"][:60].lower() not in seen]
+                found.sort(key=lambda x: x["at"] or 0, reverse=True)
+        out[symbol] = found[:12]
         print(f"  {symbol:10} {len(out[symbol]):>2} headlines", flush=True)
 
     # Anything refused is asked again, once, after a longer wait. Being turned
@@ -139,9 +155,13 @@ def build():
                 out[symbol] = old[symbol]
                 print(f"  {symbol:10} kept {len(out[symbol])} from the last run")
 
+    # A refusal only matters where it left nothing on the screen. Flagging a
+    # company that still has headlines from an earlier run would have the page
+    # apologise for a rail that is full.
+    empty_and_refused = [s for s in refused if not out.get(s)]
     data = {"read_at": int(time.time()), "by_symbol": out,
             "source": "GDELT Project, the global news index",
-            "refused": refused}
+            "refused": empty_and_refused}
     with open(path, "w") as f:
         json.dump(data, f, indent=1)
     print(f"news written, {sum(len(v) for v in out.values())} headlines across "
