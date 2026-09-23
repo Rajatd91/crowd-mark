@@ -57,6 +57,7 @@ const {VIEWS, S} = sandbox.__probe;
 S.desk = desk;
 S.chain = Object.fromEntries(Object.entries(chain).filter(([k]) => k !== "_meta"));
 S.lp = lp; S.news = news;
+if(!desk.disclosures) throw new Error("desk.json carries no disclosures, the buy screen needs them");
 
 /* A stand-in for a market that has loaded, built from the shipped snapshot so
    the shapes are real rather than invented. */

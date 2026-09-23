@@ -804,18 +804,17 @@ function verdict(t){
   }
 
   const net = exit != null ? gap - exit : gap;
-  /* What the crowd's value becomes if conversion pays what it has paid on the
-     one company that listed. */
-  const adjusted = px && t.crowd_per_token ? t.crowd_per_token * (1 - px.discount) : null;
-  const afterPrecedent = adjusted ? adjusted / t.token_price - 1 : null;
+
+  /* A verdict on the price only means something if the token is a claim on the
+     company. Where the company itself says it is not, that outranks any gap,
+     so the headline says so instead of pricing a thing that may not exist. */
+  const contested = (S.desk.disclosures || []).some(d =>
+    d.severity === "critical" && (d.applies_to || []).includes(t.symbol));
 
   let word, tone;
-  if(afterPrecedent != null && net > 0.10 && afterPrecedent < 0){
-    word = "Cheap on the crowd, dear on the precedent";
+  if(contested){
+    word = net > 0.10 ? "Cheap, if it is a claim at all" : "Read the disclosures first";
     tone = "warn";
-  } else if(afterPrecedent != null && afterPrecedent > 0.10){
-    word = "Cheap either way";
-    tone = "up";
   } else {
     word = net > 0.10 ? "Looks cheap" : net < -0.10 ? "Looks dear" : "Looks about right";
     tone = net > 0.10 ? "up" : net < -0.10 ? "down" : "mid";
@@ -836,15 +835,7 @@ function verdict(t){
       indication rather than a market price.`);
   }
 
-  if(px && adjusted){
-    catches.unshift(`<b>The only company here that has already listed still trades
-      ${F.pct(px.discount, false, 1)} below its listed stock.</b> Conversion has not paid what the
-      crowd expected. Apply that same discount here and
-      ${F.usd(t.crowd_per_token)} becomes <b>${F.usd(adjusted)}</b>, which is
-      <b class="${cls(afterPrecedent)}">${F.pct(afterPrecedent, true, 1)}</b> against what you
-      would pay today.`);
-  }
-  return {word, tone, gap, net, sim, exit, precedent: px, adjusted, afterPrecedent, line, catches};
+  return {word, tone, gap, net, sim, exit, precedent: px, line, catches};
 }
 
 function viewBuy(){
@@ -852,8 +843,26 @@ function viewBuy(){
   const v = verdict(t);
   const q = S.quote;
 
+  const notes = (S.desk.disclosures || []).filter(d =>
+    (d.applies_to || []).includes(S.sym));
+
   return `
-  <div class="card verdict ${v.tone}" id="tour-verdict">
+  ${notes.filter(d => d.severity === "critical").length ? `
+  <div class="card alarm" id="tour-alarm">
+    <h2>What you would actually be buying</h2>
+    ${notes.filter(d => d.severity === "critical").map(d => `
+      <div class="disc">
+        <div class="dh">${esc(d.headline)}</div>
+        <p>${esc(d.detail)}</p>
+        <p class="src">${esc(d.source)} ·
+          <a href="${esc(d.url)}" target="_blank" rel="noopener">read it</a></p>
+      </div>`).join("")}
+    <p class="cap">These are published statements by the companies and the issuer, not this
+      desk's opinion. Everything below prices the token against what the company might be worth,
+      and that comparison only holds if the token is a claim on the company.</p>
+  </div>` : ""}
+
+  <div class="card verdict ${v.tone}" id="tour-verdict" ${notes.filter(d => d.severity === "critical").length ? 'style="margin-top:14px"' : ""}>
     <div class="vhead">
       <div>
         <div class="vco">${esc(t.company)}</div>
@@ -866,9 +875,7 @@ function viewBuy(){
         ${t.crowd_per_token ? `<div class="fig"><span class="k">The crowd says</span>
           <span class="v ${cls(v.gap)}">${F.usd(t.crowd_per_token)}</span>
           <span class="s">rebuilt live from their bets</span></div>` : ""}
-        ${v.adjusted ? `<div class="fig"><span class="k">If conversion pays what it has</span>
-          <span class="v ${cls(v.afterPrecedent)}">${F.usd(v.adjusted)}</span>
-          <span class="s">on the one that listed</span></div>` : ""}
+
         ${!t.covered && t.symbol !== "SPACEX" ? `<div class="fig"><span class="k">Issuer's own mark</span>
           <span class="v">${F.usd(t.mark_price)}</span>
           <span class="s">the only figure available</span></div>` : ""}
@@ -879,6 +886,11 @@ function viewBuy(){
       <div class="clab">Before you do</div>
       ${v.catches.map(c => `<p>${c}</p>`).join("")}
     </div>` : ""}
+    ${notes.filter(d => d.severity !== "critical").map(d => `
+      <div class="disc quiet"><div class="dh">${esc(d.headline)}</div>
+        <p>${esc(d.detail)}</p>
+        <p class="src">${esc(d.source)} ·
+          <a href="${esc(d.url)}" target="_blank" rel="noopener">read it</a></p></div>`).join("")}
     <p class="cap">Every figure here is read in this browser as you look at it.
       <a href="#${S.sym.toLowerCase()}/why" id="whyLink">Show me where they come from</a>.</p>
   </div>

@@ -124,6 +124,10 @@ def build():
         "epoch": epoch,
         "spacex": spacex,
         "fee_history": fee_history(),
+        # What the companies and the issuer have said about these tokens. This
+        # decides whether any valuation on the desk means anything, so it
+        # travels with the data rather than sitting in a footnote.
+        "disclosures": S.DISCLOSURES,
         "tokens": {},
     }
 
