@@ -51,8 +51,17 @@ def tokens_doc(desk):
             "crowd_value_usd": t.get("crowd_value"),
             "crowd_per_token_usd": t.get("crowd_per_token"),
             "gap_to_crowd": t.get("gap"),
-            "crowd_source_market": t.get("cap_source"),
+            "crowd_source_market": t.get("cap_source") or (t.get("sources") or {}).get("ladder"),
             "crowd_has_market": bool(t.get("covered")),
+            # Two different questions end up here and a consumer must not
+            # confuse them. A distribution over listing value gives a value per
+            # token. A ladder asks whether a valuation REACHES a level by a
+            # date, which gives odds and no expected value at all, so those
+            # tokens carry the odds instead of a null nobody can interpret.
+            "crowd_market_kind": ("listing_value_distribution" if t.get("crowd_per_token")
+                                  else "valuation_touch_ladder" if t.get("covered")
+                                  else None),
+            "crowd_odds_reaches_implied_value": t.get("crowd_odds_at_token_price"),
             "round_trip_cost_by_size_usd": trip,
             "liquidity_usd": (t.get("depth") or {}).get("liquidity"),
             "volume_24h_usd": (t.get("depth") or {}).get("volume24h"),
@@ -67,7 +76,13 @@ def tokens_doc(desk):
         "tokens": rows,
         "notes": {
             "gap_to_crowd": "crowd_per_token_usd divided by token_price_usd, minus one. "
-                            "Null where no prediction market prices the company.",
+                            "Null where no market gives a value per token, which "
+                            "includes every token whose crowd_market_kind is "
+                            "valuation_touch_ladder.",
+            "crowd_odds_reaches_implied_value": "For a touch ladder only: the crowd's "
+                                                "probability that the valuation reaches "
+                                                "what this token's price implies, by the "
+                                                "market's date.",
             "issuer_mark_usd": "The issuer's own mark. The issuer is the party selling "
                                "the token, so this is not independent.",
             "round_trip_cost_by_size_usd": "Measured from real Jupiter quotes in both "
