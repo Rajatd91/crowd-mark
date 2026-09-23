@@ -77,6 +77,19 @@ const cls = x => x == null ? "" : x > 0 ? "up" : x < 0 ? "down" : "";
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
+/* Repaint a number and, if it moved, show which way.
+
+   Used for every figure the browser refreshes by itself. A value that did not
+   change is left alone, so motion on this page always means new information
+   rather than a redraw. */
+function setNum(el, text, direction){
+  if(!el || el.textContent === text) return;
+  el.classList.remove("tick-up", "tick-dn");
+  void el.offsetWidth;                         // restart the animation
+  el.textContent = text;
+  if(direction) el.classList.add(direction > 0 ? "tick-up" : "tick-dn");
+}
+
 function toast(msg){
   const t = $("#toast");
   t.textContent = msg; t.classList.add("on");
@@ -219,7 +232,11 @@ function repaintRail(){
   $$("#rail button").forEach(b => {
     const t = S.desk.tokens[b.dataset.sym];
     const tick = b.querySelector(".tick");
-    if(t && tick){ tick.textContent = railTick(t); tick.className = "tick " + railClass(t); }
+    if(!t || !tick) return;
+    const was = parseFloat(tick.textContent);
+    const now = railTick(t);
+    tick.className = "tick " + railClass(t);
+    setNum(tick, now, isFinite(was) ? parseFloat(now) - was : 0);
   });
 }
 
@@ -286,6 +303,11 @@ function shell(){
   </header>
   <main id="main"></main>
   <footer class="foot">
+    <p class="footlinks">
+      <a href="#" data-goto="api">The data, as an API</a> ·
+      <a href="#" data-goto="limits">What these numbers cannot see</a> ·
+      <a href="https://github.com/Rajatd91/crowd-mark" target="_blank" rel="noopener">Source</a>
+    </p>
     <p>Order books, fills and prices read from Polymarket by your browser as you watch. Token prices
       and costs from PreStocks and Jupiter. Transfer fees, pause flags, delegates and multipliers read
       from Solana. Headlines from the GDELT news index. Marks published to a Solana program and read
@@ -321,6 +343,13 @@ function wireShell(){
     if(b){ S.view = b.dataset.view; syncHash(); render(); }
   };
   $("#connectBtn").onclick = connect;
+  document.addEventListener("click", e => {
+    const a = e.target.closest("a[data-goto]");
+    if(!a) return;
+    e.preventDefault();
+    S.view = a.dataset.goto; syncHash(); render();
+    window.scrollTo({top: 0, behavior: "smooth"});
+  });
   $("#tourBtn").onclick = startTour;
   document.addEventListener("keydown", e => {
     if(e.target.matches("input,select,textarea")) return;
@@ -576,7 +605,7 @@ function areaChart(series, tokenPrice){
       <stop offset="100%" stop-color="#4d9dff" stop-opacity="0"/></linearGradient></defs>
     ${grid}
     <path class="ar" d="${area}"/>
-    <path class="ln" d="${line}"/>
+    <path class="ln flow" d="${line}"/>
     <line class="mk" x1="${L}" y1="${Y(tokenPrice).toFixed(1)}" x2="${W-R}" y2="${Y(tokenPrice).toFixed(1)}"/>
     <text class="mkl" x="${L+6}" y="${(Y(tokenPrice)-6).toFixed(1)}">token costs ${F.usd(tokenPrice,0)}</text>
     <circle cx="${X(now.t).toFixed(1)}" cy="${Y(now.per).toFixed(1)}" r="4" fill="#4d9dff"/>
@@ -1105,6 +1134,107 @@ function wireYours(){
   if(S.wallet) position(S.wallet);
 }
 
+/* ===================================================================== api == */
+
+/* Everything on this terminal, as files anyone can fetch.
+
+   A number nobody else can get at is a number nobody can check, so the same
+   figures the page uses are written out hourly at stable paths, with no key
+   and nothing to sign up for.
+*/
+function viewApi(){
+  const eps = [
+    ["tokens.json", "Every token, what it costs, what the crowd says it is worth, what a round trip costs, and what the issuer can do to a holder."],
+    ["marks.json", "What is published on Solana for each company, with the hash of its inputs and who last refreshed it."],
+    ["pools.json", "Every liquidity pool holding one of these tokens, what it pays, and the range width at which it stops paying."],
+    ["index.json", "This list, in machine readable form."],
+  ];
+  const base = "https://rajatd91.github.io/crowd-mark/api/v1";
+  return `
+  <div class="card">
+    <h2>The data, as an API <span class="r">no key, nothing to sign up for</span></h2>
+    <p class="cap" style="padding-bottom:0">Everything this page computes is written out every
+      hour as flat JSON beside it. Same files, same numbers, same hour. If the API and the terminal
+      ever disagree, the API is wrong and that is a bug worth reporting.</p>
+    <div class="rows">
+      ${eps.map(([f, what]) => `<div class="row">
+        <span class="k"><a href="${base}/${f}" target="_blank" rel="noopener">
+          <code>/api/v1/${f}</code></a><br><span class="dim">${esc(what)}</span></span>
+        <span class="v"></span></div>`).join("")}
+    </div>
+    <p class="cap"><b>Stability.</b> Fields are added, never renamed or removed. Anything that
+      changes meaning gets a new version path. <b>Terms.</b> Use it for anything. It is public data
+      computed from public markets, and it comes with no warranty of any kind.</p>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>Try it</h2>
+    <pre class="code">curl -s ${base}/tokens.json | jq '.tokens[] | {symbol, token_price_usd, crowd_per_token_usd, gap_to_crowd}'
+
+curl -s ${base}/pools.json | jq '.pools[0] | {pool, fee_income_per_day, breakeven_half_width}'
+
+curl -s ${base}/marks.json | jq '.marks[] | {symbol, publish_count, last_publisher}'</pre>
+    <p class="cap">The marks file carries the same hash the program stores, so anything consuming
+      this can check a value against Solana without trusting this server.</p>
+  </div>`;
+}
+
+/* ================================================================== limits == */
+
+/* What the numbers cannot see.
+
+   Written plainly and kept where a reader can find it, because every figure on
+   this terminal rests on something, and a reader deciding whether to spend
+   money is entitled to know what.
+*/
+function viewLimits(){
+  const rows = [
+    ["The crowd prices the company, not the token",
+     `A prediction market says what a company might be worth on listing day. What a token pays
+      depends on conversion terms no market prices. The gap between those two things is the whole
+      point of this page, and nothing here is called fair value.`],
+    ["One number is assumed, and it is shown",
+     `Prediction markets leave the top bracket open ended. A value has to be put on it. The model
+      picks whichever market leaves least probability there, then prints what the answer would be
+      at 1.1 and 1.5 times its floor, so you can judge the assumption rather than trust it.`],
+    ["Four of the eight have no market at all",
+     `Figure AI and Kalshi have no open Polymarket market. SpaceX has several, but they ask about
+      launches and a merger, not about its valuation. Those screens say so and list what does
+      exist rather than leaving a blank.`],
+    ["The precedent is a single case",
+     `SpaceX is the only one of these companies that has listed, so the 26 percent discount its
+      token still trades at is one observation, not a distribution. It is the best evidence
+      available and it is still one data point.`],
+    ["The pool study is short and the volatility is coarse",
+     `Fee income and volatility come from our own hourly readings, which began on 19 September
+      2026. A pool that quotes in wide bins cannot move less than one bin, so on those pools part
+      of what is measured as volatility is that quantisation, and the page says which ones.`],
+    ["The issuer's own mark cannot be refreshed here",
+     `prestocks.com does not allow browser requests, so the mark price and the share count come
+      from the hourly snapshot. The header states the age of that snapshot rather than passing it
+      off as current.`],
+    ["The marks are on devnet",
+     `The tokens, the pools and the trading are mainnet. Publishing the feed to mainnet is a
+      funding decision, not a technical one.`],
+    ["Anthropic says this exposure may be worth nothing",
+     `Anthropic states that any transfer of its stock it has not approved is void, and that
+      tokenised exposure may have no value. That is not a disclaimer this page adds, it is the
+      company's own position.`],
+  ];
+  return `
+  <div class="card">
+    <h2>What these numbers cannot see <span class="r">read this before spending anything</span></h2>
+    <p class="cap" style="padding-bottom:0">Every figure here rests on something. These are the
+      things it rests on that could be wrong, in plain words, none of them softened.</p>
+    <div class="rows">
+      ${rows.map(([k, v]) => `<div class="row" style="grid-template-columns:minmax(0,1fr)">
+        <span class="k"><b style="color:var(--ink)">${esc(k)}</b><br>${v}</span></div>`).join("")}
+    </div>
+    <p class="cap"><b>Information, not advice.</b> Nothing on this site is a recommendation to buy
+      or sell anything.</p>
+  </div>`;
+}
+
 /* ===================================================================== why == */
 function viewWhy(){
   return viewLive() + viewValue();
@@ -1437,7 +1567,8 @@ function viewProof(){
   </div>`;
 }
 
-const VIEWS = {buy: viewBuy, yours: viewYours, why: viewWhy, chain: viewProof};
+const VIEWS = {buy: viewBuy, yours: viewYours, why: viewWhy, chain: viewProof,
+               api: viewApi, limits: viewLimits};
 const WIRE = {buy: wireBuy, yours: wireYours, why: wireLive, chain: wireProof};
 
 /* ==================================================================== tour == */
@@ -1591,7 +1722,7 @@ function syncHash(){
   if(location.hash !== want) history.replaceState(null, "", want);
 }
 function readHash(){
-  const m = /^#([a-z]+)\/?(buy|yours|why|chain)?$/i.exec(location.hash || "");
+  const m = /^#([a-z]+)\/?(buy|yours|why|chain|api|limits)?$/i.exec(location.hash || "");
   if(!m) return;
   const sym = m[1].toUpperCase();
   if(S.desk.tokens[sym]) S.sym = sym;
@@ -1680,13 +1811,8 @@ function repaintDist(){
     const bar = $(`#b${i} .bar i`), p = $(`#bp${i}`), q = $(`#bq${i}`);
     if(!bar) return;
     bar.style.width = ((m.yes||0)/top*100).toFixed(1) + "%";
-    const was = p.textContent, now = F.odds((m.yes||0)/total);
-    if(was !== now){
-      p.textContent = now;
-      p.classList.remove("fl-up","fl-dn");
-      void p.offsetWidth;                       // restart the animation
-      p.classList.add(parseFloat(now) > parseFloat(was) ? "fl-up" : "fl-dn");
-    }
+    const was = parseFloat(p.textContent), now = F.odds((m.yes||0)/total);
+    setNum(p, now, isFinite(was) ? parseFloat(now) - was : 0);
     q.textContent = `${F.cents(m.bestBid)} / ${F.cents(m.bestAsk)}`;
   });
 
@@ -1696,16 +1822,11 @@ function repaintDist(){
   const gap = card.crowd_per_token / t.token_price - 1;
   const hc = $("#heroCrowd"), hg = $("#heroGap");
   if(hc){
-    const now = F.usd(card.crowd_per_token);
-    if(hc.textContent !== now){
-      hc.classList.remove("fl-up","fl-dn"); void hc.offsetWidth;
-      hc.classList.add(now > hc.textContent ? "fl-up" : "fl-dn");
-      hc.textContent = now;
-    }
-    hc.className = hc.className.replace(/\b(up|down)\b/g, "") + " " + cls(gap);
-    hg.textContent = F.pct(gap, true, 1);
-    hg.className = "v " + cls(gap);
+    const was = parseFloat(String(hc.textContent).replace(/[^0-9.]/g, ""));
+    setNum(hc, F.usd(card.crowd_per_token),
+           isFinite(was) ? card.crowd_per_token - was : 0);
   }
+  if(hg) setNum(hg, F.pct(gap, true, 1), 0);
 }
 
 document.addEventListener("DOMContentLoaded", boot);

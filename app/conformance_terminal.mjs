@@ -76,7 +76,7 @@ function fakeEvent(sym){
   };
 }
 
-const VIEWNAMES = ["buy", "yours", "why", "chain"];
+const VIEWNAMES = ["buy", "yours", "why", "chain", "api", "limits"];
 let failures = 0, done = 0;
 
 for(const sym of Object.keys(desk.tokens)){

@@ -86,6 +86,11 @@ def main():
                 raise SystemExit("nothing copied")
         os.remove(expected)
 
+    # The API is generated from the same files the page uses, so it cannot
+    # drift from what the terminal shows.
+    import api
+    api.build()
+
     missing = [f for f in FILES if not os.path.exists(os.path.join(SITE, f))]
     if missing:
         raise SystemExit(f"these are referenced but not there: {', '.join(missing)}")
@@ -93,10 +98,19 @@ def main():
     os.makedirs(DOCS, exist_ok=True)
     for f in FILES:
         shutil.copy2(os.path.join(SITE, f), os.path.join(DOCS, f))
-    stale = [f for f in os.listdir(DOCS) if f not in FILES]
+
+    api_src = os.path.join(SITE, "api", "v1")
+    api_dst = os.path.join(DOCS, "api", "v1")
+    os.makedirs(api_dst, exist_ok=True)
+    served = os.listdir(api_src)
+    for f in served:
+        shutil.copy2(os.path.join(api_src, f), os.path.join(api_dst, f))
+
+    stale = [f for f in os.listdir(DOCS)
+             if f not in FILES and not os.path.isdir(os.path.join(DOCS, f))]
     for f in stale:
         os.remove(os.path.join(DOCS, f))
-    print(f"copied {len(FILES)} files to docs"
+    print(f"copied {len(FILES)} files and {len(served)} api files to docs"
           + (f", removed {len(stale)} no longer used" if stale else ""))
 
 

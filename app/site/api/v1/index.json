@@ -1,0 +1,25 @@
+{
+ "name": "Crowd Mark",
+ "version": 1,
+ "generated_at": 1790187551,
+ "base": "https://rajatd91.github.io/crowd-mark/api/v1",
+ "auth": "None. No key, no signup, no account.",
+ "format": "Static JSON, regenerated every hour beside the page that uses it.",
+ "stability": "Fields are added, never renamed or removed. A change of meaning gets a new version path.",
+ "endpoints": [
+  {
+   "path": "https://rajatd91.github.io/crowd-mark/api/v1/tokens.json",
+   "what": "Every token, what it costs, what the crowd says it is worth, what a round trip costs and what the issuer can do to a holder."
+  },
+  {
+   "path": "https://rajatd91.github.io/crowd-mark/api/v1/marks.json",
+   "what": "What is published on Solana for each company, with the hash of its inputs and who last refreshed it."
+  },
+  {
+   "path": "https://rajatd91.github.io/crowd-mark/api/v1/pools.json",
+   "what": "Every liquidity pool holding one of these tokens, what it pays and the range width at which it stops paying."
+  }
+ ],
+ "source": "https://github.com/Rajatd91/crowd-mark",
+ "terms": "Use it for anything. It is public data, computed from public markets, and it comes with no warranty of any kind."
+}
