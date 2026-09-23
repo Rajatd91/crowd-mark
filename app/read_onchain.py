@@ -24,6 +24,24 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 STALE_AFTER_HOURS = 6        # the same limit the program states
 
 
+B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+
+
+def base58(raw):
+    """Solders can do this, but the decoder should not need a library to read
+    thirty two bytes, and the browser's copy does it the same way."""
+    n = int.from_bytes(raw, "big")
+    out = ""
+    while n:
+        n, rem = divmod(n, 58)
+        out = B58[rem] + out
+    for b in raw:
+        if b:
+            break
+        out = "1" + out
+    return out
+
+
 def decode_mark(data):
     """Unpack one Mark account, in the order the program declares its fields."""
     o = 8                                  # skip Anchor's account discriminator
@@ -43,7 +61,11 @@ def decode_mark(data):
     deadline, = struct.unpack_from("<q", data, o); o += 8
     deadline_bps, = struct.unpack_from("<H", data, o); o += 2
     read_at, published_at, slot = struct.unpack_from("<qqQ", data, o); o += 24
-    sources_hash = data[o:o + 32].hex()
+    sources_hash = data[o:o + 32].hex(); o += 32
+    # Who last refreshed this mark, and how often it has been refreshed. The
+    # feed is open, so these are the record of who has actually kept it alive.
+    last_publisher = base58(data[o:o + 32]); o += 32
+    publish_count, = struct.unpack_from("<I", data, o)
 
     return {
         "symbol": symbol, "company": company, "kind": kind,
@@ -56,6 +78,7 @@ def decode_mark(data):
         "next_deadline": deadline, "next_deadline_p": deadline_bps / 1e4,
         "source_read_at": read_at, "published_at": published_at, "slot": slot,
         "sources_hash": sources_hash,
+        "last_publisher": last_publisher, "publish_count": publish_count,
     }
 
 

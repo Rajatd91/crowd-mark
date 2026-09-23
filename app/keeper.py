@@ -69,21 +69,31 @@ def publish_to_github():
     the front screen wrong rather than merely late.
 
     Nothing is committed when nothing changed, so a quiet hour leaves no trace.
+
+    Run from the repository root, not from this directory. There is a second,
+    orphaned git repository inside app/, so a git command run here resolves to
+    that one instead, where docs/ is out of scope. The first version of this
+    asked the wrong repository, was told nothing had changed, and quietly never
+    pushed anything, which is the exact failure it existed to prevent.
     """
-    docs = os.path.join(HERE, "..", "docs")
-    changed = subprocess.run(["git", "status", "--porcelain", docs],
-                             cwd=HERE, capture_output=True, text=True)
+    root = os.path.dirname(HERE)
+    changed = subprocess.run(["git", "status", "--porcelain", "docs"],
+                             cwd=root, capture_output=True, text=True)
+    if changed.returncode:
+        print(f"  publish: could not read the repository  "
+              f"{(changed.stderr or '').strip()[:120]}", flush=True)
+        return False
     if not (changed.stdout or "").strip():
         print("  publish: nothing changed", flush=True)
         return True
     stamp = time.strftime("%d %b %H:%M", time.gmtime())
     steps = [
-        ["git", "add", docs],
+        ["git", "add", "docs"],
         ["git", "commit", "-q", "-m", f"Refresh the terminal data, {stamp} UTC"],
         ["git", "push", "-q", "origin", "main"],
     ]
     for step in steps:
-        out = subprocess.run(step, cwd=HERE, capture_output=True, text=True)
+        out = subprocess.run(step, cwd=root, capture_output=True, text=True)
         if out.returncode:
             print(f"  publish: {' '.join(step[:2])} failed  "
                   f"{(out.stderr or out.stdout).strip()[:120]}", flush=True)
