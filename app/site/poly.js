@@ -95,6 +95,22 @@ export async function loadHolders(conditionId, limit = 10){
   }));
 }
 
+/* Open markets that mention a company.
+
+   Used where this terminal has no valuation to offer. Saying only "no market"
+   leaves the reader wondering whether anyone looked, so the markets that do
+   exist are listed and the reader can see for themselves that none of them
+   asks what the company is worth.
+*/
+export async function searchMarkets(name, limit = 8){
+  const r = await json(`${GAMMA}/public-search?q=${encodeURIComponent(name)}&limit_per_type=20`);
+  return ((r && r.events) || [])
+    .filter(e => !e.closed && !e.archived)
+    .map(e => ({title: e.title, slug: e.slug, volume: parseFloat(e.volume) || 0}))
+    .sort((a, b) => b.volume - a.volume)
+    .slice(0, limit);
+}
+
 /* ------------------------------------------------------------------ stream */
 
 /* The order book as it changes, pushed by Polymarket.

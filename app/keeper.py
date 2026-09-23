@@ -55,7 +55,41 @@ def cycle():
         return False
     # Headlines, fetched slowly enough that the news index never refuses us.
     run("fetch headlines", [sys.executable, "news.py"])
-    return run("stage the site", [sys.executable, "publish_site.py"])
+    if not run("stage the site", [sys.executable, "publish_site.py"]):
+        return False
+    return publish_to_github()
+
+
+def publish_to_github():
+    """Push the refreshed site, so what visitors see is not older than the chain.
+
+    The keeper was already rebuilding the page every hour, but nothing sent it
+    anywhere, so the published site drifted a day behind the marks it was meant
+    to explain. A token price that is fifteen hours old makes the comparison on
+    the front screen wrong rather than merely late.
+
+    Nothing is committed when nothing changed, so a quiet hour leaves no trace.
+    """
+    docs = os.path.join(HERE, "..", "docs")
+    changed = subprocess.run(["git", "status", "--porcelain", docs],
+                             cwd=HERE, capture_output=True, text=True)
+    if not (changed.stdout or "").strip():
+        print("  publish: nothing changed", flush=True)
+        return True
+    stamp = time.strftime("%d %b %H:%M", time.gmtime())
+    steps = [
+        ["git", "add", docs],
+        ["git", "commit", "-q", "-m", f"Refresh the terminal data, {stamp} UTC"],
+        ["git", "push", "-q", "origin", "main"],
+    ]
+    for step in steps:
+        out = subprocess.run(step, cwd=HERE, capture_output=True, text=True)
+        if out.returncode:
+            print(f"  publish: {' '.join(step[:2])} failed  "
+                  f"{(out.stderr or out.stdout).strip()[:120]}", flush=True)
+            return False
+    print(f"  publish: pushed at {stamp} UTC", flush=True)
+    return True
 
 
 def main():

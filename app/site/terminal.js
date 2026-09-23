@@ -14,6 +14,7 @@ import * as M from "./model.js";
 import * as P from "./poly.js";
 import {headlines} from "./news.js";
 import {PROGRAM_ID as PROGRAM} from "./commit.js";
+import {watchPrices} from "./prices.js";
 
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
@@ -35,6 +36,8 @@ const S = {
   live: null,        // this browser's own reading, once taken
   ticks: 0,          // updates seen since the page opened
   state: "starting",
+  pricedAt: null,    // when this browser last got a token price of its own
+  snapshotAge: null, // how old the shipped figures are
 };
 const tape = new P.Tape();
 
@@ -115,7 +118,7 @@ async function openCompany(sym){
   render();
 
   const t = S.desk.tokens[sym];
-  if(!t?.covered){ setState("no market"); return; }
+  if(!t?.covered){ setState("no market"); loadOther(t.company); return; }
 
   /* The company's own market: the one the model chose when the page was built,
      falling back to whatever it lists. */
@@ -189,11 +192,39 @@ async function valuationHistory(){
 
 async function loadNews(sym){
   const shipped = S.news?.by_symbol?.[sym] || [];
-  paintNews(shipped, S.news?.read_at ?? null);
+  /* The news index turns away a second query within a few seconds. When that
+     happened while the snapshot was built, there is no headline to show, and
+     saying "no news about this company" would be a claim we never checked. */
+  const wasRefused = (S.news?.refused || []).includes(sym);
+  paintNews(shipped, S.news?.read_at ?? null, false, wasRefused);
   try{
     const fresh = await headlines(sym, 10);
     if(fresh.length) paintNews(fresh, Date.now(), true);
   }catch(e){ /* the shipped ones stay */ }
+}
+
+/* The rail carries a gap per company, so a new price changes it. */
+function repaintRail(){
+  $$("#rail button").forEach(b => {
+    const t = S.desk.tokens[b.dataset.sym];
+    const tick = b.querySelector(".tick");
+    if(t && tick){ tick.textContent = railTick(t); tick.className = "tick " + railClass(t); }
+  });
+}
+
+/* Say plainly how old each part of the screen is. A terminal that shows a
+   figure without its age is asking to be trusted, which is the thing this one
+   is meant not to do. */
+function paintAges(){
+  const el = $("#ages");
+  if(!el) return;
+  const snap = S.desk?.read_at ? Date.parse(S.desk.read_at) : null;
+  const hrs = snap ? (Date.now() - snap)/3600000 : null;
+  el.innerHTML =
+    `<span class="${S.pricedAt ? "up" : "warn"}">prices ${
+      S.pricedAt ? F.ago(S.pricedAt) : "from the snapshot"}</span>` +
+    ` · <span class="${hrs > 12 ? "warn" : ""}">costs and issuer data ${
+      snap ? F.ago(snap) : "unknown"}</span>`;
 }
 
 function setState(s){
@@ -228,6 +259,7 @@ function shell(){
     <div class="bar">
       <div class="brand"><span class="led" id="led"></span> Crowd Mark</div>
       <span class="state"><b id="stateTxt">starting</b> · <span id="tickCount">0</span> updates</span>
+      <span class="state" id="ages"></span>
       <span class="grow"></span>
       <button class="btn" id="tourBtn">Show me how it works</button>
       <button class="btn key" id="connectBtn">${S.wallet ? F.short(S.wallet) : "Connect wallet"}</button>
@@ -265,6 +297,7 @@ function render(){
   $("#main").innerHTML = VIEWS[S.view]();
   WIRE[S.view]?.();
   setState(S.state);
+  paintAges();
 }
 
 function wireShell(){
@@ -306,7 +339,16 @@ function viewLive(){
   const bars = live.filter(x => !isNo(x));
   const none = ladder ? null : live.find(isNo);
   const ignored = ladder ? live.filter(isNo) : [];
-  const traded = live.reduce((s, x) => s + (x.m.volume24 || 0), 0);
+  /* Gamma reports no 24 hour figure at all for some markets, and printing an
+     absent number as zero said "nobody is betting" about a market holding tens
+     of thousands of dollars. Fall back to what it does report. */
+  const has24 = live.some(x => x.m.volume24 != null);
+  const traded = has24 ? live.reduce((s, x) => s + (x.m.volume24 || 0), 0) : null;
+  const staked = live.reduce((s, x) => s + (parseFloat(x.m.volumeNum) || 0), 0);
+  /* Same trap as the volume above: if no market reports its resting size,
+     that is an absent figure, not an empty book. */
+  const hasLiq = live.some(x => x.m.liquidity != null);
+  const resting = hasLiq ? live.reduce((s, x) => s + (x.m.liquidity || 0), 0) : null;
   const gap = card?.crowd_per_token ? card.crowd_per_token / t.token_price - 1 : null;
 
   /* A company whose market is a ladder of touch odds has no expected value to
@@ -327,12 +369,15 @@ function viewLive(){
         <span class="v ${odds != null && odds < 0.5 ? "down" : "up"}">${F.odds(odds)}</span>
         <span class="s">by 31 December</span></div>`;
 
+  const money = has24
+    ? `<b>${F.big(traded)}</b> has been staked on them in the last day`
+    : `<b>${F.big(staked)}</b> has been staked on them in total, and this market does not report
+       a daily figure`;
   const line = card?.crowd_per_token
-    ? `<b>${live.length} outcomes</b> are open and <b>${F.big(traded)}</b> has been staked on
-       them in the last day.`
+    ? `<b>${live.length} outcomes</b> are open and ${money}.`
     : `This market prices whether the valuation <b>reaches</b> a level by a date, so it is a
        ladder of odds rather than a distribution, and there is no expected value to quote.
-       <b>${F.big(traded)}</b> has been staked on it in the last day.`;
+       ${money}.`;
 
   return `
   <div class="card" id="tour-hero">
@@ -342,9 +387,12 @@ function viewLive(){
         <span class="v">${F.usd(t.token_price)}</span>
         <span class="s">on PreStocks</span></div>
       ${third}
-      <div class="fig"><span class="k">Bet in 24 hours</span>
-        <span class="v">${F.big(traded)}</span>
+      <div class="fig"><span class="k">${has24 ? "Bet in 24 hours" : "Staked in total"}</span>
+        <span class="v">${F.big(has24 ? traded : staked)}</span>
         <span class="s">across ${live.length} outcomes</span></div>
+      <div class="fig"><span class="k">Resting on the book</span>
+        <span class="v">${hasLiq ? F.big(resting) : "not reported"}</span>
+        <span class="s">orders you could hit now</span></div>
     </div>
     <p class="answer">Every figure above is built from the bets below, in this browser, as they
       change. ${esc(t.company)} has no share price, so the only independent read on it is what
@@ -532,12 +580,17 @@ function areaChart(series, tokenPrice){
    Reading one as the other reported headlines as decades old. */
 const asMs = t => t == null ? null : t > 1e12 ? t : t * 1000;
 
-function paintNews(articles, at, fresh){
+function paintNews(articles, at, fresh, refused){
   const el = $("#news"), stamp = $("#newsStamp");
   if(!el) return;
   if(stamp) stamp.textContent = at ? (fresh ? "just now" : F.ago(asMs(at))) : "";
   if(!articles.length){
-    el.innerHTML = `<p class="cap">No headlines naming this company in the past week.</p>`;
+    el.innerHTML = refused
+      ? `<p class="cap">The news index turned this query away when the snapshot was built, so
+         there is nothing to show yet rather than nothing to find. Your browser is asking it
+         again now.</p>`
+      : `<p class="cap">No headline in the past week names this company alongside its funding,
+         valuation or a listing. Stories that merely mention it are left out.</p>`;
     return;
   }
   el.innerHTML = articles.map(a => `
@@ -564,7 +617,35 @@ function uncovered(t){
       has no second opinion to offer on the price. The only figure available is the issuer's own,
       and the issuer is the party selling the token. The <b>Cost</b> screen still applies: what it
       costs to trade and what the issuer can do to your balance are measured from the chain.</p>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>What the crowd does bet on ${esc(t.company)} <span class="r" id="othStamp"></span></h2>
+    <div id="other"><p class="cap">Looking…</p></div>
+    <p class="cap">This terminal only prices a company when a market asks what it will be worth.
+      These ask other questions, so none of them can be turned into a value per token. Judge that
+      for yourself from the titles.</p>
   </div>`;
+}
+
+/* Fill in the markets that exist but do not price a valuation. */
+async function loadOther(company){
+  const el = $("#other");
+  if(!el) return;
+  try{
+    const {searchMarkets} = await import("./poly.js");
+    const found = await searchMarkets(company);
+    const stamp = $("#othStamp");
+    if(stamp) stamp.textContent = found.length ? `${found.length} open` : "";
+    el.innerHTML = found.length
+      ? `<div class="rows">${found.map(m => `<div class="row">
+          <span class="k"><a href="https://polymarket.com/event/${esc(m.slug)}"
+            target="_blank" rel="noopener">${esc(m.title)}</a></span>
+          <span class="v">${F.big(m.volume)}</span></div>`).join("")}</div>`
+      : `<p class="cap">No open market mentions ${esc(company)} at all.</p>`;
+  }catch(e){
+    el.innerHTML = `<p class="cap">Could not reach Polymarket just then.</p>`;
+  }
 }
 
 /* A small deterministic generator, so the simulation below gives the same
@@ -1114,6 +1195,25 @@ async function boot(){
     .then(j => { S.lp = j; if(S.view === "cost") render(); }).catch(() => {});
   fetch("news.json?" + Date.now()).then(r => r.ok ? r.json() : null)
     .then(j => { S.news = j; if(S.view === "live") loadNews(S.sym); }).catch(() => {});
+
+  /* A price is the one figure that must not be old, so the browser refreshes
+     it itself rather than serving whatever the snapshot was built with. */
+  watchPrices(Object.values(S.desk.tokens).map(t => t.mint), (prices, at) => {
+    let moved = false;
+    for(const t of Object.values(S.desk.tokens)){
+      const px = prices[t.mint];
+      if(!px || px === t.token_price) continue;
+      t.token_price = px;
+      t.token_implied_value = px * t.shares;
+      t.premium_to_mark = t.mark_price ? px / t.mark_price - 1 : null;
+      if(t.crowd_per_token) t.gap = t.crowd_per_token / px - 1;
+      t.price_live = true;
+      moved = true;
+    }
+    S.pricedAt = at;
+    if(moved){ repaintRail(); if(S.view !== "live") render(); else repaintDist(); }
+    paintAges();
+  });
 
   tape.on("status", s => setState(s.state));
   tape.on("book", () => { if(S.view === "live") paintBook(); });

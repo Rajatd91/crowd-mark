@@ -110,6 +110,23 @@ def build():
         out[symbol] = tidy(articles, NAME[symbol])[:12]
         print(f"  {symbol:10} {len(out[symbol]):>2} headlines", flush=True)
 
+    # Anything refused is asked again, once, after a longer wait. Being turned
+    # away is not the same as there being no news, and the page would otherwise
+    # say so for a whole hour.
+    if refused:
+        print(f"  waiting, then asking again for {', '.join(refused)}", flush=True)
+        time.sleep(GAP * 4)
+        still = []
+        for symbol in refused:
+            articles = fetch(QUERY[symbol])
+            if articles is None:
+                still.append(symbol)
+                continue
+            out[symbol] = tidy(articles, NAME[symbol])[:12]
+            print(f"  {symbol:10} {len(out[symbol]):>2} headlines on the second ask", flush=True)
+            time.sleep(GAP)
+        refused = still
+
     # A run that got nothing must not replace a good file with an empty one.
     path = os.path.join(HERE, "site", "news.json")
     if not out:
