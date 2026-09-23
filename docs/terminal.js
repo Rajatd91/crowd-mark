@@ -990,18 +990,38 @@ async function doDryRun(){
   btn.disabled = true;
   const step = m => out.innerHTML = `<span class="mid">${esc(m)}…</span>`;
   try{
-    const {dryRun} = await import("./swap.js");
-    /* Any address works for a rehearsal, so nobody needs a wallet to try it. */
-    const owner = S.wallet || "2sujbbTjp2r5ugbjfHgUNDSwtdVfYpTiCSKPgT84CvD7";
+    const {dryRun, explain, REHEARSAL_WALLET, usdcBalance} = await import("./swap.js");
+
+    /* Rehearse against the connected wallet when it can actually pay, and
+       against a funded one when it cannot. A dry run that fails because the
+       visitor holds no USDC tells them nothing about whether this works, which
+       is the only question it is here to answer. */
+    let owner = REHEARSAL_WALLET, own = false, have = S.usdc;
+    if(S.wallet){
+      if(have == null){
+        step("Checking what your wallet holds");
+        try{ have = await usdcBalance(S.wallet); S.usdc = have; }catch(e){ have = null; }
+      }
+      if(have != null && have >= S.quote.dollars){ owner = S.wallet; own = true; }
+    }
+
     const r = await dryRun(t.mint, S.quote.dollars, owner, step, S.quote.slippageBps);
-    out.innerHTML = r.ok
-      ? `<b class="up">It would go through.</b> The real transaction was built
-         (${r.bytes} bytes) and run against Solana as it stands now, using
-         ${F.num(r.units)} compute units, without being signed or sent.
-         ${S.wallet ? "" : "It was rehearsed against a sample wallet, since you have not connected one."}`
-      : `<b class="warn">The chain would reject it.</b>
-         <span class="dim">${esc(JSON.stringify(r.err).slice(0, 120))}</span>
-         That is usually the sample wallet holding no USDC, which is exactly what this is for.`;
+    const whose = own
+      ? "against <b>your own wallet</b>"
+      : `against a funded wallet, because ${S.wallet
+          ? `yours holds ${have == null ? "no USDC this could read" : F.usd(have) + " of USDC"}
+             and this trade needs ${F.usd(S.quote.dollars)}`
+          : "you have not connected one"}`;
+
+    if(r.ok){
+      out.innerHTML = `<b class="up">It would go through.</b> The real transaction was built
+        (${r.bytes} bytes) and run ${whose} against Solana as it stands now, using
+        ${F.num(r.units)} compute units. Nothing was signed, sent or spent.`;
+    }else{
+      const why = explain(r.err);
+      out.innerHTML = `<b class="warn">The chain would reject it${why ? `, because ${why}` : ""}.</b>
+        <span class="dim">${esc(JSON.stringify(r.err).slice(0, 90))}</span>`;
+    }
     btn.disabled = false;
   }catch(e){
     out.innerHTML = `<span class="down">${esc(e.message || e)}</span>`;
