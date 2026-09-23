@@ -19,6 +19,22 @@ export const USDC_DECIMALS = 6;
    file needs, including simulating a transaction. This one answers both. */
 const MAINNET = "https://solana-rpc.publicnode.com";
 
+/* How much slippage a trade in these tokens actually needs.
+
+   Measured, not guessed. A hundred basis points is refused every time and
+   three hundred goes through every time, on a trade whose pool impact is
+   around a tenth of a percent. The difference is the issuer's transfer fee:
+   Token-2022 takes its cut as the tokens move, so less arrives than the route
+   promised, and a slippage limit set below that fee guarantees the trade
+   reverts no matter how deep the pool is.
+
+   So the floor is the fee plus room for the pool itself. Anyone setting one
+   percent on a token that charges one percent will simply watch it fail.
+*/
+export function slippageFor(transferFeeBps){
+  return Math.max(100, Math.round(transferFeeBps || 0) + 150);
+}
+
 /* What a given number of dollars actually buys, including the pool's price
    impact and the route it would take. */
 export async function quote(outputMint, dollars, slippageBps = 100){

@@ -37,6 +37,7 @@ const S = {
   ticks: 0,          // updates seen since the page opened
   state: "starting",
   amount: "100",     // what the visitor is thinking of spending
+  slippage: null,    // what this token's transfer fee forces it to be
   quote: null,       // a real Jupiter quote for that amount
   pricedAt: null,    // when this browser last got a token price of its own
   snapshotAge: null, // how old the shipped figures are
@@ -857,8 +858,10 @@ function viewBuy(){
             <span class="v">${F.num(q.tokens, 6)} ${esc(S.sym)}</span></div>
           <div class="row"><span class="k">Price you pay per token</span>
             <span class="v">${F.usd(q.perToken)}</span></div>
-          <div class="row"><span class="k">Slippage and pool impact</span>
+          <div class="row"><span class="k">Pool impact at this size</span>
             <span class="v ${q.impact > 0.01 ? "warn" : ""}">${F.pct(q.impact, false, 3)}</span></div>
+          ${q.slippageBps ? `<div class="row"><span class="k">Slippage allowed</span>
+            <span class="v">${(q.slippageBps / 100).toFixed(2)}%</span></div>` : ""}
           <div class="row"><span class="k">Route</span>
             <span class="v" style="font-size:11px">${esc(q.route.join(" then ") || "direct")}</span></div>
           ${t.crowd_per_token ? `<div class="row"><span class="k">Worth at the crowd's number</span>
@@ -873,6 +876,12 @@ function viewBuy(){
           : q ? `Buy ${F.usd(q.dollars, 0)} of ${esc(t.company)}` : "Enter an amount"}</button>
     </div>
     <div id="buyOut" class="cap"></div>
+    ${t.powers?.transfer_fee_bps ? `<p class="note"><b>Why the slippage is set where it is.</b>
+      The issuer takes ${(t.powers.transfer_fee_bps / 100).toFixed(2)}% as the tokens move, so less
+      arrives than the route promises. We measured it: a one percent limit is refused every time
+      and three percent goes through every time, on a trade whose pool impact is about a tenth of a
+      percent. A limit below the transfer fee reverts however deep the pool is, which is not
+      something any swap screen tells you.</p>` : ""}
     <p class="cap">These tokens only exist on mainnet, so there is no test network to try this on.
       <b>Dry run builds the real transaction and runs it against the chain as it stands right
       now</b>, without signing, sending or spending anything, so you can see it would go through
@@ -911,11 +920,13 @@ async function getQuote(dollars){
   const box = $("#gets");
   if(box) box.innerHTML = `<p class="cap">Asking Jupiter for a route…</p>`;
   try{
-    const {quote} = await import("./swap.js");
-    const q = await quote(t.mint, dollars);
+    const {quote, slippageFor} = await import("./swap.js");
+    const bps = slippageFor(t.powers?.transfer_fee_bps);
+    S.slippage = bps;
+    const q = await quote(t.mint, dollars, bps);
     const tokens = q.outRaw / 10 ** 9;          // these mints carry nine decimals
     S.quote = {dollars: q.inDollars, tokens, perToken: q.inDollars / tokens,
-               impact: q.impact, route: q.route, raw: q.raw};
+               impact: q.impact, route: q.route, raw: q.raw, slippageBps: bps};
     if(S.view === "buy") render();
   }catch(e){
     S.quote = null;
@@ -937,7 +948,7 @@ async function doDryRun(){
     const {dryRun} = await import("./swap.js");
     /* Any address works for a rehearsal, so nobody needs a wallet to try it. */
     const owner = S.wallet || "2sujbbTjp2r5ugbjfHgUNDSwtdVfYpTiCSKPgT84CvD7";
-    const r = await dryRun(t.mint, S.quote.dollars, owner, step);
+    const r = await dryRun(t.mint, S.quote.dollars, owner, step, S.quote.slippageBps);
     out.innerHTML = r.ok
       ? `<b class="up">It would go through.</b> The real transaction was built
          (${r.bytes} bytes) and run against Solana as it stands now, using
@@ -965,7 +976,8 @@ async function doBuy(){
       throw new Error(`This wallet holds ${F.usd(have)} of USDC and the trade needs ` +
                       `${F.usd(S.quote.dollars)}.`);
     }
-    const {signature} = await buy(t.mint, S.quote.dollars, providerOf(), step);
+    const {signature} = await buy(t.mint, S.quote.dollars, providerOf(), step,
+                                 S.quote.slippageBps);
     out.innerHTML = `<b class="up">Done.</b> You now hold
       ${F.num(S.quote.tokens, 6)} ${esc(S.sym)}.
       <a href="https://explorer.solana.com/tx/${signature}" target="_blank"

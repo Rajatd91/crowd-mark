@@ -95,8 +95,11 @@ for(const sym of Object.keys(desk.tokens)){
           S.lp = withLp ? lp : null;
           /* Before a quote comes back and after, since the buy button and the
              figures beside it both depend on one. */
+          /* With a slippage figure and without, since a quote taken before
+             that field existed must still render. */
           S.quote = withLp ? null : {dollars: 100, tokens: 0.0956,
-            perToken: 1046.02, impact: 0.0003, route: ["Kipseli"], raw: {}};
+            perToken: 1046.02, impact: 0.0003, route: ["Kipseli"], raw: {},
+            slippageBps: wallet ? 250 : undefined};
           for(const view of VIEWNAMES){
             S.view = view;
             try{
