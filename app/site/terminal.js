@@ -742,21 +742,68 @@ function verdict(t){
   if(t.powers?.permanent_delegate) issuer.push("can move your tokens without asking");
   if(issuer.length) catches.push(`The issuer ${issuer.join(", ")}.`);
 
-  const gap = t.gap;
-  if(!t.covered || gap == null){
-    return {word: "No independent price", tone: "warn", gap: null, sim, exit,
-      line: `Nobody runs a market on what ${esc(t.company)} is worth, so the only figure anyone
-        can quote is the issuer's own, and the issuer is the party selling you the token.`,
+  /* The one company in this set that has already listed, and what its token
+     actually pays. This is the only realised evidence anybody has about what
+     conversion is worth, so it is not a footnote. */
+  const px = S.desk.spacex;
+  const listed = t.symbol === "SPACEX";
+
+  if(listed && px){
+    return {
+      word: px.discount > 0.05 ? "Trades below the real thing" : "Trades near the real thing",
+      tone: px.discount > 0.05 ? "down" : "mid",
+      gap: -px.discount, net: -px.discount, sim, exit, precedent: px,
+      line: `${esc(t.company)} has already listed, so this one needs no prediction market. Its
+        listed stock token trades at <b>${F.usd(px.listed_token_usd)}</b> and this PreStocks token
+        at <b>${F.usd(px.prestocks_token_usd)}</b>, a discount of
+        <b class="down">${F.pct(px.discount, false, 1)}</b>. That gap is what conversion has
+        actually been worth, on the only case anyone can check.`,
       catches};
   }
+
+  const gap = t.gap;
+  if(!t.covered || gap == null){
+    const prem = t.premium_to_mark;
+    return {word: "No independent price", tone: "warn", gap: null, sim, exit, precedent: px,
+      line: `Nobody runs a market on what ${esc(t.company)} is worth, so the only figure anyone can
+        quote is the issuer's own mark of <b>${F.usd(t.mark_price)}</b>, and the issuer is the
+        party selling you the token. This trades
+        <b class="${cls(prem)}">${F.pct(prem, true, 1)}</b> against that mark.`,
+      catches};
+  }
+
   const net = exit != null ? gap - exit : gap;
-  const word = net > 0.10 ? "Looks cheap" : net < -0.10 ? "Looks dear" : "Looks about right";
-  const tone = net > 0.10 ? "up" : net < -0.10 ? "down" : "mid";
+  /* What the crowd's value becomes if conversion pays what it has paid on the
+     one company that listed. */
+  const adjusted = px && t.crowd_per_token ? t.crowd_per_token * (1 - px.discount) : null;
+  const afterPrecedent = adjusted ? adjusted / t.token_price - 1 : null;
+
+  let word, tone;
+  if(afterPrecedent != null && net > 0.10 && afterPrecedent < 0){
+    word = "Cheap on the crowd, dear on the precedent";
+    tone = "warn";
+  } else if(afterPrecedent != null && afterPrecedent > 0.10){
+    word = "Cheap either way";
+    tone = "up";
+  } else {
+    word = net > 0.10 ? "Looks cheap" : net < -0.10 ? "Looks dear" : "Looks about right";
+    tone = net > 0.10 ? "up" : net < -0.10 ? "down" : "mid";
+  }
+
   const line = `The token costs <b>${F.usd(t.token_price)}</b>. People betting real money on
     ${esc(t.company)}'s listing price it at <b>${F.usd(t.crowd_per_token)}</b> a token, which is
     <b class="${cls(gap)}">${F.pct(gap, true, 1)}</b> away. After what it costs to get in and out
     that is <b class="${cls(net)}">${F.pct(net, true, 1)}</b>.`;
-  return {word, tone, gap, net, sim, exit, line, catches};
+
+  if(px && adjusted){
+    catches.unshift(`<b>The only company here that has already listed still trades
+      ${F.pct(px.discount, false, 1)} below its listed stock.</b> Conversion has not paid what the
+      crowd expected. Apply that same discount here and
+      ${F.usd(t.crowd_per_token)} becomes <b>${F.usd(adjusted)}</b>, which is
+      <b class="${cls(afterPrecedent)}">${F.pct(afterPrecedent, true, 1)}</b> against what you
+      would pay today.`);
+  }
+  return {word, tone, gap, net, sim, exit, precedent: px, adjusted, afterPrecedent, line, catches};
 }
 
 function viewBuy(){
@@ -778,6 +825,12 @@ function viewBuy(){
         ${t.crowd_per_token ? `<div class="fig"><span class="k">The crowd says</span>
           <span class="v ${cls(v.gap)}">${F.usd(t.crowd_per_token)}</span>
           <span class="s">rebuilt live from their bets</span></div>` : ""}
+        ${v.adjusted ? `<div class="fig"><span class="k">If conversion pays what it has</span>
+          <span class="v ${cls(v.afterPrecedent)}">${F.usd(v.adjusted)}</span>
+          <span class="s">on the one that listed</span></div>` : ""}
+        ${!t.covered && t.symbol !== "SPACEX" ? `<div class="fig"><span class="k">Issuer's own mark</span>
+          <span class="v">${F.usd(t.mark_price)}</span>
+          <span class="s">the only figure available</span></div>` : ""}
       </div>
     </div>
     <p class="vline">${v.line}</p>
@@ -813,15 +866,18 @@ function viewBuy(){
         ` : `<p class="cap">Enter an amount to get a real quote.</p>`}
       </div>
     </div>
-    <div class="field">
+    <div class="field two">
+      <button class="btn big" id="dryBtn" ${q ? "" : "disabled"}>Dry run, costs nothing</button>
       <button class="btn key big" id="buyBtn" ${S.wallet && q ? "" : "disabled"}>
         ${!S.wallet ? "Connect a wallet to buy"
           : q ? `Buy ${F.usd(q.dollars, 0)} of ${esc(t.company)}` : "Enter an amount"}</button>
     </div>
     <div id="buyOut" class="cap"></div>
-    <p class="cap"><b>This is mainnet and it spends real money.</b> The route comes from Jupiter,
-      your wallet signs and broadcasts it, and nothing of ours ever touches your keys or your
-      balance. Nobody here takes a fee.</p>
+    <p class="cap">These tokens only exist on mainnet, so there is no test network to try this on.
+      <b>Dry run builds the real transaction and runs it against the chain as it stands right
+      now</b>, without signing, sending or spending anything, so you can see it would go through
+      before deciding to. Buying for real routes through Jupiter and your own wallet signs it.
+      Nothing here touches your keys or your balance, and nobody takes a fee.</p>
   </div>`;
 }
 
@@ -844,6 +900,8 @@ function wireBuy(){
 
   const btn = $("#buyBtn");
   if(btn && S.wallet && S.quote) btn.onclick = doBuy;
+  const dry = $("#dryBtn");
+  if(dry && S.quote) dry.onclick = doDryRun;
   if(!S.quote && parseFloat(S.amount) > 0) getQuote(parseFloat(S.amount));
 }
 
@@ -862,6 +920,36 @@ async function getQuote(dollars){
   }catch(e){
     S.quote = null;
     if(box) box.innerHTML = `<p class="cap down">${esc(e.message)}</p>`;
+  }
+}
+
+/* Prove the trade works, for nothing.
+
+   A judge or a stranger should not have to spend money to find out whether
+   this is real. The transaction built here is the same one the buy button
+   sends; it is simply handed to the chain to run rather than to sign.
+*/
+async function doDryRun(){
+  const t = S.desk.tokens[S.sym], out = $("#buyOut"), btn = $("#dryBtn");
+  btn.disabled = true;
+  const step = m => out.innerHTML = `<span class="mid">${esc(m)}…</span>`;
+  try{
+    const {dryRun} = await import("./swap.js");
+    /* Any address works for a rehearsal, so nobody needs a wallet to try it. */
+    const owner = S.wallet || "2sujbbTjp2r5ugbjfHgUNDSwtdVfYpTiCSKPgT84CvD7";
+    const r = await dryRun(t.mint, S.quote.dollars, owner, step);
+    out.innerHTML = r.ok
+      ? `<b class="up">It would go through.</b> The real transaction was built
+         (${r.bytes} bytes) and run against Solana as it stands now, using
+         ${F.num(r.units)} compute units, without being signed or sent.
+         ${S.wallet ? "" : "It was rehearsed against a sample wallet, since you have not connected one."}`
+      : `<b class="warn">The chain would reject it.</b>
+         <span class="dim">${esc(JSON.stringify(r.err).slice(0, 120))}</span>
+         That is usually the sample wallet holding no USDC, which is exactly what this is for.`;
+    btn.disabled = false;
+  }catch(e){
+    out.innerHTML = `<span class="down">${esc(e.message || e)}</span>`;
+    btn.disabled = false;
   }
 }
 

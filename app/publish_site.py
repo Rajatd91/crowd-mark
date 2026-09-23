@@ -23,6 +23,7 @@ FILES = [
     "index.html", "terminal.css",
     # The terminal and the modules it loads, some of them only on demand.
     "terminal.js", "poly.js", "news.js", "chain.js", "prices.js", "swap.js",
+    "balances.js",
     "commit.js", "model.js", "live.js", "publish.js",
     # What it ships with, so the first screen is never empty.
     "desk.json", "onchain.json", "liquidity.json", "news.json",

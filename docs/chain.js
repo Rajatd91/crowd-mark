@@ -186,16 +186,19 @@ export async function showPosition(addr, S, out, F, esc){
   }
   out.innerHTML = `<p class="cap">Reading the chain…</p>`;
   try{
-    const res = await rpc("getTokenAccountsByOwner",
-      [addr, {programId: TOKEN_2022}, {encoding: "jsonParsed"}], MAINNET);
+    /* Not over RPC. Listing an owner's token accounts is an indexed query and
+       every free endpoint answers it with 403, which is what a visitor met the
+       moment they connected a wallet. */
+    const {balancesOf} = await import("./balances.js");
+    const all = await balancesOf(addr);
     const bySym = {};
     Object.values(S.desk.tokens).forEach(t => bySym[t.mint] = t.symbol);
-    const held = {};
-    for(const a of res.value){
-      const info = a.account.data.parsed.info, sym = bySym[info.mint];
-      if(!sym) continue;
-      const ui = parseFloat(info.tokenAmount.uiAmountString || "0");
-      if(ui > 0) held[sym] = (held[sym] || 0) + ui;
+    const held = {}, frozen = {};
+    for(const [mint, v] of Object.entries(all)){
+      const sym = bySym[mint];
+      if(!sym || !(v.amount > 0)) continue;
+      held[sym] = v.amount;
+      frozen[sym] = v.frozen;
     }
     const syms = Object.keys(held);
     if(!syms.length){
@@ -205,7 +208,8 @@ export async function showPosition(addr, S, out, F, esc){
     out.innerHTML = syms.map(s => {
       const t = S.desk.tokens[s], amt = held[s];
       const fee = t.powers?.transfer_fee_bps, rt = (t.round_trip || [])[1];
-      return `<div class="row"><span class="k"><b>${esc(t.company)}</b> · ${F.num(amt, 2)} tokens</span>
+      return `<div class="row"><span class="k"><b>${esc(t.company)}</b> · ${F.num(amt, 2)} tokens${
+          frozen[s] ? ` <span class="down">· this account is frozen</span>` : ""}</span>
           <span class="v">${F.usd(amt * t.token_price)}</span></div>` +
         (t.crowd_per_token ? `<div class="row"><span class="k">at the crowd's value</span>
           <span class="v up">${F.usd(amt * t.crowd_per_token)}</span></div>` : "") +

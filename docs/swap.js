@@ -15,7 +15,9 @@
 const JUP = "https://lite-api.jup.ag/swap/v1";
 export const USDC = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 export const USDC_DECIMALS = 6;
-const MAINNET = "https://api.mainnet-beta.solana.com";
+/* Solana's own public endpoint answers 403 Access forbidden to the calls this
+   file needs, including simulating a transaction. This one answers both. */
+const MAINNET = "https://solana-rpc.publicnode.com";
 
 /* What a given number of dollars actually buys, including the pool's price
    impact and the route it would take. */
@@ -68,17 +70,46 @@ function bytesFrom(b64){
 }
 
 /* What the wallet holds of the token being spent, so the screen can say "you
-   do not have enough" before anyone signs rather than after it fails. */
+   do not have enough" before anyone signs rather than after it fails. Read
+   through Jupiter, because the public RPC refuses this query outright. */
 export async function usdcBalance(owner){
+  const {balanceOf} = await import("./balances.js");
+  return balanceOf(owner, USDC);
+}
+
+/* Run the trade against live mainnet state without spending anything.
+
+   These tokens only exist on mainnet, so there is no testnet on which to try
+   this. Rather than ask someone to risk money to see whether it works, the
+   real transaction is built and simulated against the chain as it is right
+   now. A simulation that returns no error is the chain saying this trade would
+   go through, and nothing is signed, sent or spent to find that out.
+*/
+export async function dryRun(outputMint, dollars, owner, onStep, slippageBps = 100){
+  onStep?.("Pricing the trade");
+  const q = await quote(outputMint, dollars, slippageBps);
+
+  onStep?.("Building the real transaction");
+  const built = await build(q.raw, owner);
+
+  onStep?.("Running it against the chain as it is now");
   const r = await fetch(MAINNET, {
     method: "POST", headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({jsonrpc: "2.0", id: 1, method: "getTokenAccountsByOwner",
-      params: [owner, {mint: USDC}, {encoding: "jsonParsed"}]}),
+    body: JSON.stringify({jsonrpc: "2.0", id: 1, method: "simulateTransaction",
+      params: [built.swapTransaction, {encoding: "base64",
+        replaceRecentBlockhash: true, sigVerify: false}]}),
   });
   const j = await r.json();
-  if(j.error) throw new Error(j.error.message);
-  return (j.result?.value || []).reduce((sum, a) =>
-    sum + parseFloat(a.account.data.parsed.info.tokenAmount.uiAmountString || "0"), 0);
+  if(j.error) throw new Error(j.error.message || "The chain would not simulate that.");
+  const v = j.result.value;
+  return {
+    ok: !v.err,
+    err: v.err,
+    units: v.unitsConsumed,
+    logs: v.logs || [],
+    quote: q,
+    bytes: atob(built.swapTransaction).length,
+  };
 }
 
 /* Sign and send. The wallet broadcasts through its own connection where it
