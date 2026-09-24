@@ -865,10 +865,12 @@ function viewWatch(){
             <br><span style="font-size:12px">epoch ${a.epoch}</span></span>
           <span class="v">${esc(String(a.at).slice(0, 16).replace("T", " "))}</span></div>`).join("")}
       </div>
-      <p class="cap">This cannot be reconstructed after the fact. A mint holds its current and
-        next setting, never its past ones, so an amendment that has already taken effect leaves
-        no trace on chain. The only record is one taken at the time, which is what has been
-        running here hourly since ${esc(w.watching_since)}.</p>`
+      <p class="cap">Two things this adds, and one it does not. The mint does keep one step of
+        its past, in <code>olderTransferFee</code>, and every change is a transaction, so the
+        record is reconstructible from the chain where the endpoint still retains it. What an
+        hourly archive adds is the wall clock time, since the mint records only an epoch, and
+        durability, because replaying transactions fails once an endpoint stops serving them.
+        This one has been running since ${esc(w.watching_since)}.</p>`
       : `<p class="cap">Nothing has changed since watching began.</p>`}
     </div>
 

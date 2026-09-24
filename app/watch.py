@@ -173,10 +173,12 @@ def exposure(powers, value_usd):
 def amendments():
     """Every change to these powers that our own snapshots have witnessed.
 
-    This cannot be reconstructed later. A mint holds its current and next
-    setting, not its past ones, so an amendment that has already taken effect
-    leaves no trace on chain. The only record is one taken at the time, which is
-    what the collector has been doing hourly since 19 September 2026.
+    Not because the chain forgets. The mint keeps one step of its past in
+    olderTransferFee, and every change is a transaction, so the record can be
+    rebuilt from the log wherever the endpoint still serves it. What an hourly
+    archive adds is narrower and worth stating honestly: the wall clock moment,
+    since the mint records only an epoch, and durability, since replaying
+    transactions fails once an endpoint stops retaining them.
     """
     import glob
     import gzip
