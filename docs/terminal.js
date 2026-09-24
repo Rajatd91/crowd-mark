@@ -822,17 +822,17 @@ function viewWatch(){
           <span class="v ${t.paused ? "down" : ""}">${t.paused ? "yes" : "not right now"}</span></div>
       </div>
       ${t.multiplier_naive != null && t.multiplier_naive !== t.multiplier ? `
-      <p class="note"><b>Everything else reads this wrong.</b> The mint stores the old multiplier
-        and the new one side by side with a timestamp deciding which applies. The obvious field
-        says <b>${t.multiplier_naive}</b>; the value actually in force is <b>${t.multiplier}</b>.
-        Anything reading the field without checking the timestamp is
-        <b>${(t.multiplier / t.multiplier_naive).toFixed(4)}x</b> wrong on this token, and that
-        includes the public API of the largest Solana token scanner.</p>` : ""}
+      <p class="note"><b>This one is easy to get wrong.</b> The mint stores the old multiplier and
+        the new one side by side with a timestamp deciding which applies. The obvious field says
+        <b>${t.multiplier_naive}</b>; the value actually in force is <b>${t.multiplier}</b>, so a
+        reader that does not check the timestamp is
+        <b>${(t.multiplier / t.multiplier_naive).toFixed(4)}x</b> out. Jupiter resolves this
+        correctly. RugCheck's public API does not, and returns both values raw.</p>` : ""}
     </div>
   </div>
 
   ${(w.misread || []).length ? `<div class="card" style="margin-top:14px">
-    <h2>Tokens every other reader gets wrong <span class="r">checked against RugCheck</span></h2>
+    <h2>Where readers disagree about this token <span class="r">checked against both</span></h2>
     <div class="scroll"><table>
       <colgroup><col style="width:24%"><col style="width:25%"><col style="width:25%"><col style="width:26%"></colgroup>
       <thead><tr><th>Token</th><th class="num">Obvious field says</th>
@@ -843,8 +843,12 @@ function viewWatch(){
         <td class="num up">${m.in_force}</td>
         <td class="num down">${m.factor ? m.factor.toFixed(4) + "x" : "—"}</td></tr>`).join("")}
       </tbody></table></div>
-    <p class="cap">A balance multiplier rescales what every wallet displays. Read it naively and
-      a holding, a price and a market cap are all out by that factor.</p>
+    <p class="cap">A balance multiplier rescales what every wallet displays, so reading it
+      naively puts a holding, a price and a market cap all out by that factor.
+      <b>Tools disagree about this.</b> Jupiter resolves it and publishes both the scaled and the
+      prescaled figure. RugCheck's public API returns both raw values and resolves neither, so a
+      consumer of it gets the wrong number unless they check the timestamp themselves. A holder
+      has no way of telling which kind of tool they are looking at.</p>
   </div>` : ""}
 
   <div class="grid g-2" style="margin-top:14px">
