@@ -26,7 +26,7 @@ FILES = [
     "balances.js",
     "commit.js", "model.js", "live.js", "publish.js",
     # What it ships with, so the first screen is never empty.
-    "desk.json", "onchain.json", "liquidity.json", "news.json",
+    "desk.json", "onchain.json", "liquidity.json", "news.json", "watch.json",
 ]
 
 TESTS = [

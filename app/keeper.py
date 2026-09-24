@@ -50,6 +50,10 @@ def cycle():
     # verify a mark without waiting for the next build.
     if not run("rebuild the desk", [sys.executable, "desk.py"]):
         return False
+    # What the issuer can do, resolved to what is in force, and what is
+    # scheduled. This is the first screen, so it runs before the slower steps.
+    if not run("read the mints", [sys.executable, "watch.py"]):
+        return False
     # The pool study grows by one reading an hour, so it is rebuilt too.
     if not run("restudy the pools", [sys.executable, "liquidity.py"]):
         return False

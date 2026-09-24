@@ -24,9 +24,10 @@ const S = {
   desk: null,        // the shipped snapshot: tokens, costs, issuer powers
   lp: null,          // the liquidity study
   news: null,        // headlines shipped with the page
+  watch: null,       // the mint powers, resolved to what is in force
   chain: null,       // marks read back from Solana
   sym: "ANTHROPIC",
-  view: "buy",
+  view: "watch",
   ev: null,          // the Polymarket event for the selected company
   pick: 0,           // which bracket is showing its book
   book: null,
@@ -281,7 +282,7 @@ function railClass(t){
 }
 
 function shell(){
-  const tabs = [["buy","Buy"],["yours","Yours"],["why","Why"],["chain","Chain"]];
+  const tabs = [["watch","Watch"],["buy","Buy"],["yours","Yours"],["chain","Chain"]];
   const toks = Object.values(S.desk.tokens);
   return `
   <header class="top">
@@ -354,7 +355,7 @@ function wireShell(){
   $("#tourBtn").onclick = startTour;
   document.addEventListener("keydown", e => {
     if(e.target.matches("input,select,textarea")) return;
-    const keys = {1:"buy",2:"yours",3:"why",4:"chain"};
+    const keys = {1:"watch",2:"buy",3:"yours",4:"chain"};
     if(keys[e.key]){ S.view = keys[e.key]; syncHash(); render(); }
   });
 }
@@ -733,6 +734,185 @@ function payoff(brackets, shares, price, draws = 20000){
           below: below / draws, draws};
 }
 
+
+
+/* ==================================================================== watch ==
+
+   The screen this app is now for.
+
+   A Token-2022 mint is a contract the issuer can amend. Every other tool
+   reports a snapshot of it. This reports what is actually in force, what each
+   power would cost the holder, what has already been changed, and what is
+   scheduled next.
+*/
+function viewWatch(){
+  const w = S.watch;
+  if(!w) return `<div class="card">
+    <h2>Reading what the issuer can do to these tokens</h2>
+    <p class="cap">Resolving each mint's current and pending settings against the epoch and the
+      clock, because the two are stored side by side and the obvious field is often not the one
+      in force. This takes a moment and it is the whole point of the screen.</p></div>`;
+  const t = w.tokens[S.sym];
+  if(!t) return `<div class="card">
+    <h2>No mint state for ${esc(S.sym)}</h2>
+    <p class="cap">This token was not in the last sweep of the mints. Every other screen still
+      works; only the issuer powers are missing.</p></div>`;
+
+  const totalExposed = Object.values(w.tokens).reduce((a, x) => a + (x.liquidity || 0), 0);
+  const totalHolders = Object.values(w.tokens).reduce((a, x) => a + (x.holders || 0), 0);
+  const mine = S.usdcHeld?.[S.sym];
+  const worst = t.exposure.filter(e => e.severity === "worst");
+  const now = t.exposure.find(e => e.severity === "now");
+
+  return `
+  <div class="card verdict warn" id="tour-watch">
+    <div class="vhead">
+      <div>
+        <div class="vco">${esc(t.company)}</div>
+        <div class="vword warn">${worst.length} things the issuer can do to your balance</div>
+      </div>
+      <div class="vnums">
+        <div class="fig"><span class="k">Charged on every transfer</span>
+          <span class="v warn">${(t.transfer_fee_bps / 100).toFixed(2)}%</span>
+          <span class="s">doubled on 20 September</span></div>
+        <div class="fig"><span class="k">Ceiling on that fee</span>
+          <span class="v down">${t.fee_uncapped ? "none" : F.usd(t.max_fee)}</span>
+          <span class="s">${t.fee_uncapped ? "it can be set to 100%" : "capped"}</span></div>
+        <div class="fig"><span class="k">Wallets holding this</span>
+          <span class="v">${F.num(t.holders)}</span>
+          <span class="s">none of them were told</span></div>
+      </div>
+    </div>
+    <p class="vline">Every tool that looks at this mint says <b>fee config enabled</b>. What that
+      actually permits is this: the maximum fee is set to the largest number the field can hold,
+      so the issuer may raise the fee to <b>100%</b> at an epoch boundary and take the entire
+      balance on your next transfer. The next boundary is in
+      <b>${w.hours_to_next_epoch} hours</b>.</p>
+  </div>
+
+  <div class="grid g-2" style="margin-top:14px">
+    <div class="card" id="tour-exposure">
+      <h2>What each power is worth against this position
+        <span class="r">${F.big(t.liquidity)} of liquidity</span></h2>
+      <div class="rows">
+        ${t.exposure.map(e => `<div class="row">
+          <span class="k"><b style="color:var(--ink)">${esc(e.power)}</b><br>
+            <span style="font-size:12.5px">${esc(e.detail)}</span></span>
+          <span class="v ${e.severity === "now" ? "warn" : "down"}">${
+            e.costs == null ? "dilution" : F.big(e.costs)}</span></div>`).join("")}
+      </div>
+      <p class="cap">A list of capabilities tells a holder nothing. These are the same powers
+        priced against the money actually sitting behind this token.</p>
+    </div>
+
+    <div class="card">
+      <h2>What is actually in force <span class="r">resolved, not read raw</span></h2>
+      <div class="rows">
+        <div class="row"><span class="k">Transfer fee</span>
+          <span class="v warn">${(t.transfer_fee_bps / 100).toFixed(2)}%</span></div>
+        <div class="row"><span class="k">Balance multiplier</span>
+          <span class="v ${t.multiplier_naive != null && t.multiplier_naive !== t.multiplier ? "down" : ""}">${t.multiplier}</span></div>
+        <div class="row"><span class="k">Frozen by authority</span>
+          <span class="v">${t.freeze_authority ? F.short(t.freeze_authority) : "no authority"}</span></div>
+        <div class="row"><span class="k">Permanent delegate</span>
+          <span class="v">${t.permanent_delegate ? F.short(t.permanent_delegate) : "none"}</span></div>
+        <div class="row"><span class="k">Can still mint more</span>
+          <span class="v ${t.mint_authority ? "down" : "up"}">${t.mint_authority ? "yes" : "no"}</span></div>
+        <div class="row"><span class="k">Transfers paused</span>
+          <span class="v ${t.paused ? "down" : ""}">${t.paused ? "yes" : "not right now"}</span></div>
+      </div>
+      ${t.multiplier_naive != null && t.multiplier_naive !== t.multiplier ? `
+      <p class="note"><b>Everything else reads this wrong.</b> The mint stores the old multiplier
+        and the new one side by side with a timestamp deciding which applies. The obvious field
+        says <b>${t.multiplier_naive}</b>; the value actually in force is <b>${t.multiplier}</b>.
+        Anything reading the field without checking the timestamp is
+        <b>${(t.multiplier / t.multiplier_naive).toFixed(4)}x</b> wrong on this token, and that
+        includes the public API of the largest Solana token scanner.</p>` : ""}
+    </div>
+  </div>
+
+  ${(w.misread || []).length ? `<div class="card" style="margin-top:14px">
+    <h2>Tokens every other reader gets wrong <span class="r">checked against RugCheck</span></h2>
+    <div class="scroll"><table>
+      <colgroup><col style="width:24%"><col style="width:25%"><col style="width:25%"><col style="width:26%"></colgroup>
+      <thead><tr><th>Token</th><th class="num">Obvious field says</th>
+        <th class="num">Actually in force</th><th class="num">Error if unresolved</th></tr></thead>
+      <tbody>${w.misread.map(m => `<tr>
+        <td>${esc(w.tokens[m.symbol]?.company || m.symbol)}</td>
+        <td class="num">${m.naive}</td>
+        <td class="num up">${m.in_force}</td>
+        <td class="num down">${m.factor ? m.factor.toFixed(4) + "x" : "—"}</td></tr>`).join("")}
+      </tbody></table></div>
+    <p class="cap">A balance multiplier rescales what every wallet displays. Read it naively and
+      a holding, a price and a market cap are all out by that factor.</p>
+  </div>` : ""}
+
+  <div class="grid g-2" style="margin-top:14px">
+    <div class="card" id="tour-amend">
+      <h2>What has been changed <span class="r">watched hourly since ${esc(w.watching_since)}</span></h2>
+      ${(w.amendments || []).length ? `<div class="rows">
+        ${w.amendments.slice().reverse().map(a => `<div class="row">
+          <span class="k"><b style="color:var(--ink)">${esc(a.symbol)}</b>
+            ${a.fee_from !== a.fee_to
+              ? `transfer fee raised from ${(a.fee_from/100).toFixed(2)}% to ${(a.fee_to/100).toFixed(2)}%`
+              : a.multiplier_from !== a.multiplier_to
+              ? `multiplier changed from ${a.multiplier_from} to ${a.multiplier_to}`
+              : `pause switch flipped`}
+            <br><span style="font-size:12px">epoch ${a.epoch}</span></span>
+          <span class="v">${esc(String(a.at).slice(0, 16).replace("T", " "))}</span></div>`).join("")}
+      </div>
+      <p class="cap">This cannot be reconstructed after the fact. A mint holds its current and
+        next setting, never its past ones, so an amendment that has already taken effect leaves
+        no trace on chain. The only record is one taken at the time, which is what has been
+        running here hourly since ${esc(w.watching_since)}.</p>`
+      : `<p class="cap">Nothing has changed since watching began.</p>`}
+    </div>
+
+    <div class="card">
+      <h2>What is scheduled next</h2>
+      ${t.pending?.length ? `<div class="rows">
+        ${t.pending.map(p => `<div class="row">
+          <span class="k"><b style="color:var(--ink)">${esc(p.what)}</b> ${esc(p.from)} to ${esc(p.to)}</span>
+          <span class="v warn">${esc(p.when)}</span></div>`).join("")}
+      </div>` : `<p class="cap">Nothing is scheduled on this mint right now.</p>`}
+      <p class="cap">A fee change takes effect two epochs after it is set, and a multiplier change
+        carries its own effective timestamp. So the chain announces these roughly
+        <b>four days</b> before they bite. That window is public, it is sitting on the mint, and
+        no wallet or scanner reads it. This one does, and the next epoch boundary is in
+        <b>${w.hours_to_next_epoch} hours</b>.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <h2>Across all eight <span class="r">one issuer, one set of powers</span></h2>
+    <div class="scroll"><table>
+      <colgroup><col style="width:16%"><col style="width:11%"><col style="width:12%"><col style="width:11%">
+        <col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:10%"></colgroup>
+      <thead><tr><th>Token</th><th class="num">Wallets</th><th class="num">Liquidity</th>
+        <th class="num">Fee</th><th class="num">Capped</th><th class="num">Delegate</th>
+        <th class="num">Freeze</th><th class="num">Can mint</th><th class="num">Multiplier</th></tr></thead>
+      <tbody>${Object.entries(w.tokens).map(([sym, x]) => `
+        <tr data-pick data-sym="${sym}" class="${sym === S.sym ? "on" : ""}">
+          <td>${esc(x.company)}</td>
+          <td class="num">${F.num(x.holders)}</td>
+          <td class="num">${F.big(x.liquidity)}</td>
+          <td class="num warn">${(x.transfer_fee_bps / 100).toFixed(2)}%</td>
+          <td class="num down">${x.fee_uncapped ? "no" : "yes"}</td>
+          <td class="num ${x.permanent_delegate ? "down" : "up"}">${x.permanent_delegate ? "yes" : "no"}</td>
+          <td class="num ${x.freeze_authority ? "down" : "up"}">${x.freeze_authority ? "yes" : "no"}</td>
+          <td class="num ${x.mint_authority ? "down" : "up"}">${x.mint_authority ? "yes" : "no"}</td>
+          <td class="num ${x.multiplier_naive != null && x.multiplier_naive !== x.multiplier ? "down" : ""}">${x.multiplier}</td>
+        </tr>`).join("")}</tbody>
+    </table></div>
+    <p class="cap"><b>${F.num(totalHolders)} wallets</b> and <b>${F.big(totalExposed)}</b> of
+      liquidity sit behind the same set of powers, held by one issuer, who used them once already
+      on 20 September without announcing it.</p>
+  </div>`;
+}
+
+function wireWatch(){
+  $$("tr[data-sym]").forEach(r => r.onclick = () => { openCompany(r.dataset.sym); syncHash(); });
+}
 
 /* ===================================================================== buy ==
 
@@ -1625,9 +1805,10 @@ function viewProof(){
   </div>`;
 }
 
-const VIEWS = {buy: viewBuy, yours: viewYours, why: viewWhy, chain: viewProof,
-               api: viewApi, limits: viewLimits};
-const WIRE = {buy: wireBuy, yours: wireYours, why: wireLive, chain: wireProof};
+const VIEWS = {watch: viewWatch, buy: viewBuy, yours: viewYours, why: viewWhy,
+               chain: viewProof, api: viewApi, limits: viewLimits};
+const WIRE = {watch: wireWatch, buy: wireBuy, yours: wireYours, why: wireLive,
+              chain: wireProof};
 
 /* ==================================================================== tour == */
 const TOUR = [
@@ -1781,7 +1962,7 @@ function syncHash(){
   if(location.hash !== want) history.replaceState(null, "", want);
 }
 function readHash(){
-  const m = /^#([a-z]+)\/?(buy|yours|why|chain|api|limits)?$/i.exec(location.hash || "");
+  const m = /^#([a-z]+)\/?(watch|buy|yours|why|chain|api|limits)?$/i.exec(location.hash || "");
   if(!m) return;
   const sym = m[1].toUpperCase();
   if(S.desk.tokens[sym]) S.sym = sym;
@@ -1800,6 +1981,8 @@ async function boot(){
   render();
 
   /* Everything below is extra. A failure changes a panel, never the page. */
+  fetch("watch.json?" + Date.now()).then(r => r.ok ? r.json() : null)
+    .then(j => { S.watch = j; if(S.view === "watch") render(); }).catch(() => {});
   fetch("liquidity.json?" + Date.now()).then(r => r.ok ? r.json() : null)
     .then(j => { S.lp = j; if(S.view === "cost") render(); }).catch(() => {});
   fetch("news.json?" + Date.now()).then(r => r.ok ? r.json() : null)

@@ -16,6 +16,7 @@ const chain = JSON.parse(readFileSync("site/onchain.json", "utf8"));
 const lp = JSON.parse(readFileSync("site/liquidity.json", "utf8"));
 let news = {by_symbol: {}, read_at: Math.floor(Date.now()/1000)};
 try{ news = JSON.parse(readFileSync("site/news.json", "utf8")); }catch(e){}
+const watch = JSON.parse(readFileSync("site/watch.json", "utf8"));
 
 /* terminal.js is a module and imports others, so it is loaded as one, with a
    DOM thin enough to render into and rich enough not to lie about it. */
@@ -77,7 +78,7 @@ function fakeEvent(sym){
   };
 }
 
-const VIEWNAMES = ["buy", "yours", "why", "chain", "api", "limits"];
+const VIEWNAMES = ["watch", "buy", "yours", "why", "chain", "api", "limits"];
 let failures = 0, done = 0;
 
 for(const sym of Object.keys(desk.tokens)){
@@ -94,6 +95,9 @@ for(const sym of Object.keys(desk.tokens)){
             .filter(([, t]) => t.covered))} : null;
         for(const withLp of [true, false]){
           S.lp = withLp ? lp : null;
+          /* Before the mint state arrives and after, since watch is the first
+             screen a visitor sees and it must not be blank either way. */
+          S.watch = withLp ? watch : null;
           /* Before a quote comes back and after, since the buy button and the
              figures beside it both depend on one. */
           /* With a slippage figure and without, since a quote taken before
