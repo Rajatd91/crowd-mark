@@ -764,8 +764,43 @@ function viewWatch(){
   const worst = t.exposure.filter(e => e.severity === "worst");
   const now = t.exposure.find(e => e.severity === "now");
 
+  /* A scheduled change outranks everything else on this screen. It has a
+     date, it is not reversible by the holder, and nobody has been told. */
+  const fee = (t.pending || []).find(p => p.what === "transfer fee");
+  const trip = (S.desk.tokens[S.sym]?.round_trip || []).find(r => r.cost != null);
+  const nowBps = t.transfer_fee_bps, thenBps = fee ? Math.round(parseFloat(fee.to) * 100) : null;
+  /* A round trip pays the fee twice, once in and once out, so the change to
+     the cost of getting in and out again is twice the change to the fee. */
+  const tripAfter = trip && thenBps != null
+    ? trip.cost + 2 * (thenBps - nowBps) / 1e4 : null;
+
   return `
-  <div class="card verdict warn" id="tour-watch">
+  ${fee ? `<div class="card alarm" id="tour-pending">
+    <h2>Scheduled, unannounced, and it lands in ${w.hours_to_next_epoch} hours</h2>
+    <div class="hero">
+      <div class="name">The fee on ${esc(t.company)} ${thenBps >= nowBps * 2 ? "triples" : "changes"}
+        <small>at epoch ${esc(String(fee.when).replace("epoch ", ""))}</small></div>
+      <div class="fig"><span class="k">Charged today</span>
+        <span class="v">${esc(fee.from)}</span>
+        <span class="s">every time it moves</span></div>
+      <div class="fig"><span class="k">Charged after</span>
+        <span class="v down">${esc(fee.to)}</span>
+        <span class="s">set by the issuer already</span></div>
+      ${trip ? `<div class="fig"><span class="k">Round trip at ${F.usd(trip.size, 0)} today</span>
+        <span class="v">${F.pct(trip.cost, false, 2)}</span>
+        <span class="s">in and straight back out</span></div>
+      <div class="fig"><span class="k">The same round trip after</span>
+        <span class="v down">${F.pct(tripAfter, false, 2)}</span>
+        <span class="s">a fee is paid on each leg</span></div>` : ""}
+    </div>
+    <p class="vline">This is already written into the mint. It is not a proposal and there is
+      nothing to vote on: at the epoch boundary it simply applies, to
+      <b>${F.num(t.holders)} wallets</b> holding ${esc(t.company)} and to every other PreStocks
+      token except SpaceX. <b>No announcement has been made.</b> The chain has been saying so
+      since the issuer set it, which is the whole reason this screen exists.</p>
+  </div>` : ""}
+
+  <div class="card verdict warn" id="tour-watch" ${fee ? 'style="margin-top:14px"' : ""}>
     <div class="vhead">
       <div>
         <div class="vco">${esc(t.company)}</div>
