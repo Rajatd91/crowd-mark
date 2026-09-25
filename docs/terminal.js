@@ -1137,7 +1137,17 @@ async function getQuote(dollars){
 async function doDryRun(){
   const t = S.desk.tokens[S.sym], out = $("#buyOut"), btn = $("#dryBtn");
   btn.disabled = true;
-  const step = m => out.innerHTML = `<span class="mid">${esc(m)}…</span>`;
+  /* A line that never changes reads as a hang. This one counts, so a slow
+     answer still looks like work rather than a dead button. */
+  const began = Date.now();
+  let label = "";
+  const tick = setInterval(() => {
+    const s = Math.round((Date.now() - began) / 1000);
+    out.innerHTML = `<span class="mid">${esc(label)}… <span class="n dim">${s}s</span></span>`;
+  }, 500);
+  const step = m => { label = m;
+    out.innerHTML = `<span class="mid">${esc(m)}… <span class="n dim">0s</span></span>`; };
+  const done = () => clearInterval(tick);
   try{
     const {dryRun, explain, REHEARSAL_WALLET, usdcBalance} = await import("./swap.js");
 
@@ -1162,10 +1172,12 @@ async function doDryRun(){
              and this trade needs ${F.usd(S.quote.dollars)}`
           : "you have not connected one"}`;
 
+    done();
     if(r.ok){
       out.innerHTML = `<b class="up">It would go through.</b> The real transaction was built
         (${r.bytes} bytes) and run ${whose} against Solana as it stands now, using
-        ${F.num(r.units)} compute units. Nothing was signed, sent or spent.`;
+        ${F.num(r.units)} compute units, in ${Math.round((Date.now()-began)/1000)} seconds.
+        Nothing was signed, sent or spent.`;
     }else{
       const why = explain(r.err);
       out.innerHTML = `<b class="warn">The chain would reject it${why ? `, because ${why}` : ""}.</b>
@@ -1173,6 +1185,7 @@ async function doDryRun(){
     }
     btn.disabled = false;
   }catch(e){
+    done();
     out.innerHTML = `<span class="down">${esc(e.message || e)}</span>`;
     btn.disabled = false;
   }

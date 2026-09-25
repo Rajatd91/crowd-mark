@@ -129,12 +129,25 @@ export async function dryRun(outputMint, dollars, owner, onStep, slippageBps = 1
   const built = await build(q.raw, owner);
 
   onStep?.("Running it against the chain as it is now");
-  const r = await fetch(MAINNET, {
-    method: "POST", headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({jsonrpc: "2.0", id: 1, method: "simulateTransaction",
-      params: [built.swapTransaction, {encoding: "base64",
-        replaceRecentBlockhash: true, sigVerify: false}]}),
-  });
+  /* Simulating a route through a thin pool has taken over thirty seconds, so
+     this gives up rather than leaving someone staring at a line that never
+     changes. */
+  const stop = new AbortController();
+  const bell = setTimeout(() => stop.abort(), 60_000);
+  let r;
+  try{
+    r = await fetch(MAINNET, {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      signal: stop.signal,
+      body: JSON.stringify({jsonrpc: "2.0", id: 1, method: "simulateTransaction",
+        params: [built.swapTransaction, {encoding: "base64",
+          replaceRecentBlockhash: true, sigVerify: false}]}),
+    });
+  }catch(e){
+    throw new Error(e.name === "AbortError"
+      ? "The chain took more than a minute to answer. That is the endpoint being slow, not the trade being wrong."
+      : e.message);
+  }finally{ clearTimeout(bell); }
   const j = await r.json();
   if(j.error) throw new Error(j.error.message || "The chain would not simulate that.");
   const v = j.result.value;
