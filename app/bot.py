@@ -181,6 +181,39 @@ def handle(update, subs):
         send(chat, "Stopped. /watch again whenever you like.")
 
 
+def scheduled(prev, cards, epoch):
+    """Changes the issuer has set but which have not landed yet.
+
+    A fee change takes effect two epochs after it is set, so the mint announces
+    it days ahead. Telling a holder afterwards is a log. Telling them while
+    they can still act on it is the only version worth sending, and it is the
+    one thing no wallet or scanner does.
+
+    Fires once per scheduled change, not once per check, because a warning that
+    repeats every ten minutes stops being read.
+    """
+    out = []
+    for sym, (c, powers) in cards.items():
+        at = powers.get("transfer_fee_changes_at_epoch")
+        nxt = powers.get("next_transfer_fee_bps")
+        now_bps = powers.get("transfer_fee_bps")
+        if at is None or nxt is None or at <= epoch or nxt == now_bps:
+            continue
+        # Only once. The state records which scheduled change was announced.
+        if (prev.get(sym) or {}).get("warned_fee_epoch") == at:
+            continue
+        move = "triples" if nxt >= now_bps * 3 else "doubles" if nxt >= now_bps * 2 else "changes"
+        # A round trip pays the fee on the way in and again on the way out.
+        extra = 2 * (nxt - now_bps) / 100
+        out.append((sym, "scheduled",
+                    f"The transfer fee {move} from {now_bps/100:.2f}% to {nxt/100:.2f}% at epoch "
+                    f"{at}, which is {at - epoch} epoch{'s' if at - epoch > 1 else ''} away. "
+                    f"It is already written into the mint, so there is nothing to vote on. "
+                    f"Getting in and back out will cost you about {extra:.2f}% more than it does "
+                    f"today. Nothing has been announced."))
+    return out
+
+
 def changes(prev, cards):
     """What changed since the last check, as (symbol, kind, message) tuples."""
     out = []
@@ -226,6 +259,9 @@ def snapshot_state(cards):
     st = {}
     for sym, (c, powers) in cards.items():
         st[sym] = {"fee_bps": powers.get("transfer_fee_bps"), "paused": powers.get("paused"),
+                   # Which scheduled change has already been warned about, so the
+                   # warning goes out once rather than every ten minutes.
+                   "warned_fee_epoch": powers.get("transfer_fee_changes_at_epoch"),
                    "multiplier": powers.get("ui_multiplier"),
                    "delegate": powers.get("permanent_delegate"),
                    "timing": c.timing,
@@ -238,7 +274,9 @@ def check_and_alert(subs):
     epoch = W.current_epoch()
     cards = cards_now(snap, epoch)
     prev = load(STATE, {})
-    fired = changes(prev, cards)
+    # Warnings first. A change that has not landed is the one a holder can
+    # still do something about.
+    fired = scheduled(prev, cards, epoch) + changes(prev, cards)
     save(STATE, snapshot_state(cards))
     if not fired or not subs:
         return fired

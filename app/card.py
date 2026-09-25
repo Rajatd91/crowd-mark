@@ -97,6 +97,7 @@ def render(card, position=None, powers=None, spacex=None, when=None):
 def render_alert(kind, card, detail):
     """One short message per change worth waking someone for."""
     head = {
+        "scheduled": "The issuer has scheduled a change",
         "fee": "The issuer changed the transfer fee",
         "pause": "The issuer paused transfers",
         "multiplier": "Your displayed balance was rescaled",
