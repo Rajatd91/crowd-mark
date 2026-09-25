@@ -95,6 +95,25 @@ def main():
     if missing:
         raise SystemExit(f"these are referenced but not there: {', '.join(missing)}")
 
+    # A stale file must not reach the site quietly. This has gone wrong three
+    # times, every time because a long running keeper was started before the
+    # step that writes one of these existed, so the cycle reported success
+    # while the page served yesterday's numbers. Refuse instead.
+    import time
+    limits = {"watch.json": 3, "desk.json": 6, "onchain.json": 12}
+    stale = []
+    for name, hours in limits.items():
+        path = os.path.join(SITE, name)
+        if not os.path.exists(path):
+            continue
+        age = (time.time() - os.path.getmtime(path)) / 3600
+        if age > hours:
+            stale.append(f"{name} is {age:.1f} h old, limit {hours} h")
+    if stale:
+        raise SystemExit("refusing to publish stale data:\n  " + "\n  ".join(stale)
+                         + "\n  the keeper step that writes it is probably not running. "
+                           "Restart the keeper so it picks up the current code.")
+
     os.makedirs(DOCS, exist_ok=True)
     for f in FILES:
         shutil.copy2(os.path.join(SITE, f), os.path.join(DOCS, f))
