@@ -78,6 +78,56 @@ function fakeEvent(sym){
   };
 }
 
+/* The same mint state, one epoch later, with every scheduled change applied.
+
+   A change that is pending today is in force tomorrow, and the screen that
+   announces it then has to stop announcing it and say what is charged now.
+   That second screen has never rendered: until the epoch turns there is no
+   snapshot of it to test against, and by the time there is, it is live in
+   front of whoever is reading. So it is built here from the shipped file by
+   doing what the chain will do, rather than invented, and every view is
+   rendered against it as well.
+*/
+function afterPending(w){
+  const out = JSON.parse(JSON.stringify(w));
+  const moved = [];
+  for(const [symbol, t] of Object.entries(out.tokens)){
+    const keep = [];
+    for(const p of t.pending || []){
+      if(p.what === "transfer fee"){
+        moved.push({symbol, kind: "fee", from: t.transfer_fee_bps,
+                    to: t.transfer_fee_bps = Math.round(parseFloat(p.to) * 100)});
+      }else if(p.what === "balance multiplier"){
+        moved.push({symbol, kind: "multiplier", from: t.multiplier,
+                    to: t.multiplier = parseFloat(p.to)});
+      }else keep.push(p);
+    }
+    t.pending = keep;
+  }
+  /* The issuer moves every mint at once, and the archive groups one action
+     into one row, so the rehearsal groups it the same way. */
+  const rows = new Map();
+  for(const m of moved){
+    const key = `${m.kind}|${m.from}|${m.to}`;
+    if(!rows.has(key)) rows.set(key, {at: out.read_at, epoch: out.epoch + 1,
+      kind: m.kind, from: m.from, to: m.to, symbols: []});
+    rows.get(key).symbols.push(m.symbol);
+  }
+  for(const r of rows.values()) r.count = r.symbols.length;
+  out.amendments = (out.amendments || []).concat([...rows.values()]);
+  out.epoch += 1;
+  /* An epoch is 432,000 slots of roughly four tenths of a second, so the next
+     boundary is about two days from the one just crossed. */
+  out.hours_to_next_epoch = 48.0;
+  return out;
+}
+const watchAfter = afterPending(watch);
+
+/* Three mint states per screen: not read yet, read with a change pending, and
+   read once that change is in force. */
+const LPWATCH = [["lp", lp, watch], ["no lp", null, null],
+                 ["after the change lands", lp, watchAfter]];
+
 const VIEWNAMES = ["watch", "buy", "yours", "why", "chain", "api", "limits"];
 let failures = 0, done = 0;
 
@@ -93,11 +143,12 @@ for(const sym of Object.keys(desk.tokens)){
           snapshot_at: Math.floor(Date.parse(desk.read_at)/1000),
           tokens: Object.fromEntries(Object.entries(desk.tokens)
             .filter(([, t]) => t.covered))} : null;
-        for(const withLp of [true, false]){
-          S.lp = withLp ? lp : null;
+        for(const [lpName, lpState, watchState] of LPWATCH){
+          S.lp = lpState;
           /* Before the mint state arrives and after, since watch is the first
              screen a visitor sees and it must not be blank either way. */
-          S.watch = withLp ? watch : null;
+          S.watch = watchState;
+          const withLp = lpState !== null;
           /* Before a quote comes back and after, since the buy button and the
              figures beside it both depend on one. */
           /* With a slippage figure and without, since a quote taken before
@@ -113,12 +164,24 @@ for(const sym of Object.keys(desk.tokens)){
                 throw new Error("rendered almost nothing");
               for(const bad of ["undefined", "NaN", "[object Object]", "$null"])
                 if(html.includes(bad)) throw new Error(`printed ${bad}`);
+              /* Once the change is in force the alarm has to stand down and
+                 the screen has to quote the fee that is now being charged. */
+              if(view === "watch" && watchState === watchAfter){
+                const t = watchAfter.tokens[sym];
+                if(t && !(t.pending || []).length){
+                  if(!html.includes("Nothing scheduled"))
+                    throw new Error("still warns of a change that has already landed");
+                  const now = `${(t.transfer_fee_bps / 100).toFixed(2)}%`;
+                  if(!html.includes(now))
+                    throw new Error(`does not show ${now}, the fee now in force`);
+                }
+              }
               done++;
             }catch(e){
               failures++;
               console.log(`  ${view}/${sym}/${withEvent?"market":"no market"}/` +
                           `${wallet?"wallet":"no wallet"}/${withLive?"read":"unread"}/` +
-                          `${withLp?"lp":"no lp"}: ${e.message}`);
+                          `${lpName}: ${e.message}`);
             }
           }
         }
