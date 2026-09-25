@@ -312,7 +312,30 @@ def amendments():
                     "paused_from": was[2], "paused_to": key[2],
                 })
             seen[symbol] = key
-    return log
+
+    # The issuer changes every mint at once, which produced one row per token
+    # for a single action. Group by what actually changed rather than by the
+    # whole state, so two tokens that share a fee rise but differ in some
+    # unrelated field still read as one event.
+    grouped = {}
+    for a in log:
+        if a["fee_from"] != a["fee_to"]:
+            kind, frm, to = "fee", a["fee_from"], a["fee_to"]
+        elif a["multiplier_from"] != a["multiplier_to"]:
+            kind, frm, to = "multiplier", a["multiplier_from"], a["multiplier_to"]
+        elif a["paused_from"] != a["paused_to"]:
+            kind, frm, to = "paused", a["paused_from"], a["paused_to"]
+        else:
+            continue
+        g = grouped.setdefault((a["at"], kind, frm, to), {
+            "at": a["at"], "epoch": a["epoch"], "kind": kind,
+            "from": frm, "to": to, "symbols": [],
+        })
+        g["symbols"].append(a["symbol"])
+    out = sorted(grouped.values(), key=lambda x: x["at"])
+    for g in out:
+        g["count"] = len(g["symbols"])
+    return out
 
 
 def build():

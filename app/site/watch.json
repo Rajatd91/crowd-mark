@@ -31,9 +31,9 @@
   ],
   "reads": 12
  },
- "read_at": 1790338637,
+ "read_at": 1790339394,
  "epoch": 1042,
- "hours_to_next_epoch": 25.1,
+ "hours_to_next_epoch": 24.8,
  "tokens": {
   "ANDURIL": {
    "transfer_fee_bps": 100,
@@ -624,90 +624,20 @@
   {
    "at": "2026-09-20T22:02:00+00:00",
    "epoch": 1039,
-   "symbol": "ANDURIL",
-   "fee_from": 50,
-   "fee_to": 100,
-   "multiplier_from": 1.0,
-   "multiplier_to": 1.0,
-   "paused_from": false,
-   "paused_to": false
-  },
-  {
-   "at": "2026-09-20T22:02:00+00:00",
-   "epoch": 1039,
-   "symbol": "ANTHROPIC",
-   "fee_from": 50,
-   "fee_to": 100,
-   "multiplier_from": 1.0,
-   "multiplier_to": 1.0,
-   "paused_from": false,
-   "paused_to": false
-  },
-  {
-   "at": "2026-09-20T22:02:00+00:00",
-   "epoch": 1039,
-   "symbol": "FIGUREAI",
-   "fee_from": 50,
-   "fee_to": 100,
-   "multiplier_from": 1.0,
-   "multiplier_to": 1.0,
-   "paused_from": false,
-   "paused_to": false
-  },
-  {
-   "at": "2026-09-20T22:02:00+00:00",
-   "epoch": 1039,
-   "symbol": "KALSHI",
-   "fee_from": 50,
-   "fee_to": 100,
-   "multiplier_from": 1.0,
-   "multiplier_to": 1.0,
-   "paused_from": false,
-   "paused_to": false
-  },
-  {
-   "at": "2026-09-20T22:02:00+00:00",
-   "epoch": 1039,
-   "symbol": "NEURALINK",
-   "fee_from": 50,
-   "fee_to": 100,
-   "multiplier_from": 1.0,
-   "multiplier_to": 1.0,
-   "paused_from": false,
-   "paused_to": false
-  },
-  {
-   "at": "2026-09-20T22:02:00+00:00",
-   "epoch": 1039,
-   "symbol": "OPENAI",
-   "fee_from": 50,
-   "fee_to": 100,
-   "multiplier_from": 1.4861347,
-   "multiplier_to": 1.4861347,
-   "paused_from": false,
-   "paused_to": false
-  },
-  {
-   "at": "2026-09-20T22:02:00+00:00",
-   "epoch": 1039,
-   "symbol": "POLYMARKET",
-   "fee_from": 50,
-   "fee_to": 100,
-   "multiplier_from": 1.0,
-   "multiplier_to": 1.0,
-   "paused_from": false,
-   "paused_to": false
-  },
-  {
-   "at": "2026-09-20T22:02:00+00:00",
-   "epoch": 1039,
-   "symbol": "SPACEX",
-   "fee_from": 50,
-   "fee_to": 100,
-   "multiplier_from": 5.0,
-   "multiplier_to": 5.0,
-   "paused_from": false,
-   "paused_to": false
+   "kind": "fee",
+   "from": 50,
+   "to": 100,
+   "symbols": [
+    "ANDURIL",
+    "ANTHROPIC",
+    "FIGUREAI",
+    "KALSHI",
+    "NEURALINK",
+    "OPENAI",
+    "POLYMARKET",
+    "SPACEX"
+   ],
+   "count": 8
   }
  ],
  "misread": [

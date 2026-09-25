@@ -226,8 +226,6 @@ async def main():
             [ix], keypair.pubkey(), blockhash), blockhash)
         sig = (await client.send_transaction(tx)).value
         print(f"{symbol:10} published in {sig}")
-    with open(os.path.join(HERE, "site", "proofs.json"), "w") as f:
-        json.dump({"read_at": read_at, "proofs": proofs}, f, indent=1)
     await client.close()
     return 0
 
