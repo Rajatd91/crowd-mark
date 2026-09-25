@@ -1,7 +1,7 @@
 {
  "name": "Crowd Mark",
  "version": 1,
- "generated_at": 1790320950,
+ "generated_at": 1790338679,
  "base": "https://rajatd91.github.io/crowd-mark/api/v1",
  "auth": "None. No key, no signup, no account.",
  "format": "Static JSON, regenerated every hour beside the page that uses it.",
@@ -14,6 +14,10 @@
   {
    "path": "https://rajatd91.github.io/crowd-mark/api/v1/marks.json",
    "what": "What is published on Solana for each company, with the hash of its inputs and who last refreshed it."
+  },
+  {
+   "path": "https://rajatd91.github.io/crowd-mark/api/v1/governance.json",
+   "what": "Who can change these tokens, whether that control is separated, and who has been signing for it."
   },
   {
    "path": "https://rajatd91.github.io/crowd-mark/api/v1/pools.json",

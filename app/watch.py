@@ -112,6 +112,104 @@ def in_force(extensions, epoch, now, base=None):
     return out
 
 
+B58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+SQUADS_V4 = "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf"
+SQUADS_V3 = "SMPLecH534NA9acpos4G6x7uf3LWbCAwZQE9e8ZekMu"
+
+
+def on_curve(address):
+    """Is this an ordinary wallet, or a program derived address?
+
+    An ordinary address is a point on the ed25519 curve, because it is the
+    public half of somebody's key. A program derived address is chosen to be
+    off the curve precisely so no key can sign for it, which is what a multisig
+    vault is. The difference decides whether one person holds these powers or a
+    quorum does, so it is worth checking rather than assuming.
+    """
+    n = 0
+    for c in address:
+        n = n * 58 + B58.index(c)
+    b = n.to_bytes(32, "big")
+    p = (1 << 255) - 19
+    d = (-121665 * pow(121666, p - 2, p)) % p
+    y = int.from_bytes(b, "little")
+    sign = y >> 255
+    y &= (1 << 255) - 1
+    if y >= p:
+        return False
+    y2 = y * y % p
+    u, v = (y2 - 1) % p, (d * y2 + 1) % p
+    x2 = u * pow(v, p - 2, p) % p
+    x = pow(x2, (p + 3) // 8, p)
+    if (x * x - x2) % p != 0:
+        x = x * pow(2, (p - 1) // 4, p) % p
+        if (x * x - x2) % p != 0:
+            return False
+    return not (x == 0 and sign)
+
+
+def governance(authorities, reads=12):
+    """Who holds these powers, and whether holding them is separated at all.
+
+    The test is not how many tokens exist. It is whether the money, the assets
+    and the records are controlled separately, because an attestation of
+    reserves means nothing if the same approval that proves them can also mint,
+    freeze, seize or rescale them afterwards.
+
+    So this counts the distinct holders across every power on every mint, says
+    whether that holder is a wallet or a vault, and looks at who has actually
+    been signing for it.
+    """
+    holders, slots = {}, 0
+    for mint_powers in authorities:
+        for power, who in mint_powers.items():
+            if who:
+                # One slot per power per mint. The same address holding the
+                # same power on eight mints is eight slots, not one, because
+                # that is eight tokens it can act on.
+                slots += 1
+                holders.setdefault(who, set()).add(power)
+    if not holders:
+        return None
+
+    main = max(holders, key=lambda k: len(holders[k]))
+    out = {
+        "distinct_holders": len(holders),
+        "authority": main,
+        "powers_held": sorted(holders[main]),
+        "power_slots": slots,
+        "mints": len(authorities),
+        "is_wallet": on_curve(main),
+        "kind": "an ordinary wallet" if on_curve(main) else "a program derived address",
+        "program": None, "signers": [], "reads": 0,
+    }
+    # Who signs for it, which a program derived address cannot do by itself.
+    try:
+        sigs = W.rpc("getSignaturesForAddress", [main, {"limit": reads}])
+        seen = {}
+        for sig in sigs:
+            tx = W.rpc("getTransaction", [sig["signature"],
+                       {"maxSupportedTransactionVersion": 0, "encoding": "jsonParsed"}])
+            if not tx:
+                continue
+            out["reads"] += 1
+            msg = tx["transaction"]["message"]
+            for key in msg.get("accountKeys", []):
+                if key.get("signer"):
+                    seen[key["pubkey"]] = seen.get(key["pubkey"], 0) + 1
+            for ix in msg.get("instructions", []):
+                pid = ix.get("programId")
+                if pid == SQUADS_V4:
+                    out["program"] = "Squads multisig v4"
+                elif pid == SQUADS_V3:
+                    out["program"] = "Squads multisig v3"
+        out["signers"] = [{"key": k, "signed": n}
+                          for k, n in sorted(seen.items(), key=lambda x: -x[1])]
+    except Exception:
+        pass
+    return out
+
+
 def exposure(powers, value_usd):
     """What each power is worth, in dollars, on a holding of this size.
 
@@ -231,6 +329,14 @@ def build():
         info = (((acc or {}).get("value") or {}).get("data") or {}) \
             .get("parsed", {}).get("info", {})
         powers = in_force(info.get("extensions", []), epoch, now, base=info)
+        powers["authorities"] = {
+            "mint": info.get("mintAuthority"),
+            "freeze": info.get("freezeAuthority"),
+            "fee": powers.get("fee_authority"),
+            "pause": powers.get("pause_authority"),
+            "multiplier": powers.get("multiplier_authority"),
+            "delegate": powers.get("permanent_delegate"),
+        }
         value = (t.get("depth") or {}).get("liquidity") or 0
         powers["exposure"] = exposure(powers, value)
         powers["mint"] = t["mint"]
@@ -248,7 +354,9 @@ def build():
                           "factor": powers["multiplier"] / naive if naive else None})
 
     log = amendments()
+    gov = governance([t["authorities"] for t in tokens.values()])
     out = {
+        "governance": gov,
         "read_at": now,
         "epoch": epoch,
         "hours_to_next_epoch": round(left / 3600, 1),
@@ -268,6 +376,12 @@ def build():
     print(f"  epoch {epoch}, {left/3600:.1f} h to the next")
     print(f"  {len(tokens)} mints, {holders:,} wallets, ${total:,.0f} exposed")
     print(f"  {len(log)} amendments witnessed since 19 Sep")
+    if gov:
+        print(f"  {gov['power_slots']} power slots across {len(tokens)} mints held by "
+              f"{gov['distinct_holders']} address(es)")
+        print(f"  authority is {gov['kind']}"
+              + (f", {gov['program']}" if gov["program"] else "")
+              + f", {len(gov['signers'])} signers seen in {gov['reads']} transactions")
     for w in wrong:
         print(f"  MISREAD {w['symbol']}: obvious field says {w['naive']}, "
               f"in force is {w['in_force']} ({w['factor']:.4g}x)")

@@ -1,0 +1,37 @@
+{
+ "generated_at": 1790338679,
+ "power_slots": 48,
+ "mints": 8,
+ "distinct_holders": 1,
+ "authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
+ "authority_kind": "a program derived address",
+ "authority_program": "Squads multisig v4",
+ "powers_held": [
+  "delegate",
+  "fee",
+  "freeze",
+  "mint",
+  "multiplier",
+  "pause"
+ ],
+ "signers_seen": [
+  {
+   "key": "BCbd3oUietSbTaABjADub4RUXqwAUeRdUZCZiDK5NbE6",
+   "signed": 12
+  },
+  {
+   "key": "Cxr1P9uTZurmTywsWyW73Q3Q17uZVzNGr7WHK132DyW",
+   "signed": 8
+  },
+  {
+   "key": "6osFjBpDiFR998aR9N4rj9Mm1gyx9dHytM6vujw7ncs3",
+   "signed": 3
+  }
+ ],
+ "transactions_read": 12,
+ "notes": {
+  "what_this_measures": "Whether the money, the assets and the records are controlled separately. One holder across every power means they are not.",
+  "multisig": "A multisig separates who authorises, not what can be authorised. The same approval that mints supply can freeze, seize, raise an uncapped fee, pause transfers and rescale balances.",
+  "method": "Authorities read from each mint. Whether the holder is a wallet or a vault is decided by testing the address against the ed25519 curve. Signers counted from recent transactions."
+ }
+}

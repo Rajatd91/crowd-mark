@@ -130,6 +130,36 @@ def marks_doc(chain):
     }
 
 
+def governance_doc(watch):
+    """Who can change these tokens, and whether that control is separated."""
+    g = watch.get("governance")
+    if not g:
+        return None
+    return {
+        "generated_at": int(time.time()),
+        "power_slots": g["power_slots"],
+        "mints": g["mints"],
+        "distinct_holders": g["distinct_holders"],
+        "authority": g["authority"],
+        "authority_kind": g["kind"],
+        "authority_program": g["program"],
+        "powers_held": g["powers_held"],
+        "signers_seen": g["signers"],
+        "transactions_read": g["reads"],
+        "notes": {
+            "what_this_measures": "Whether the money, the assets and the records are "
+                                  "controlled separately. One holder across every power "
+                                  "means they are not.",
+            "multisig": "A multisig separates who authorises, not what can be authorised. "
+                        "The same approval that mints supply can freeze, seize, raise an "
+                        "uncapped fee, pause transfers and rescale balances.",
+            "method": "Authorities read from each mint. Whether the holder is a wallet or "
+                      "a vault is decided by testing the address against the ed25519 "
+                      "curve. Signers counted from recent transactions.",
+        },
+    }
+
+
 def pools_doc(lp):
     """What a liquidity provider earns, and the width at which it stops paying."""
     rows = [{
@@ -190,6 +220,11 @@ def build():
         write("marks.json", marks_doc(chain),
               "What is published on Solana for each company, with the hash of its "
               "inputs and who last refreshed it.")
+    watch = load("watch.json")
+    if watch and watch.get("governance"):
+        write("governance.json", governance_doc(watch),
+              "Who can change these tokens, whether that control is separated, and who "
+              "has been signing for it.")
     if lp:
         write("pools.json", pools_doc(lp),
               "Every liquidity pool holding one of these tokens, what it pays and the "

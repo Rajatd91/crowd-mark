@@ -886,6 +886,41 @@ function viewWatch(){
       has no way of telling which kind of tool they are looking at.</p>
   </div>` : ""}
 
+  ${w.governance ? `<div class="card" style="margin-top:14px" id="tour-gov">
+    <h2>Who holds these powers <span class="r">and whether holding them is separated</span></h2>
+    <div class="hero">
+      <div class="fig"><span class="k">Power slots across the eight mints</span>
+        <span class="v">${w.governance.power_slots}</span>
+        <span class="s">mint, freeze, seize, fee, pause, rescale</span></div>
+      <div class="fig"><span class="k">Addresses holding them</span>
+        <span class="v down">${w.governance.distinct_holders}</span>
+        <span class="s">all of them, one holder</span></div>
+      <div class="fig"><span class="k">That holder is</span>
+        <span class="v">${esc(w.governance.program || w.governance.kind)}</span>
+        <span class="s">${w.governance.is_wallet
+          ? "an ordinary wallet, so one private key"
+          : "a vault, so a quorum rather than one key"}</span></div>
+      ${w.governance.signers.length ? `<div class="fig"><span class="k">Signers seen</span>
+        <span class="v">${w.governance.signers.length}</span>
+        <span class="s">across ${w.governance.reads} transactions</span></div>` : ""}
+    </div>
+    <p class="vline">The question worth asking about a tokenised security is not how many tokens
+      exist. It is whether the money, the assets and the records are controlled
+      <b>separately</b>, and whether anyone reconciles them. Here they are not separated.
+      ${w.governance.program
+        ? `The authority is a <b>${esc(w.governance.program)}</b> vault, so more than one person
+           signs, which is better than a single key and worth saying plainly.`
+        : ""}
+      But a multisig separates <b>who</b> authorises, not <b>what</b> can be authorised. The same
+      approval that mints supply can also freeze an account, move a balance out of a wallet, raise
+      an uncapped fee, pause every transfer and rescale what every wallet displays.</p>
+    <p class="cap">This is why an attestation of reserves would not settle it. An attestation says
+      reserves existed at a moment. The same quorum can dilute, freeze or seize them the moment
+      after. Authority
+      <a href="https://explorer.solana.com/address/${esc(w.governance.authority)}"
+         target="_blank" rel="noopener">${esc(w.governance.authority)}</a>.</p>
+  </div>` : ""}
+
   <div class="grid g-2" style="margin-top:14px">
     <div class="card" id="tour-amend">
       <h2>What has been changed <span class="r">watched hourly since ${esc(w.watching_since)}</span></h2>
