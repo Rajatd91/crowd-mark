@@ -1,28 +1,43 @@
 # Crowd Mark
 
-**Before you buy a tokenised share in a company that has not listed, find out
-what it is actually worth and what it will really cost you.**
+**An issuer is tripling the fee on 109,000 wallets and has told nobody. This
+reads it off the mint before it lands, and prices what it will cost you.**
 
 Live: **https://rajatd91.github.io/crowd-mark/**
 
-## The problem, and who has it
+## What is happening right now
 
-Eight tokens on Solana claim to represent private companies: Anthropic, OpenAI,
-SpaceX, Anduril, Neuralink and others. Tens of thousands of wallets hold them.
-Anyone can buy one in about fifteen seconds.
+Seven of the eight PreStocks mints on Solana carry a transfer fee increase from
+**1.00% to 3.00%**, already written into the mint, taking effect at **epoch
+1043**. It is not a proposal and there is nothing to vote on. At the epoch
+boundary it applies.
 
-Nobody can tell you whether the price is right.
+No announcement has been made anywhere. Check it yourself:
 
-These companies are private. There is no share price, no exchange, no audited
-number. The only figure a buyer gets is the one the issuer publishes, and the
-issuer is the party selling the token. A brokerage app would at least show you a
-market price. Here there is nothing to compare against.
+```bash
+curl -s https://rajatd91.github.io/crowd-mark/api/v1/tokens.json | jq '.tokens[0].issuer_powers'
+```
 
-So people buy blind, and they do not find out until later that a round trip
-costs several percent, that the issuer can charge a fee on every transfer and
-change it without notice, that it holds a delegate able to move their balance,
-and that the one company in this set that has already listed still trades far
-below its listed stock.
+This is the second rise in a week. The first was caught by this project's own
+hourly collector on 20 September at 22:02 UTC, when the fee doubled from 0.50%
+to 1.00%, also unannounced.
+
+## Why nobody else shows it
+
+A Token-2022 mint is a contract the issuer can amend. It stores the current
+setting and the next one side by side, and which applies depends on the epoch
+for a fee and on the clock for a multiplier. Most readers take the obvious
+field and stop, which is how a token gets reported as safer, or cheaper, than
+it is.
+
+The scanners do report these powers. What none of them do is price them. "Fee
+config enabled" is not a risk statement. A round trip pays the fee on the way
+in and again on the way out, so tripling it takes the cost of getting into
+Anthropic and back out from **1.23% to 5.23%**. That is the number a holder
+needs, and it is the one this shows.
+
+The maximum fee on every one of these mints is set to `18446744073709551615`,
+which is to say there is no ceiling at all.
 
 ## What this does about it
 
