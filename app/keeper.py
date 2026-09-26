@@ -29,10 +29,26 @@ def devnet_rpc():
 
 
 def run(label, args, env=None):
+    """Run one step of the cycle and say what it did.
+
+    The last line is the step's own summary, which is all that used to be
+    kept. That was enough while a failing step also failed loudly, but a step
+    can write its files, print what disagreed and still exit non zero, and
+    then the summary is the cheerful line and the reason is thrown away. A
+    read back that reported four of four marks fresh and returned one stopped
+    the cycle every hour for five hours and left nothing in the log to say
+    why. So when a step fails, whatever it called a problem is printed too,
+    and stderr is read alongside stdout rather than only when stdout is empty.
+    """
     out = subprocess.run(args, cwd=HERE, capture_output=True, text=True,
                          env={**os.environ, **(env or {})})
-    tail = (out.stdout or out.stderr).strip().split("\n")[-1][:160]
+    lines = [l for l in ((out.stdout or "") + (out.stderr or "")).split("\n") if l.strip()]
+    tail = lines[-1][:160] if lines else ""
     print(f"  {label}: {'ok' if out.returncode == 0 else 'FAILED'}  {tail}", flush=True)
+    if out.returncode:
+        for line in lines[:-1]:
+            if any(w in line for w in ("problem", "Error", "error", "Traceback")):
+                print(f"    {line.strip()[:200]}", flush=True)
     return out.returncode == 0
 
 
@@ -44,8 +60,18 @@ def cycle():
     if not run("publish", [sys.executable, "publish_onchain.py"],
                env={"PUBLISH_RPC": devnet_rpc()}):
         return False
-    if not run("read back", [sys.executable, "read_onchain.py"]):
-        return False
+    # Reading the marks back compares the chain against the model and writes
+    # the file the page ships. A disagreement is worth saying loudly, but it
+    # is not a reason to abandon the cycle, because everything below rebuilds
+    # the screens a visitor actually reads and none of it depends on this
+    # verdict. While this step was fatal, a disagreement that cleared by
+    # itself froze the published site for five hours across the epoch
+    # boundary it existed to report, and every cycle still logged as healthy
+    # up to the point it stopped. What a genuine disagreement must not do is
+    # reach the site, and it cannot: staging runs the chain suite, which
+    # checks the shipped page against the chain and refuses to copy anything
+    # when the two differ.
+    run("read back", [sys.executable, "read_onchain.py"])
     # The page ships the same reading the chain now holds, so a visitor can
     # verify a mark without waiting for the next build.
     if not run("rebuild the desk", [sys.executable, "desk.py"]):
