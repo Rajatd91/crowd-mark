@@ -50,6 +50,17 @@ THIN = 4
 BROAD = {k: f'"{v}"' for k, v in NAME.items()}
 
 
+class Throttled(Exception):
+    """The index has told us we are over its limit.
+
+    This is not the same as a query failing. Retrying a refusal costs nothing
+    but time, but retrying a rate limit is what caused it, and four tries
+    apiece across eight companies turned a limit that clears in minutes into a
+    step that ran until it was killed and wrote nothing at all. So the first
+    one of these stops the run, and the headlines already on the page stay.
+    """
+
+
 def fetch(query):
     """One query, retried while the service says it is busy.
 
@@ -65,6 +76,10 @@ def fetch(query):
                 body = r.read().decode("utf-8", "replace")
             if body.lstrip().startswith("{"):
                 return json.loads(body).get("articles") or []
+        except urllib.error.HTTPError as e:
+            # Checked before URLError, which it inherits from.
+            if e.code == 429:
+                raise Throttled() from None
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError):
             pass
         time.sleep(GAP * (attempt + 1))
@@ -106,6 +121,14 @@ def tidy(articles, name):
 
 
 def build():
+    try:
+        return _build()
+    except Throttled:
+        print("  the news index is rate limiting us, keeping what is there", flush=True)
+        return None
+
+
+def _build():
     out, refused = {}, []
     for i, (symbol, query) in enumerate(QUERY.items()):
         if i:
