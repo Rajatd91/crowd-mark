@@ -28,7 +28,7 @@ def devnet_rpc():
     return "https://api.devnet.solana.com"
 
 
-def run(label, args, env=None):
+def run(label, args, env=None, limit=900):
     """Run one step of the cycle and say what it did.
 
     The last line is the step's own summary, which is all that used to be
@@ -40,8 +40,17 @@ def run(label, args, env=None):
     why. So when a step fails, whatever it called a problem is printed too,
     and stderr is read alongside stdout rather than only when stdout is empty.
     """
-    out = subprocess.run(args, cwd=HERE, capture_output=True, text=True,
-                         env={**os.environ, **(env or {})})
+    try:
+        out = subprocess.run(args, cwd=HERE, capture_output=True, text=True,
+                             env={**os.environ, **(env or {})}, timeout=limit)
+    except subprocess.TimeoutExpired:
+        # No step had a bound, so a source that answered slowly rather than
+        # refusing could hold the cycle past the hour and leave the site
+        # standing still. Headlines retry four times with a widening gap and a
+        # forty five second timeout apiece, which is most of an hour across
+        # eight companies.
+        print(f"  {label}: FAILED  gave up after {limit}s", flush=True)
+        return False
     lines = [l for l in ((out.stdout or "") + (out.stderr or "")).split("\n") if l.strip()]
     tail = lines[-1][:160] if lines else ""
     print(f"  {label}: {'ok' if out.returncode == 0 else 'FAILED'}  {tail}", flush=True)
@@ -84,7 +93,10 @@ def cycle():
     if not run("restudy the pools", [sys.executable, "liquidity.py"]):
         return False
     # Headlines, fetched slowly enough that the news index never refuses us.
-    run("fetch headlines", [sys.executable, "news.py"])
+    # Headlines are the one step that may fail without stopping anything, so
+    # they are also the one given a tight bound. Yesterday's headlines beside
+    # today's marks is a small loss. An hour with no rebuilt site is not.
+    run("fetch headlines", [sys.executable, "news.py"], limit=420)
     if not run("stage the site", [sys.executable, "publish_site.py"]):
         return False
     return publish_to_github()
