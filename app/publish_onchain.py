@@ -29,6 +29,7 @@ from solders.pubkey import Pubkey
 from solders.system_program import ID as SYSTEM_PROGRAM_ID
 from solders.transaction import Transaction
 from solana.rpc.async_api import AsyncClient
+from solana.rpc.commitment import Confirmed
 
 import build_site
 import sources as S
@@ -192,7 +193,7 @@ async def main():
     read_at = int(time.mktime(time.strptime(data["read_at"][:19], "%Y-%m-%dT%H:%M:%S")))
     read_at -= time.timezone if not time.daylight else time.altzone
 
-    proofs = {}
+    proofs, sent = {}, []
     keypair = Keypair.from_bytes(bytes(json.load(open(args.keypair))))
     client = AsyncClient(args.rpc)
     config, _ = Pubkey.find_program_address([CONFIG_SEED], PROGRAM_ID)
@@ -225,7 +226,22 @@ async def main():
         tx = Transaction([keypair], Message.new_with_blockhash(
             [ix], keypair.pubkey(), blockhash), blockhash)
         sig = (await client.send_transaction(tx)).value
+        sent.append((symbol, sig))
         print(f"{symbol:10} published in {sig}")
+
+    # Sending is not landing. The keeper reads these marks back as soon as
+    # this returns, and a transaction that has been accepted but not yet
+    # confirmed leaves the previous reading on the account. The read back then
+    # reports the chain disagreeing with the model, which is true, but the
+    # disagreement is ours and it clears by itself a moment later. So the
+    # marks are confirmed here before anything is told they are published.
+    # They are all sent first and confirmed afterwards, so the waiting
+    # overlaps rather than stacking up per token.
+    for symbol, sig in sent:
+        try:
+            await client.confirm_transaction(sig, commitment=Confirmed)
+        except Exception as e:  # noqa: BLE001 - one slow mark must not stop the rest
+            print(f"{symbol:10} sent but not confirmed  {e!r}")
     await client.close()
     return 0
 
