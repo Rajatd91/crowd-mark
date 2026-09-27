@@ -31,7 +31,7 @@
   ],
   "reads": 12
  },
- "read_at": 1790499563,
+ "read_at": 1790499632,
  "epoch": 1043,
  "hours_to_next_epoch": 6.4,
  "tokens": {
@@ -98,7 +98,7 @@
    "mint": "PresTj4Yc2bAR197Er7wz4UUKSfqt6FryBEdAriBoQB",
    "company": "Anduril",
    "token_price": 162.85560251975417,
-   "holders": 9440,
+   "holders": 9443,
    "liquidity": 445117.7530999371
   },
   "ANTHROPIC": {
@@ -390,25 +390,25 @@
    "exposure": [
     {
      "power": "The transfer fee it charges today",
-     "costs": 26758.33330079701,
+     "costs": 26758.30795353584,
      "detail": "3.00% of every transfer, charged again when you sell",
      "severity": "now"
     },
     {
      "power": "The fee has no ceiling",
-     "costs": 891944.4433599004,
+     "costs": 891943.5984511947,
      "detail": "The maximum fee on this mint is set to the largest number it can hold, so the issuer may raise the fee to 100% and take the whole balance on your next transfer",
      "severity": "worst"
     },
     {
      "power": "A permanent delegate can move your tokens",
-     "costs": 891944.4433599004,
+     "costs": 891943.5984511947,
      "detail": "This authority can transfer your balance out of your wallet without your signature",
      "severity": "worst"
     },
     {
      "power": "A freeze authority can stop you selling",
-     "costs": 891944.4433599004,
+     "costs": 891943.5984511947,
      "detail": "Your account can be frozen, which does not take the balance but does end your ability to act on it",
      "severity": "worst"
     },
@@ -420,7 +420,7 @@
     },
     {
      "power": "Transfers can be paused for everyone",
-     "costs": 891944.4433599004,
+     "costs": 891943.5984511947,
      "detail": "The mint carries a pause switch that is currently off",
      "severity": "worst"
     }
@@ -429,7 +429,7 @@
    "company": "OpenAI",
    "token_price": 1383.883209944718,
    "holders": 32179,
-   "liquidity": 891944.4433599004
+   "liquidity": 891943.5984511947
   },
   "POLYMARKET": {
    "transfer_fee_bps": 300,
