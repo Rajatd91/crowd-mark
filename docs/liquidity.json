@@ -1,81 +1,81 @@
 {
- "window_hours": 221,
+ "window_hours": 222,
  "reported": 30,
  "usable": 20,
- "snapshots_read": 221,
+ "snapshots_read": 222,
  "pools": [
   {
    "pool": "ANTHROPIC-SOL",
    "symbol": "ANTHROPIC",
-   "snapshots": 221,
-   "tvl": 302286.32735399436,
+   "snapshots": 222,
+   "tvl": 302339.604636865,
    "base_fee_pct": 1.0,
    "bin_step": 80,
-   "fee_yield_day": 0.02287359163379194,
-   "fee_yield_year": 8.348860946334058,
-   "turnover_day": 2.4995604560395397,
-   "sigma": 0.5414947383895954,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.005785517185056694,
+   "fee_yield_day": 0.022959148986305238,
+   "fee_yield_year": 8.380089380001412,
+   "turnover_day": 2.5092890965318997,
+   "sigma": 0.540268439783288,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.005772414986350383,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 0.024995604560395398,
-   "fee_agreement": 0.9151045568241343,
+   "fee_yield_implied_by_volume": 0.025092890965318998,
+   "fee_agreement": 0.9149662754298492,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.00010041662729575902,
-   "breakeven_amplification": 227.7868939615141,
-   "breakeven_half_width": 0.00883829480120868,
+   "lvr_day_cpmm": 9.996232432392749e-05,
+   "breakeven_amplification": 229.678022610861,
+   "breakeven_half_width": 0.008765044134063205,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 1.3115561596229588,
+   "days_to_recover_entry": 1.3066686408060906,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.04031721325526795,
-     "net_day": -0.01744362162147601
+     "lvr_day": 0.040134810895309306,
+     "net_day": -0.017175661909004068
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.020233825503020043,
-     "net_day": 0.0026397661307718985
+     "lvr_day": 0.020142284019252932,
+     "net_day": 0.002816864967052305
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.010192039108419601,
-     "net_day": 0.01268155252537234
+     "lvr_day": 0.010145928481318569,
+     "net_day": 0.012813220504986669
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.004166677645177658,
-     "net_day": 0.018706913988614283
+     "lvr_day": 0.004147826842398823,
+     "net_day": 0.018811322143906413
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.00215776137236531,
-     "net_day": 0.02071583026142663
+     "lvr_day": 0.002147999269909094,
+     "net_day": 0.020811149716396145
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.000951159945887951,
-     "net_day": 0.02192243168790399
+     "lvr_day": 0.0009468567263740024,
+     "net_day": 0.022012292259931236
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.00054721938045312,
-     "net_day": 0.022326372253338823
+     "lvr_day": 0.0005447436610680082,
+     "net_day": 0.022414405325237228
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.00034284381080094484,
-     "net_day": 0.022530747822990995
+     "lvr_day": 0.00034129272343309125,
+     "net_day": 0.022617856262872146
     }
    ],
    "address": "EZyszDEx1LZDt7TsSFV8xdPi49sDKC3mdfv2MVMEQLtU"
@@ -83,75 +83,75 @@
   {
    "pool": "OPENAI-USDC",
    "symbol": "OPENAI",
-   "snapshots": 221,
-   "tvl": 163579.77421267485,
+   "snapshots": 222,
+   "tvl": 163554.15526165674,
    "base_fee_pct": 0.75,
    "bin_step": 50,
-   "fee_yield_day": 0.020972455467605504,
-   "fee_yield_year": 7.654946245676009,
-   "turnover_day": 3.057253541519523,
-   "sigma": 2.422578787576401,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.025883670170757822,
+   "fee_yield_day": 0.02105505373206559,
+   "fee_yield_year": 7.68509461220394,
+   "turnover_day": 3.069155207010682,
+   "sigma": 2.4186470244052756,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.025841661852335798,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.022929401561396424,
-   "fee_agreement": 0.9146534161150719,
+   "fee_yield_implied_by_volume": 0.023018664052580115,
+   "fee_agreement": 0.9146948616987862,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.0020098931445257347,
-   "breakeven_amplification": 10.43461217066556,
-   "breakeven_half_width": 0.22321984836869646,
+   "lvr_day_cpmm": 0.002003374461871402,
+   "breakeven_amplification": 10.509794415766656,
+   "breakeven_half_width": 0.22136700881730254,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 1.4304476672432864,
+   "days_to_recover_entry": 1.4248360693714017,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.8069708444745533,
-     "net_day": -0.7859983890069477
+     "lvr_day": 0.8043535974528615,
+     "net_day": -0.7832985437207959
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.4049909687393725,
-     "net_day": -0.384018513271767
+     "lvr_day": 0.4036774622923888,
+     "net_day": -0.38262240856032326
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.20399917906440077,
-     "net_day": -0.18302672359679525
+     "lvr_day": 0.20333754891073455,
+     "net_day": -0.18228249517866896
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.08339830822863037,
-     "net_day": -0.062425852761024865
+     "lvr_day": 0.08312782265245365,
+     "net_day": -0.06207276892038806
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.04318876172833421,
-     "net_day": -0.022216306260728708
+     "lvr_day": 0.043048687698673774,
+     "net_day": -0.021993633966608184
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.019037981119969374,
-     "net_day": 0.0019344743476361302
+     "lvr_day": 0.018976235271620037,
+     "net_day": 0.002078818460445553
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.010952892075183218,
-     "net_day": 0.010019563392422286
+     "lvr_day": 0.010917368580921972,
+     "net_day": 0.010137685151143617
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.006862204432960472,
-     "net_day": 0.01411025103464503
+     "lvr_day": 0.006839948258233242,
+     "net_day": 0.014215105473832347
     }
    ],
    "address": "4HTy7aTjPm5PTSEws2yWRDPX6gjWM6sC2dV5mv9u8JsH"
@@ -159,75 +159,75 @@
   {
    "pool": "SPACEX-SPCXx",
    "symbol": "SPACEX",
-   "snapshots": 221,
-   "tvl": 119755.50544631848,
+   "snapshots": 222,
+   "tvl": 119752.42758199705,
    "base_fee_pct": 5.0,
    "bin_step": 100,
-   "fee_yield_day": 1.4378595918261704e-05,
-   "fee_yield_year": 0.005248187510165522,
-   "turnover_day": 0.0003084681643535229,
-   "sigma": 0.5327757907910818,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.00569236093146718,
+   "fee_yield_day": 1.437896547542445e-05,
+   "fee_yield_year": 0.005248322398529924,
+   "turnover_day": 0.00030847609256989843,
+   "sigma": 0.5315690490586109,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.005679467685169166,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 1.5423408217676145e-05,
+   "fee_yield_implied_by_volume": 1.542380462849492e-05,
    "fee_agreement": 0.9322580142684012,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 9.720891892228171e-05,
-   "breakeven_amplification": 0.14791436915122322,
+   "lvr_day_cpmm": 9.676905956064242e-05,
+   "breakeven_amplification": 0.1485905261527685,
    "breakeven_half_width": null,
    "transfer_fee_bps": 100,
    "entry_exit_cost": 0.01,
-   "days_to_recover_entry": 695.4781994603092,
+   "days_to_recover_entry": 695.4603248120541,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.039029320343138094,
-     "net_day": -0.03901494174721983
+     "lvr_day": 0.03885271708366688,
+     "net_day": -0.03883833811819146
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.019587476255476084,
-     "net_day": -0.019573097659557823
+     "lvr_day": 0.019498845141197912,
+     "net_day": -0.019484466175722488
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.009866464648578462,
-     "net_day": -0.0098520860526602
+     "lvr_day": 0.009821820012159555,
+     "net_day": -0.00980744104668413
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.0040335773097854785,
-     "net_day": -0.004019198713867217
+     "lvr_day": 0.004015325828745725,
+     "net_day": -0.004000946863270301
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.0020888338510125348,
-     "net_day": -0.002074455255094273
+     "lvr_day": 0.002079382114130125,
+     "net_day": -0.0020650031486547002
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0009207760960703834,
-     "net_day": -0.0009063975001521217
+     "lvr_day": 0.0009166096883958568,
+     "net_day": -0.0009022307229204324
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0005297390065740157,
-     "net_day": -0.0005153604106557541
+     "lvr_day": 0.0005273419974944953,
+     "net_day": -0.0005129630320190708
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0003318920093680809,
-     "net_day": -0.0003175134134498192
+     "lvr_day": 0.0003303902355700353,
+     "net_day": -0.00031601127009461084
     }
    ],
    "address": "F9oJK3UC6bLVcAoYEZPHNteZACb7YzdZw7FHad4KFC6B"
@@ -235,18 +235,18 @@
   {
    "pool": "SPACEX-XAI",
    "symbol": "SPACEX",
-   "snapshots": 221,
-   "tvl": 87014.63996259884,
+   "snapshots": 222,
+   "tvl": 87014.26729774481,
    "base_fee_pct": 0.01,
    "bin_step": 1,
-   "fee_yield_day": 1.8933060632800077e-07,
-   "fee_yield_year": 6.910567130972028e-05,
-   "turnover_day": 0.0021070351361766344,
+   "fee_yield_day": 1.8933141719344803e-07,
+   "fee_yield_year": 6.910596727560852e-05,
+   "turnover_day": 0.002107044160190349,
    "sigma": 0.0,
-   "sigma_observations": 220,
+   "sigma_observations": 221,
    "sigma_hourly": null,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 2.1070351361766345e-07,
+   "fee_yield_implied_by_volume": 2.1070441601903493e-07,
    "fee_agreement": 0.8985640679516842,
    "never_traded": true,
    "corroborated": true,
@@ -255,82 +255,82 @@
    "breakeven_half_width": null,
    "transfer_fee_bps": 100,
    "entry_exit_cost": 0.01,
-   "days_to_recover_entry": 52817.66215165321,
+   "days_to_recover_entry": 52817.43594504747,
    "net_by_width": [],
    "address": "8rFjXknJvC225QZqKZtohSnwpL3ZeocNiVDs8tpfUiR8"
   },
   {
    "pool": "NEURALINK-USDC",
    "symbol": "NEURALINK",
-   "snapshots": 221,
-   "tvl": 73823.95289967257,
+   "snapshots": 222,
+   "tvl": 73820.78352980097,
    "base_fee_pct": 2.0,
    "bin_step": 200,
-   "fee_yield_day": 0.004825574232162283,
-   "fee_yield_year": 1.7613345947392334,
-   "turnover_day": 0.26873626064706335,
-   "sigma": 0.6844223037453242,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.007312604757584383,
+   "fee_yield_day": 0.004821958427345646,
+   "fee_yield_year": 1.7600148259811608,
+   "turnover_day": 0.26851546438113844,
+   "sigma": 0.6828720813612759,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.007296041645133384,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 0.005374725212941267,
-   "fee_agreement": 0.8978271522687824,
+   "fee_yield_implied_by_volume": 0.005370309287622769,
+   "fee_agreement": 0.8978921267084309,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.00016042256502193727,
-   "breakeven_amplification": 30.080395681881797,
-   "breakeven_half_width": 0.0699573502993982,
+   "lvr_day_cpmm": 0.00015969667106256196,
+   "breakeven_amplification": 30.19448304878328,
+   "breakeven_half_width": 0.06967936522802765,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 6.216876698331786,
+   "days_to_recover_entry": 6.2215384997655745,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.06440955984208496,
-     "net_day": -0.05958398560992268
+     "lvr_day": 0.06411811386994883,
+     "net_day": -0.05929615544260318
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.03232494732013226,
-     "net_day": -0.02749937308796998
+     "lvr_day": 0.0321786805901769,
+     "net_day": -0.027356722162831255
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.0162824932544376,
-     "net_day": -0.011456919022275318
+     "lvr_day": 0.016208816814372272,
+     "net_day": -0.011386858387026626
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.006656558116518177,
-     "net_day": -0.0018309838843558936
+     "lvr_day": 0.006626437944045243,
+     "net_day": -0.0018044795166995966
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.003447174271652897,
-     "net_day": 0.0013783999605093862
+     "lvr_day": 0.003431576198025508,
+     "net_day": 0.0013903822293201383
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0015195443461375497,
-     "net_day": 0.003306029886024734
+     "lvr_day": 0.0015126685798654339,
+     "net_day": 0.0033092898474802123
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0008742211225980145,
-     "net_day": 0.003951353109564269
+     "lvr_day": 0.0008702653709120506,
+     "net_day": 0.003951693056433596
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.000547716897208578,
-     "net_day": 0.004277857334953705
+     "lvr_day": 0.0005452385402076341,
+     "net_day": 0.004276719887138012
     }
    ],
    "address": "GhznDwSWioFirbyAJY5GWpwcfN4NNR2KPY9Q9XPHT8Ry"
@@ -338,75 +338,75 @@
   {
    "pool": "ANDURIL-USDC",
    "symbol": "ANDURIL",
-   "snapshots": 221,
-   "tvl": 60493.2610885933,
+   "snapshots": 222,
+   "tvl": 60492.03384451571,
    "base_fee_pct": 1.0,
    "bin_step": 80,
-   "fee_yield_day": 0.003056689029478228,
-   "fee_yield_year": 1.1156914957595532,
-   "turnover_day": 0.33981414408842453,
-   "sigma": 0.5127173196619392,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.005478049284102431,
+   "fee_yield_day": 0.003033175108185132,
+   "fee_yield_year": 1.1071089144875732,
+   "turnover_day": 0.33639571698671705,
+   "sigma": 0.5115562129106409,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.005465643617736586,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 0.0033981414408842453,
-   "fee_agreement": 0.8995178931347936,
+   "fee_yield_implied_by_volume": 0.0033639571698671706,
+   "fee_agreement": 0.9016687653918316,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 9.002707187716546e-05,
-   "breakeven_amplification": 33.95299842306133,
-   "breakeven_half_width": 0.06161339936677912,
+   "lvr_day_cpmm": 8.961978046831404e-05,
+   "breakeven_amplification": 33.84492901383017,
+   "breakeven_half_width": 0.06181916542887356,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 9.81454106410064,
+   "days_to_recover_entry": 9.890625806285936,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.036145813231991605,
-     "net_day": -0.03308912420251338
+     "lvr_day": 0.03598228598526047,
+     "net_day": -0.03294911087707534
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.018140343008586007,
-     "net_day": -0.015083653979107778
+     "lvr_day": 0.018058274296286935,
+     "net_day": -0.015025099188101803
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.009137524950783972,
-     "net_day": -0.006080835921305743
+     "lvr_day": 0.009096185880957312,
+     "net_day": -0.00606301077277218
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.0037355744556781196,
-     "net_day": -0.0006788854261998915
+     "lvr_day": 0.0037186743460644422,
+     "net_day": -0.0006854992378793104
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.0019345096862450305,
-     "net_day": 0.0011221793432331976
+     "lvr_day": 0.0019257577724137943,
+     "net_day": 0.0011074173357713375
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0008527486644510303,
-     "net_day": 0.002203940365027198
+     "lvr_day": 0.0008488907448530863,
+     "net_day": 0.0021842843633320458
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.000490601604767417,
-     "net_day": 0.002566087424710811
+     "lvr_day": 0.0004883820744125575,
+     "net_day": 0.002544793033772574
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.00030737164978375585,
-     "net_day": 0.0027493173796944723
+     "lvr_day": 0.00030598106993181726,
+     "net_day": 0.0027271940382533146
     }
    ],
    "address": "DZwJYn5ZgC3ZzJPjdzLnpufr3YHJ8PveNyXomzoh1Md4"
@@ -414,75 +414,75 @@
   {
    "pool": "SPACEX-USDC",
    "symbol": "SPACEX",
-   "snapshots": 221,
-   "tvl": 52699.37733481573,
+   "snapshots": 222,
+   "tvl": 52699.366218095936,
    "base_fee_pct": 2.0,
    "bin_step": 80,
-   "fee_yield_day": 6.480238432781408e-06,
-   "fee_yield_year": 0.002365287027965214,
-   "turnover_day": 0.0003554912817442821,
-   "sigma": 0.8994442998843172,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.009609974178988241,
+   "fee_yield_day": 6.480239799761696e-06,
+   "fee_yield_year": 0.002365287526913019,
+   "turnover_day": 0.00035549135673374117,
+   "sigma": 0.9194695112657779,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.009823930467698248,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 7.109825634885641e-06,
+   "fee_yield_implied_by_volume": 7.109827134674823e-06,
    "fee_agreement": 0.9114482922035316,
    "never_traded": true,
    "corroborated": true,
-   "lvr_day_cpmm": 0.0002770548111624621,
-   "breakeven_amplification": 0.023389734347480658,
+   "lvr_day_cpmm": 0.00028952882950250975,
+   "breakeven_amplification": 0.022382019127064248,
    "breakeven_half_width": null,
    "transfer_fee_bps": 100,
    "entry_exit_cost": 0.01,
-   "days_to_recover_entry": 1543.153095943703,
+   "days_to_recover_entry": 1543.1527704218197,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.11123733395402269,
-     "net_day": -0.11123085371558991
+     "lvr_day": 0.11624564454072035,
+     "net_day": -0.11623916430092059
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.05582619985156767,
-     "net_day": -0.05581971961313489
+     "lvr_day": 0.058339699032043085,
+     "net_day": -0.058333218792243326
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.02812037753694681,
-     "net_day": -0.02811389729851403
+     "lvr_day": 0.029386459521421885,
+     "net_day": -0.029379979281622122
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.011496085053319683,
-     "net_day": -0.011489604814886901
+     "lvr_day": 0.012013680742028975,
+     "net_day": -0.012007200502229214
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.005953378296540081,
-     "net_day": -0.0059468980581073
+     "lvr_day": 0.006221421106353392,
+     "net_day": -0.0062149408665536305
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.002624300838317576,
-     "net_day": -0.0026178205998847945
+     "lvr_day": 0.0027424564359396653,
+     "net_day": -0.0027359761961399036
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0015098073516185675,
-     "net_day": -0.001503327113185786
+     "lvr_day": 0.0015777843866139464,
+     "net_day": -0.0015713041468141847
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0009459242937915951,
-     "net_day": -0.0009394440553588137
+     "lvr_day": 0.0009885132563854765,
+     "net_day": -0.0009820330165857148
     }
    ],
    "address": "22PthLk8TYnurtbWKRyECFd99cHHbfsbPNHfeMetzfZg"
@@ -490,75 +490,75 @@
   {
    "pool": "POLYMARKET-USDC",
    "symbol": "POLYMARKET",
-   "snapshots": 221,
-   "tvl": 50625.81713935749,
+   "snapshots": 222,
+   "tvl": 50626.61254667423,
    "base_fee_pct": 1.5,
    "bin_step": 125,
-   "fee_yield_day": 0.007318961091029134,
-   "fee_yield_year": 2.671420798225634,
-   "turnover_day": 0.543394496881196,
-   "sigma": 0.7008061661358759,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.007487655613480127,
+   "fee_yield_day": 0.007293749942188937,
+   "fee_yield_year": 2.662218728898962,
+   "turnover_day": 0.5422898649851199,
+   "sigma": 0.6992202736002465,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.007470711388784936,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 0.008150917453217941,
-   "fee_agreement": 0.8979309547711889,
+   "fee_yield_implied_by_volume": 0.0081343479747768,
+   "fee_agreement": 0.8966606745624344,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.0001681949597582414,
-   "breakeven_amplification": 43.51474682445418,
-   "breakeven_half_width": 0.04759574974349423,
+   "lvr_day_cpmm": 0.00016743458596356288,
+   "breakeven_amplification": 43.561788027332675,
+   "breakeven_half_width": 0.047542533979571644,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 4.098942408202042,
+   "days_to_recover_entry": 4.1131105724467245,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.06753017148307094,
-     "net_day": -0.06021121039204181
+     "lvr_day": 0.06722488187855676,
+     "net_day": -0.059931131936367815
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.033891075192280094,
-     "net_day": -0.02657211410125096
+     "lvr_day": 0.033737860818396775,
+     "net_day": -0.02644411087620784
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.017071372081100128,
-     "net_day": -0.009752410990070993
+     "lvr_day": 0.016994196023099737,
+     "net_day": -0.0097004460809108
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.006979065098373588,
-     "net_day": 0.0003398959926555452
+     "lvr_day": 0.006947514223009745,
+     "net_day": 0.0003462357191791913
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.0036141881774613112,
-     "net_day": 0.0037047729135678224
+     "lvr_day": 0.003597849198082092,
+     "net_day": 0.0036959007441068445
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0015931655257757453,
-     "net_day": 0.005725795565253388
+     "lvr_day": 0.0015859631618159317,
+     "net_day": 0.005707786780373005
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0009165767079903659,
-     "net_day": 0.006402384383038768
+     "lvr_day": 0.0009124330587955841,
+     "net_day": 0.006381316883393353
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0005742535127293848,
-     "net_day": 0.006744707578299749
+     "lvr_day": 0.0005716574342071204,
+     "net_day": 0.006722092507981816
     }
    ],
    "address": "EEkVx3wibBK6m5Fc9VaUTfr32Xwwopv9n7PrvS4Qp9eb"
@@ -566,75 +566,75 @@
   {
    "pool": "ANTHROPIC-USDC",
    "symbol": "ANTHROPIC",
-   "snapshots": 221,
-   "tvl": 40686.511669785315,
+   "snapshots": 222,
+   "tvl": 40393.80169884491,
    "base_fee_pct": 0.15,
    "bin_step": 15,
-   "fee_yield_day": 0.004711377905263998,
-   "fee_yield_year": 1.7196529354213594,
-   "turnover_day": 3.346864843522376,
-   "sigma": 0.5255949370150645,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.005615638204579599,
+   "fee_yield_day": 0.004760154501509104,
+   "fee_yield_year": 1.7374563930508231,
+   "turnover_day": 3.3751114237664273,
+   "sigma": 0.5256090396392287,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.005615788881896794,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.005020297265283564,
-   "fee_agreement": 0.9384659226942975,
+   "fee_yield_implied_by_volume": 0.005062667135649641,
+   "fee_agreement": 0.9402463906800544,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 9.460617733420194e-05,
-   "breakeven_amplification": 49.799897195093045,
-   "breakeven_half_width": 0.041403608666847,
+   "lvr_day_cpmm": 9.461125429810695e-05,
+   "breakeven_amplification": 50.3127723738924,
+   "breakeven_half_width": 0.040968670482388836,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 6.367563927843944,
+   "days_to_recover_entry": 6.302316445924003,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.03798432121818343,
-     "net_day": -0.03327294331291943
+     "lvr_day": 0.037986359616026096,
+     "net_day": -0.03322620511451699
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.01906302706273882,
-     "net_day": -0.014351649157474822
+     "lvr_day": 0.01906405006465101,
+     "net_day": -0.014303895563141905
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.009602292819975934,
-     "net_day": -0.004890914914711936
+     "lvr_day": 0.009602808119245243,
+     "net_day": -0.004842653617736139
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.003925579406616665,
-     "net_day": 0.0007857984986473334
+     "lvr_day": 0.003925790069657021,
+     "net_day": 0.0008343644318520834
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.0020329059094728722,
-     "net_day": 0.002678471995791126
+     "lvr_day": 0.002033015003722482,
+     "net_day": 0.002727139497786622
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0008961225738923602,
-     "net_day": 0.003815255331371638
+     "lvr_day": 0.0008961706635847072,
+     "net_day": 0.003863983837924397
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0005155553929866598,
-     "net_day": 0.004195822512277339
+     "lvr_day": 0.0005155830598493847,
+     "net_day": 0.004244571441659719
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0003230056937387064,
-     "net_day": 0.004388372211525292
+     "lvr_day": 0.0003230230275777266,
+     "net_day": 0.004437131473931377
     }
    ],
    "address": "9thgWVMJUKiiotrVmzhEy1MWPyvkNsUSwKbp8ZFsuhA2"
@@ -642,75 +642,75 @@
   {
    "pool": "ANTHROPIC-USDC",
    "symbol": "ANTHROPIC",
-   "snapshots": 221,
-   "tvl": 38860.68583390938,
+   "snapshots": 222,
+   "tvl": 38855.69173639953,
    "base_fee_pct": 0.3,
    "bin_step": 50,
-   "fee_yield_day": 0.002368822420465047,
-   "fee_yield_year": 0.8646201834697421,
-   "turnover_day": 0.8678487754063977,
-   "sigma": 0.5820038509173442,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.006218330562667141,
+   "fee_yield_day": 0.00238949200100505,
+   "fee_yield_year": 0.8721645803668433,
+   "turnover_day": 0.878858122430649,
+   "sigma": 0.580689536187648,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.006204287969237989,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.002603546326219193,
-   "fee_agreement": 0.9098445441933017,
+   "fee_yield_implied_by_volume": 0.002636574367291947,
+   "fee_agreement": 0.9062865931823961,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.00011600290495980076,
-   "breakeven_amplification": 20.420371552642845,
-   "breakeven_half_width": 0.10563610048004346,
+   "lvr_day_cpmm": 0.00011547956761569373,
+   "breakeven_amplification": 20.69190290837491,
+   "breakeven_half_width": 0.1041434290730685,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 12.664520455742057,
+   "days_to_recover_entry": 12.554969837681659,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.04657509402023494,
-     "net_day": -0.0442062715997699
+     "lvr_day": 0.04636497440284664,
+     "net_day": -0.04397548240184159
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.02337444106628701,
-     "net_day": -0.021005618645821962
+     "lvr_day": 0.02326898924237057,
+     "net_day": -0.020879497241365518
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.011774007710479088,
-     "net_day": -0.00940518529001404
+     "lvr_day": 0.011720890265473438,
+     "net_day": -0.009331398264468388
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.004813413115818559,
-     "net_day": -0.0024445906953535117
+     "lvr_day": 0.004791697807594206,
+     "net_day": -0.002402205806589156
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.0024926806859106062,
-     "net_day": -0.00012385826544555932
+     "lvr_day": 0.002481435166754656,
+     "net_day": -9.194316574960559e-05
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0010987952869541276,
-     "net_day": 0.0012700271335109193
+     "lvr_day": 0.0010938381644804175,
+     "net_day": 0.0012956538365246327
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0006321566407114861,
-     "net_day": 0.0017366657797535608
+     "lvr_day": 0.0006293047192227594,
+     "net_day": 0.001760187281782291
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.000396058691388429,
-     "net_day": 0.001972763729076618
+     "lvr_day": 0.00039427190593048245,
+     "net_day": 0.001995220095074568
     }
    ],
    "address": "2ZFSKYNYsgxmLDiKd9bFPh17fV7c9bdGkGYF8AEMhmpq"
@@ -718,75 +718,75 @@
   {
    "pool": "ANDURIL-SOL",
    "symbol": "ANDURIL",
-   "snapshots": 221,
-   "tvl": 32302.621975788556,
+   "snapshots": 222,
+   "tvl": 32311.23135172298,
    "base_fee_pct": 1.0,
    "bin_step": 80,
-   "fee_yield_day": 0.0010518497835426976,
-   "fee_yield_year": 0.38392517099308465,
-   "turnover_day": 0.11998004232179713,
-   "sigma": 0.8774298020972251,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.009374763665869687,
+   "fee_yield_day": 0.0010527975967028259,
+   "fee_yield_year": 0.3842711227965315,
+   "turnover_day": 0.11996025298314379,
+   "sigma": 0.8754519946098535,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.009353632086196443,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.0011998004232179713,
-   "fee_agreement": 0.8766872916426742,
+   "fee_yield_implied_by_volume": 0.001199602529831438,
+   "fee_agreement": 0.8776220210628929,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.00026365858137273137,
-   "breakeven_amplification": 3.989438834367802,
-   "breakeven_half_width": 0.7809194538393958,
+   "lvr_day_cpmm": 0.00026247129961177085,
+   "breakeven_amplification": 4.011096063684107,
+   "breakeven_half_width": 0.774503679503415,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 28.521182843198456,
+   "days_to_recover_entry": 28.49550577808559,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.10585875604522293,
-     "net_day": -0.10480690626168024
+     "lvr_day": 0.10538206315839903,
+     "net_day": -0.10432926556169621
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.05312687621101737,
-     "net_day": -0.05207502642747467
+     "lvr_day": 0.05288764041291157,
+     "net_day": -0.051834842816208745
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.026760693373086446,
-     "net_day": -0.02570884358954375
+     "lvr_day": 0.02664018721323722,
+     "net_day": -0.02558738961653439
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.010940223213525632,
-     "net_day": -0.009888373429982934
+     "lvr_day": 0.010890958261045693,
+     "net_day": -0.009838160664342867
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.005665518925497142,
-     "net_day": -0.004613669141954445
+     "lvr_day": 0.005640006509964912,
+     "net_day": -0.004587208913262086
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.002497409928464831,
-     "net_day": -0.0014455601449221334
+     "lvr_day": 0.0024861638342081214,
+     "net_day": -0.0014333662375052955
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0014368047347874634,
-     "net_day": -0.00038495495124476575
+     "lvr_day": 0.0014303346550093156,
+     "net_day": -0.0003775370583064897
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0009001867043588299,
-     "net_day": 0.0001516630791838677
+     "lvr_day": 0.0008961330708682003,
+     "net_day": 0.00015666452583462556
     }
    ],
    "address": "8MRxd2cRV2mC5mkczq7s9p8U494N9AdbZE2FSb7CdC3C"
@@ -794,75 +794,75 @@
   {
    "pool": "POLYMARKET-SOL",
    "symbol": "POLYMARKET",
-   "snapshots": 221,
-   "tvl": 31956.646608160147,
+   "snapshots": 222,
+   "tvl": 31951.44318945648,
    "base_fee_pct": 0.8,
    "bin_step": 80,
-   "fee_yield_day": 0.00647782947247839,
-   "fee_yield_year": 2.3644077574546123,
-   "turnover_day": 0.8987400420798028,
-   "sigma": 0.6178473973826487,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.00660129541781075,
+   "fee_yield_day": 0.006472165526762933,
+   "fee_yield_year": 2.3623404172684705,
+   "turnover_day": 0.8979727878851662,
+   "sigma": 0.6164480097164785,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.00658634387568633,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 0.0071899203366384236,
-   "fee_agreement": 0.900959839494833,
+   "fee_yield_implied_by_volume": 0.00718378230308133,
+   "fee_agreement": 0.9009412108697721,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.00013073130357962762,
-   "breakeven_amplification": 49.550714290344274,
-   "breakeven_half_width": 0.04161827583486155,
+   "lvr_day_cpmm": 0.00013013977694637245,
+   "breakeven_amplification": 49.732416011669976,
+   "breakeven_half_width": 0.04146152371381606,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 4.631180880487446,
+   "days_to_recover_entry": 4.635233736830053,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.05248853688378781,
-     "net_day": -0.04601070741130942
+     "lvr_day": 0.05225103930931862,
+     "net_day": -0.045778873782555685
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.02634219506916502,
-     "net_day": -0.01986436559668663
+     "lvr_day": 0.0262230031882983,
+     "net_day": -0.019750837661535365
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.013268903713065787,
-     "net_day": -0.0067910742405873975
+     "lvr_day": 0.013208865224001108,
+     "net_day": -0.006736699697238175
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.00542455183787251,
-     "net_day": 0.00105327763460588
+     "lvr_day": 0.0054000070899987125,
+     "net_day": 0.0010721584367642204
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.0028091658186472157,
-     "net_day": 0.003668663653831174
+     "lvr_day": 0.002796455042012546,
+     "net_day": 0.003675710484750387
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0012383046810805559,
-     "net_day": 0.005239524791397834
+     "lvr_day": 0.0012327016603893596,
+     "net_day": 0.005239463866373573
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0007124188979178545,
-     "net_day": 0.005765410574560535
+     "lvr_day": 0.0007091953795973474,
+     "net_day": 0.005762970147165585
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.00044634458970827906,
-     "net_day": 0.006031484882770111
+     "lvr_day": 0.00044432499145451436,
+     "net_day": 0.006027840535308419
     }
    ],
    "address": "DCh6beahzr11ggjtLzhXyDamPGQguoBSVaAoMA9NEaLk"
@@ -870,75 +870,75 @@
   {
    "pool": "SPACEX-SPCXx",
    "symbol": "SPACEX",
-   "snapshots": 221,
-   "tvl": 26719.091218531987,
+   "snapshots": 222,
+   "tvl": 26706.741048772947,
    "base_fee_pct": 0.8,
    "bin_step": 80,
-   "fee_yield_day": 0.0008017631743348322,
-   "fee_yield_year": 0.29264355863221375,
-   "turnover_day": 0.11187713325330167,
-   "sigma": 0.9174760227204108,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.009802631346174491,
+   "fee_yield_day": 0.0008021382170240386,
+   "fee_yield_year": 0.2927804492137741,
+   "turnover_day": 0.11192946742172522,
+   "sigma": 0.9275217204017926,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.009909963056810066,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.0008950170660264134,
-   "fee_agreement": 0.8958076943654288,
+   "fee_yield_implied_by_volume": 0.0008954357393738017,
+   "fee_agreement": 0.8958076853007808,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.00028827474392700814,
-   "breakeven_amplification": 2.78124667951432,
-   "breakeven_half_width": 1.437984185325023,
+   "lvr_day_cpmm": 0.00029462210336202095,
+   "breakeven_amplification": 2.7226002661395716,
+   "breakeven_half_width": 1.498036301823476,
    "transfer_fee_bps": 100,
    "entry_exit_cost": 0.01,
-   "days_to_recover_entry": 12.472510985923384,
+   "days_to_recover_entry": 12.466679417295884,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.11574212996400653,
-     "net_day": -0.11494036678967169
+     "lvr_day": 0.11829059081995141,
+     "net_day": -0.11748845260292737
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.058087002348397095,
-     "net_day": -0.05728523917406226
+     "lvr_day": 0.05936598737977766,
+     "net_day": -0.058563849162753624
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.029259172939756765,
-     "net_day": -0.028457409765421934
+     "lvr_day": 0.029903414210739773,
+     "net_day": -0.029101275993715734
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.01196164383864651,
-     "net_day": -0.011159880664311679
+     "lvr_day": 0.01222502054603063,
+     "net_day": -0.011422882329006592
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.006194473204543388,
-     "net_day": -0.005392710030208556
+     "lvr_day": 0.006330865825708106,
+     "net_day": -0.005528727608684067
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.00273057756686931,
-     "net_day": -0.0019288143925344776
+     "lvr_day": 0.0027907006183930006,
+     "net_day": -0.001988562401368962
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.001570950260133678,
-     "net_day": -0.0007691870857988458
+     "lvr_day": 0.0016055401302685385,
+     "net_day": -0.0008034019132444999
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0009842315404052224,
-     "net_day": -0.00018246836607039023
+     "lvr_day": 0.0010059027810735,
+     "net_day": -0.00020376456404946148
     }
    ],
    "address": "9RExWJFGfAviKHCSCQ59CqA6e7eZgmnfKuABqHn1jKG4"
@@ -946,75 +946,75 @@
   {
    "pool": "OPENAI-SOL",
    "symbol": "OPENAI",
-   "snapshots": 221,
-   "tvl": 26092.60523748597,
+   "snapshots": 222,
+   "tvl": 26090.645000133176,
    "base_fee_pct": 0.01,
    "bin_step": 80,
-   "fee_yield_day": 0.001978219364883437,
-   "fee_yield_year": 0.7220500681824545,
-   "turnover_day": 5.726169701294529,
-   "sigma": 2.857119572524108,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.030526454302695547,
+   "fee_yield_day": 0.0019923177401667876,
+   "fee_yield_year": 0.7271959751608775,
+   "turnover_day": 5.7295247328747,
+   "sigma": 2.8509898508523865,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.03046096223498529,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.0005726169701294529,
-   "fee_agreement": 3.4546991585600693,
+   "fee_yield_implied_by_volume": 0.00057295247328747,
+   "fee_agreement": 3.4772827294650197,
    "never_traded": false,
    "corroborated": false,
-   "lvr_day_cpmm": 0.0027955932368836788,
-   "breakeven_amplification": 0.7076206004449381,
+   "lvr_day_cpmm": 0.0027836106608436,
+   "breakeven_amplification": 0.715731466398033,
    "breakeven_half_width": null,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 15.165153335645208,
+   "days_to_recover_entry": 15.057839116309097,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 1.1224289417175464,
-     "net_day": -1.120450722352663
+     "lvr_day": 1.1176179449079005,
+     "net_day": -1.1156256271677336
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.5633085601045308,
-     "net_day": -0.5613303407396474
+     "lvr_day": 0.5608940859362487,
+     "net_day": -0.5589017681960818
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.28374579358885876,
-     "net_day": -0.2817675742239753
+     "lvr_day": 0.28252959178135933,
+     "net_day": -0.28053727404119255
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.11600007049455074,
-     "net_day": -0.11402185112966731
+     "lvr_day": 0.11550286666424499,
+     "net_day": -0.1135105489240782
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.06007195483300274,
-     "net_day": -0.0580937354681193
+     "lvr_day": 0.05981447217881481,
+     "net_day": -0.05782215443864802
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.026480239214639545,
-     "net_day": -0.02450201984975611
+     "lvr_day": 0.0263667386252968,
+     "net_day": -0.024374420885130012
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.01523455666939163,
-     "net_day": -0.013256337304508193
+     "lvr_day": 0.015169257744169102,
+     "net_day": -0.013176940004002314
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.009544752344246758,
-     "net_day": -0.00756653297936332
+     "lvr_day": 0.009503841270618554,
+     "net_day": -0.007511523530451767
     }
    ],
    "address": "CoqYNCGKpiGgLJJ6DntdbcvKmqTZBrxdvQDrxDCfb9GH"
@@ -1022,75 +1022,75 @@
   {
    "pool": "KALSHI-USDC",
    "symbol": "KALSHI",
-   "snapshots": 221,
-   "tvl": 22248.077560939604,
+   "snapshots": 222,
+   "tvl": 22247.932733092217,
    "base_fee_pct": 0.5,
    "bin_step": 50,
-   "fee_yield_day": 0.0011666481972472714,
-   "fee_yield_year": 0.4258265919952541,
-   "turnover_day": 0.32189035959615075,
-   "sigma": 0.6188366577311036,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.006611865017736139,
+   "fee_yield_day": 0.0011598074916687386,
+   "fee_yield_year": 0.4233297344590896,
+   "turnover_day": 0.32136922423879105,
+   "sigma": 0.6174363176473302,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.006596903299652433,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.0016094517979807538,
-   "fee_agreement": 0.7248730273941528,
+   "fee_yield_implied_by_volume": 0.0016068461211939554,
+   "fee_agreement": 0.7217912632523592,
    "never_traded": false,
    "corroborated": false,
-   "lvr_day_cpmm": 0.00013115027703828873,
-   "breakeven_amplification": 8.895506922236038,
-   "breakeven_half_width": 0.26934993956811026,
+   "lvr_day_cpmm": 0.00013055739943489548,
+   "breakeven_amplification": 8.88350638637755,
+   "breakeven_half_width": 0.2697844088069139,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 25.714692801810838,
+   "days_to_recover_entry": 25.866361629407827,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.05265675446623444,
-     "net_day": -0.05149010626898717
+     "lvr_day": 0.05241871447809707,
+     "net_day": -0.05125890698642833
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.02642661769997074,
-     "net_day": -0.02525996950272347
+     "lvr_day": 0.02630715360030152,
+     "net_day": -0.02514734610863278
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.013311428482031457,
-     "net_day": -0.012144780284784185
+     "lvr_day": 0.01325125287284183,
+     "net_day": -0.01209144538117309
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.005441936681310682,
-     "net_day": -0.00427528848406341
+     "lvr_day": 0.005417335876415002,
+     "net_day": -0.0042575283847462635
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.0028181687573984103,
-     "net_day": -0.0016515205601511389
+     "lvr_day": 0.0028054289509978772,
+     "net_day": -0.0016456214593291386
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0012422732546425303,
-     "net_day": -7.562505739525886e-05
+     "lvr_day": 0.001236657437378515,
+     "net_day": -7.684994570977648e-05
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0007147020894833266,
-     "net_day": 0.00045194610776394485
+     "lvr_day": 0.0007114712090649092,
+     "net_day": 0.00044833628260382936
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0004477750545731142,
-     "net_day": 0.0007188731426741573
+     "lvr_day": 0.0004457508438187817,
+     "net_day": 0.0007140566478499569
     }
    ],
    "address": "Ao6jpr2KaQLbnwzjEZ7SgSJ8ExotDQ2HJmn5eW87jMgV"
@@ -1098,75 +1098,75 @@
   {
    "pool": "POLYMARKET-USDC",
    "symbol": "POLYMARKET",
-   "snapshots": 221,
-   "tvl": 20570.738977200217,
+   "snapshots": 222,
+   "tvl": 20570.561434097704,
    "base_fee_pct": 0.01,
    "bin_step": 80,
-   "fee_yield_day": 0.0004924722718990209,
-   "fee_yield_year": 0.1797523792431426,
-   "turnover_day": 0.2026746227742434,
-   "sigma": 1.0050377669255421,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.010738171324566384,
+   "fee_yield_day": 0.0004922135633155181,
+   "fee_yield_year": 0.1796579506101641,
+   "turnover_day": 0.20107778791662714,
+   "sigma": 1.002763928756837,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.010713876850643692,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 2.0267462277424342e-05,
-   "fee_agreement": 24.29866478387771,
+   "fee_yield_implied_by_volume": 2.0107778791662716e-05,
+   "fee_agreement": 24.478763587731752,
    "never_traded": false,
    "corroborated": false,
-   "lvr_day_cpmm": 0.00034592497018721936,
-   "breakeven_amplification": 1.4236389805352534,
-   "breakeven_half_width": 10.292963207960188,
+   "lvr_day_cpmm": 0.0003443614715122764,
+   "breakeven_amplification": 1.4293514345665432,
+   "breakeven_half_width": 10.082869184792179,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 60.91713526188406,
+   "days_to_recover_entry": 60.949153448600605,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.1388886598658881,
-     "net_day": -0.13839618759398908
+     "lvr_day": 0.13826091612264982,
+     "net_day": -0.1377687025593343
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.06970345123512446,
-     "net_day": -0.06921097896322544
+     "lvr_day": 0.06938840819678559,
+     "net_day": -0.06889619463347006
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.035110528203091,
-     "net_day": -0.03461805593119198
+     "lvr_day": 0.034951836957725364,
+     "net_day": -0.03445962339440985
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.01435377665038058,
-     "net_day": -0.013861304378481558
+     "lvr_day": 0.01428890099031721,
+     "net_day": -0.013796687427001693
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.007433266367412917,
-     "net_day": -0.006940794095513896
+     "lvr_day": 0.007399669769544719,
+     "net_day": -0.006907456206229201
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0032766483478425174,
-     "net_day": -0.0027841760759434965
+     "lvr_day": 0.003261838675827996,
+     "net_day": -0.002769625112512478
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0018851145768078285,
-     "net_day": -0.0013926423049088078
+     "lvr_day": 0.0018765943068158716,
+     "net_day": -0.0013843807435003535
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0011810617247767132,
-     "net_day": -0.0006885894528776924
+     "lvr_day": 0.0011757236063959706,
+     "net_day": -0.0006835100430804525
     }
    ],
    "address": "gPchZYUR4prBpYr4BQDZdB4fwYxWSh8h2rY83CQxN61"
@@ -1174,75 +1174,75 @@
   {
    "pool": "FIGUREAI-USDC",
    "symbol": "FIGUREAI",
-   "snapshots": 221,
-   "tvl": 17815.82364742362,
+   "snapshots": 222,
+   "tvl": 17815.84260960515,
    "base_fee_pct": 2.0,
    "bin_step": 100,
-   "fee_yield_day": 0.0022671577722960354,
-   "fee_yield_year": 0.827512586888053,
-   "turnover_day": 0.1377120536530864,
-   "sigma": 0.6876021292916144,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.007346579114192642,
+   "fee_yield_day": 0.0022405940815863703,
+   "fee_yield_year": 0.8178168397790252,
+   "turnover_day": 0.1377119070801166,
+   "sigma": 0.6860456458345622,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.0073299491062708425,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 0.002754241073061728,
-   "fee_agreement": 0.8231515369044182,
+   "fee_yield_implied_by_volume": 0.002754238141602332,
+   "fee_agreement": 0.8135077529217792,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.00016191667404327463,
-   "breakeven_amplification": 14.002003102472965,
-   "breakeven_half_width": 0.1597377888393774,
+   "lvr_day_cpmm": 0.00016118446170156216,
+   "breakeven_amplification": 13.90080692601063,
+   "breakeven_half_width": 0.16103756478488274,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 13.232427123771751,
+   "days_to_recover_entry": 13.389306098121798,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.06500944368266107,
-     "net_day": -0.06274228591036503
+     "lvr_day": 0.0647154608839557,
+     "net_day": -0.062474866802369335
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.032626008429575686,
-     "net_day": -0.03035885065727965
+     "lvr_day": 0.032478468553438125,
+     "net_day": -0.030237874471851754
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.016434141621723047,
-     "net_day": -0.014166983849427012
+     "lvr_day": 0.01635982388149044,
+     "net_day": -0.014119229799904069
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.006718554529127502,
-     "net_day": -0.004451396756831467
+     "lvr_day": 0.006688172182320029,
+     "net_day": -0.004447578100733658
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.003479279818504703,
-     "net_day": -0.0012121220462086675
+     "lvr_day": 0.0034635459749185913,
+     "net_day": -0.001222951893332221
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0015336967499192484,
-     "net_day": 0.000733461022376787
+     "lvr_day": 0.0015267611350706194,
+     "net_day": 0.0007138329465157509
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0008823632543843923,
-     "net_day": 0.0013847945179116432
+     "lvr_day": 0.000878373070738691,
+     "net_day": 0.0013622210108476794
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.000552818104492892,
-     "net_day": 0.0017143396678031433
+     "lvr_day": 0.0005503181751852804,
+     "net_day": 0.0016902759064010898
     }
    ],
    "address": "5fLS1XqZshXkPPYyZcnzWK2RRDkcHuXf88wpFoXCJXKG"
@@ -1250,75 +1250,75 @@
   {
    "pool": "OPENAI-SOL",
    "symbol": "OPENAI",
-   "snapshots": 61,
-   "tvl": 12252.637229147196,
+   "snapshots": 62,
+   "tvl": 12255.515646841173,
    "base_fee_pct": 0.75,
    "bin_step": 75,
-   "fee_yield_day": 0.003713798137292814,
-   "fee_yield_year": 1.355536320111877,
-   "turnover_day": 0.5401964708714897,
-   "sigma": 2.686861108314557,
-   "sigma_observations": 60,
-   "sigma_hourly": 0.028707353948156173,
+   "fee_yield_day": 0.0038806539039803203,
+   "fee_yield_year": 1.4164386749528168,
+   "turnover_day": 0.5647653126251296,
+   "sigma": 2.665815546340345,
+   "sigma_observations": 61,
+   "sigma_hourly": 0.028482495880591027,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.004051473531536173,
-   "fee_agreement": 0.9166536837486572,
+   "fee_yield_implied_by_volume": 0.004235739844688472,
+   "fee_agreement": 0.9161690864576063,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.0024723365121141535,
-   "breakeven_amplification": 1.50214103909223,
-   "breakeven_half_width": 7.948906878572503,
+   "lvr_day_cpmm": 0.0024337577147636544,
+   "breakeven_amplification": 1.5945111875514593,
+   "breakeven_half_width": 6.193414371118268,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 8.077983479702159,
+   "days_to_recover_entry": 7.730655900344401,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.992641568254518,
-     "net_day": -0.9889277701172252
+     "lvr_day": 0.9771522051699492,
+     "net_day": -0.9732715512659689
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.4981727321265621,
-     "net_day": -0.49445893398926927
+     "lvr_day": 0.4903991524443122,
+     "net_day": -0.48651849854033186
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.2509360361847702,
-     "net_day": -0.24722223804747737
+     "lvr_day": 0.24702038374810756,
+     "net_day": -0.24313972984412724
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.10258688778743336,
-     "net_day": -0.09887308965014054
+     "lvr_day": 0.10098610296895187,
+     "net_day": -0.09710544906497155
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.053125785728850156,
-     "net_day": -0.04941198759155734
+     "lvr_day": 0.052296801117865006,
+     "net_day": -0.04841614721388469
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.023418307569254723,
-     "net_day": -0.01970450943196191
+     "lvr_day": 0.023052883955770417,
+     "net_day": -0.0191722300517901
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.013472972463474418,
-     "net_day": -0.009759174326181605
+     "lvr_day": 0.013262737703023962,
+     "net_day": -0.009382083799043641
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.008441084850410339,
-     "net_day": -0.004727286713117525
+     "lvr_day": 0.00830936859727622,
+     "net_day": -0.0044287146932959
     }
    ],
    "address": "5HSw79TwErhojoD3o3UjPrKf2MzMXChL45WjRXDWvxk7"
@@ -1326,75 +1326,75 @@
   {
    "pool": "SPACEX-USDC",
    "symbol": "SPACEX",
-   "snapshots": 221,
-   "tvl": 10953.74418093322,
+   "snapshots": 222,
+   "tvl": 10953.81081582664,
    "base_fee_pct": 1.0,
    "bin_step": 5,
-   "fee_yield_day": 0.0016985590882751867,
-   "fee_yield_year": 0.6199740672204431,
-   "turnover_day": 0.16791264631286926,
-   "sigma": 1.3937274207424375,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.014891066103376658,
+   "fee_yield_day": 0.001699786030595476,
+   "fee_yield_year": 0.6204219011673487,
+   "turnover_day": 0.1680483527391405,
+   "sigma": 1.3979273358754936,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.01493593945016178,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.0016791264631286925,
-   "fee_agreement": 1.0115730563320917,
+   "fee_yield_implied_by_volume": 0.001680483527391405,
+   "fee_agreement": 1.0114862793293988,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.0006652315490853998,
-   "breakeven_amplification": 2.5533351366309485,
-   "breakeven_half_width": 1.7019997902031347,
+   "lvr_day_cpmm": 0.000669246861776697,
+   "breakeven_amplification": 2.539849086603012,
+   "breakeven_half_width": 1.720567497306675,
    "transfer_fee_bps": 100,
    "entry_exit_cost": 0.01,
-   "days_to_recover_entry": 5.887343024465853,
+   "days_to_recover_entry": 5.883093412937838,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.26709005222425986,
-     "net_day": -0.26539149313598465
+     "lvr_day": 0.2687021977664996,
+     "net_day": -0.26700241173590417
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.1340433297331643,
-     "net_day": -0.13234477064488911
+     "lvr_day": 0.13485241024625977,
+     "net_day": -0.1331526242156643
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.0675193555790665,
-     "net_day": -0.06582079649079133
+     "lvr_day": 0.06792689987809677,
+     "net_day": -0.0662271138475013
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.027603052393675682,
-     "net_day": -0.025904493305400494
+     "lvr_day": 0.027769663383108233,
+     "net_day": -0.026069877352512757
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.014294554387566414,
-     "net_day": -0.012595995299291228
+     "lvr_day": 0.014380835781958706,
+     "net_day": -0.01268104975136323
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.006301163674491882,
-     "net_day": -0.004602604586216695
+     "lvr_day": 0.006339197262205684,
+     "net_day": -0.004639411231610208
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0036251725033166504,
-     "net_day": -0.0019266134150414636
+     "lvr_day": 0.003647053908641941,
+     "net_day": -0.001947267878046465
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.002271242577005836,
-     "net_day": -0.0005726834887306493
+     "lvr_day": 0.0022849517120536312,
+     "net_day": -0.0005851656814581552
     }
    ],
    "address": "Chroid93DKzmgDYmCJELZ6CNC3SZ8WfRXzCkcqVtRy1r"
@@ -1402,75 +1402,75 @@
   {
    "pool": "FIGUREAI-USDC",
    "symbol": "FIGUREAI",
-   "snapshots": 221,
-   "tvl": 10623.329763966944,
+   "snapshots": 222,
+   "tvl": 10623.328407344914,
    "base_fee_pct": 1.5,
    "bin_step": 125,
-   "fee_yield_day": 1.2916591898361674e-06,
-   "fee_yield_year": 0.00047145560429020107,
-   "turnover_day": 9.577505047273572e-05,
-   "sigma": 0.22146307849238775,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.0023661881743925884,
+   "fee_yield_day": 1.2916593547838415e-06,
+   "fee_yield_year": 0.00047145566449610215,
+   "turnover_day": 9.577506270341695e-05,
+   "sigma": 0.22096260147210356,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.0023608409047031517,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 1.4366257570910356e-06,
+   "fee_yield_implied_by_volume": 1.4366259405512543e-06,
    "fee_agreement": 0.899092323425688,
    "never_traded": true,
    "corroborated": true,
-   "lvr_day_cpmm": 1.6796539429905993e-05,
-   "breakeven_amplification": 0.07690031599821015,
+   "lvr_day_cpmm": 1.672070933195879e-05,
+   "breakeven_amplification": 0.07724907652781539,
    "breakeven_half_width": null,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 23225.940895295425,
+   "days_to_recover_entry": 23225.937929292882,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.006743800109433042,
-     "net_day": -0.006742508450243206
+     "lvr_day": 0.006713354372382936,
+     "net_day": -0.006712062713028152
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.0033844818037785974,
-     "net_day": -0.0033831901445887614
+     "lvr_day": 0.0033692021333588617,
+     "net_day": -0.0033679104740040777
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.0017048071755238468,
-     "net_day": -0.0017035155163340106
+     "lvr_day": 0.0016971106082850683,
+     "net_day": -0.0016958189489302844
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.0006969539531815182,
-     "net_day": -0.0006956622939916821
+     "lvr_day": 0.0006938074665641412,
+     "net_day": -0.0006925158072093574
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.00036092552545620774,
-     "net_day": -0.00035963386626637156
+     "lvr_day": 0.00035929608160194216,
+     "net_day": -0.00035800442224715834
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.00015909910505358066,
-     "net_day": -0.0001578074458637445
+     "lvr_day": 0.00015838083205634384,
+     "net_day": -0.00015708917270156
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 9.153256933752591e-05,
-     "net_day": -9.024091014768975e-05
+     "lvr_day": 9.111933399656839e-05,
+     "net_day": -8.982767464178455e-05
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 5.7346972722519506e-05,
-     "net_day": -5.605531353268334e-05
+     "lvr_day": 5.708807257367209e-05,
+     "net_day": -5.5796413218888244e-05
     }
    ],
    "address": "5EsQ8H97vuQcyjG4wkxws5FETNrpT3bNrVR5WKkCFNrT"
@@ -1478,75 +1478,75 @@
   {
    "pool": "OPENAI-USDC",
    "symbol": "OPENAI",
-   "snapshots": 221,
-   "tvl": 10573.098623353728,
+   "snapshots": 222,
+   "tvl": 10573.034220614813,
    "base_fee_pct": 0.01,
    "bin_step": 80,
-   "fee_yield_day": 1.8734359609769919e-06,
-   "fee_yield_year": 0.0006838041257566021,
-   "turnover_day": 0.0044204870954253905,
-   "sigma": 2.8846027849754456,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.030820094455895664,
+   "fee_yield_day": 1.8756038292975914e-06,
+   "fee_yield_year": 0.0006845953976936208,
+   "turnover_day": 0.004468002124786477,
+   "sigma": 2.884528464346462,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.030819300388574777,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 4.4204870954253905e-07,
-   "fee_agreement": 4.238075851224057,
+   "fee_yield_implied_by_volume": 4.4680021247864766e-07,
+   "fee_agreement": 4.197857961822758,
    "never_traded": true,
    "corroborated": false,
-   "lvr_day_cpmm": 0.0028496346668109925,
-   "breakeven_amplification": 0.0006574302252834192,
+   "lvr_day_cpmm": 0.002849487829323616,
+   "breakeven_amplification": 0.0006582248957149623,
    "breakeven_half_width": null,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 16013.357608634287,
+   "days_to_recover_entry": 15994.848982172807,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 1.1441265421416462,
-     "net_day": -1.1441246687056852
+     "lvr_day": 1.1440675869820092,
+     "net_day": -1.1440657113781798
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.5741978410187597,
-     "net_day": -0.5741959675827987
+     "lvr_day": 0.5741682534476881,
+     "net_day": -0.5741663778438588
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.289230864957287,
-     "net_day": -0.28922899152132603
+     "lvr_day": 0.2892159613157863,
+     "net_day": -0.289214085711957
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.11824246026659882,
-     "net_day": -0.11824058683063784
+     "lvr_day": 0.11823636740635642,
+     "net_day": -0.11823449180252711
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.06123320186095853,
-     "net_day": -0.06123132842499755
+     "lvr_day": 0.061230046604037344,
+     "net_day": -0.06122817100020805
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.026992126986113644,
-     "net_day": -0.026990253550152665
+     "lvr_day": 0.026990736121469922,
+     "net_day": -0.026988860517640625
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.015529054887465862,
-     "net_day": -0.015527181451504885
+     "lvr_day": 0.015528254698084547,
+     "net_day": -0.01552637909425525
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.009729261327234628,
-     "net_day": -0.009727387891273651
+     "lvr_day": 0.009728759992693762,
+     "net_day": -0.009726884388864465
     }
    ],
    "address": "Y6wSJPjwcnfY8sHM2b3gTht3gGCGdf838gRkQJpfNYe"
@@ -1554,75 +1554,75 @@
   {
    "pool": "OPENAI-USDC",
    "symbol": "OPENAI",
-   "snapshots": 221,
-   "tvl": 10440.335127122122,
+   "snapshots": 222,
+   "tvl": 10438.748278723466,
    "base_fee_pct": 5.0,
    "bin_step": 100,
-   "fee_yield_day": 0.0045962895762799594,
-   "fee_yield_year": 1.6776456953421852,
-   "turnover_day": 0.10275504940734638,
-   "sigma": 2.588586185961421,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.02765735066682216,
+   "fee_yield_day": 0.004476027471858353,
+   "fee_yield_year": 1.633750027228299,
+   "turnover_day": 0.10016692911295803,
+   "sigma": 2.5827344078196,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.027594828243975852,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.0051377524703673195,
-   "fee_agreement": 0.8946109418057175,
+   "fee_yield_implied_by_volume": 0.005008346455647902,
+   "fee_agreement": 0.8937136261431647,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.0022947871377227047,
-   "breakeven_amplification": 2.00292632842679,
-   "breakeven_half_width": 2.988337353438866,
+   "lvr_day_cpmm": 0.0022844236374435826,
+   "breakeven_amplification": 1.9593683931879275,
+   "breakeven_half_width": 3.171203550917806,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 6.527003902195544,
+   "days_to_recover_entry": 6.702371732214732,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.9213556051281527,
-     "net_day": -0.9167593155518727
+     "lvr_day": 0.9171946662271302,
+     "net_day": -0.9127186387552718
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.46239675402060676,
-     "net_day": -0.4578004644443268
+     "lvr_day": 0.46030852160436914,
+     "net_day": -0.45583249413251076
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.23291521417345865,
-     "net_day": -0.22831892459717867
+     "lvr_day": 0.23186334454798485,
+     "net_day": -0.2273873170761265
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.09521967152938071,
-     "net_day": -0.09062338195310075
+     "lvr_day": 0.0947896494692728,
+     "net_day": -0.09031362199741445
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.049310589062055966,
-     "net_day": -0.04471429948577601
+     "lvr_day": 0.049087897251078046,
+     "net_day": -0.044611869779219694
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0217365357562938,
-     "net_day": -0.017140246180013842
+     "lvr_day": 0.021638371272680278,
+     "net_day": -0.017162343800821926
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.012505418968890647,
-     "net_day": -0.007909129392610688
+     "lvr_day": 0.01244894318042024,
+     "net_day": -0.007972915708561887
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.007834893368372196,
-     "net_day": -0.003238603792092237
+     "lvr_day": 0.007799510165165559,
+     "net_day": -0.003323482693307206
     }
    ],
    "address": "4NDDFqtEfQXpBUU6vmB9fhTJ8Ne9LSCuato8HvKdCDsU"
@@ -1630,75 +1630,75 @@
   {
    "pool": "ANTHROPIC-ANDURIL",
    "symbol": "ANDURIL",
-   "snapshots": 221,
-   "tvl": 10083.16820285418,
+   "snapshots": 222,
+   "tvl": 10082.318824932445,
    "base_fee_pct": 1.0,
    "bin_step": 80,
-   "fee_yield_day": 0.00017001185445763767,
-   "fee_yield_year": 0.06205432687703775,
-   "turnover_day": 0.019069462722288204,
-   "sigma": 0.4606285370107041,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.004921514703408905,
+   "fee_yield_day": 0.00017002617698781323,
+   "fee_yield_year": 0.062059554600551826,
+   "turnover_day": 0.01907106921588327,
+   "sigma": 0.4595861104528566,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.004910377057302643,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 0.00019069462722288205,
-   "fee_agreement": 0.8915398243440255,
+   "fee_yield_implied_by_volume": 0.00019071069215883269,
+   "fee_agreement": 0.8915398243440256,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 7.266392092761014e-05,
-   "breakeven_amplification": 2.3397010825634954,
-   "breakeven_half_width": 2.050035789162259,
+   "lvr_day_cpmm": 7.23354085346525e-05,
+   "breakeven_amplification": 2.3505248733939434,
+   "breakeven_half_width": 2.029176144980298,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 176.4582834279664,
+   "days_to_recover_entry": 176.44341907511262,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.02917451895066898,
-     "net_day": -0.029004507096211343
+     "lvr_day": 0.02904262142970503,
+     "net_day": -0.028872595252717216
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.014641689688343127,
-     "net_day": -0.014471677833885489
+     "lvr_day": 0.014575494849762194,
+     "net_day": -0.01440546867277438
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.007375208108553853,
-     "net_day": -0.007205196254096215
+     "lvr_day": 0.007341864913838069,
+     "net_day": -0.007171838736850255
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.003015109579893421,
-     "net_day": -0.002845097725435783
+     "lvr_day": 0.0030014783190080215,
+     "net_day": -0.0028314521420202085
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.0015614087623198466,
-     "net_day": -0.0013913969078622088
+     "lvr_day": 0.0015543496589526373,
+     "net_day": -0.001384323481964824
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0006882825380496622,
-     "net_day": -0.0005182706835920246
+     "lvr_day": 0.0006851708240006653,
+     "net_day": -0.0005151446470128521
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.00039598129176541934,
-     "net_day": -0.00022596943730778167
+     "lvr_day": 0.00039419106684961954,
+     "net_day": -0.00022416488986180632
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.00024809014432625274,
-     "net_day": -7.807828986861507e-05
+     "lvr_day": 0.00024696853285880913,
+     "net_day": -7.69423558709959e-05
     }
    ],
    "address": "5GVgrQNCiNWpgJp8Htm89N883quUwTnUbsD7v4vXNKTZ"
@@ -1706,75 +1706,75 @@
   {
    "pool": "KALSHI-SOL",
    "symbol": "KALSHI",
-   "snapshots": 205,
-   "tvl": 10042.20227847515,
+   "snapshots": 206,
+   "tvl": 10048.939763669787,
    "base_fee_pct": 0.5,
    "bin_step": 50,
-   "fee_yield_day": 0.0025066278277656334,
-   "fee_yield_year": 0.9149191571344562,
-   "turnover_day": 0.5576156375609027,
-   "sigma": 0.5411567171593711,
-   "sigma_observations": 204,
-   "sigma_hourly": 0.005781905649250838,
+   "fee_yield_day": 0.002481813415898168,
+   "fee_yield_year": 0.9058618968028314,
+   "turnover_day": 0.5529565869788838,
+   "sigma": 0.5398536659744507,
+   "sigma_observations": 205,
+   "sigma_hourly": 0.0057679833994321505,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.0027880781878045135,
-   "fee_agreement": 0.8990521997302703,
+   "fee_yield_implied_by_volume": 0.002764782934894419,
+   "fee_agreement": 0.897652175357102,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.00010029129881051628,
-   "breakeven_amplification": 24.993472589297,
-   "breakeven_half_width": 0.08509305997542915,
+   "lvr_day_cpmm": 9.98088974883746e-05,
+   "breakeven_amplification": 24.865653046485573,
+   "breakeven_half_width": 0.08555815409339163,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 11.968270545668323,
+   "days_to_recover_entry": 12.087935300786098,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.04026689394657808,
-     "net_day": -0.03776026611881245
+     "lvr_day": 0.04007321011648761,
+     "net_day": -0.03759139670058944
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.020208571969125795,
-     "net_day": -0.01770194414136016
+     "lvr_day": 0.020111368702719606,
+     "net_day": -0.017629555286821436
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.010179318577394089,
-     "net_day": -0.007672690749628456
+     "lvr_day": 0.010130356037288651,
+     "net_day": -0.007648542621390484
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.004161477277351852,
-     "net_day": -0.0016548494495862184
+     "lvr_day": 0.004141460564392037,
+     "net_day": -0.0016596471484938689
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.0021550683027851364,
-     "net_day": 0.000351559524980497
+     "lvr_day": 0.002144702420491266,
+     "net_day": 0.00033711099540690214
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0009499728174366976,
-     "net_day": 0.0015566550103289357
+     "lvr_day": 0.0009454034465285001,
+     "net_day": 0.0015364099693696682
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0005465364041583112,
-     "net_day": 0.001960091423607322
+     "lvr_day": 0.0005439075631013951,
+     "net_day": 0.001937905852796773
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0003424159125868774,
-     "net_day": 0.0021642119151787558
+     "lvr_day": 0.0003407688914503146,
+     "net_day": 0.0021410445244478536
     }
    ],
    "address": "6gVN1JBffdyFtkSgsHTkGiyzmbp7oJsLuQho56aPx7Fy"
@@ -1782,75 +1782,75 @@
   {
    "pool": "OPENAI-SOL",
    "symbol": "OPENAI",
-   "snapshots": 221,
-   "tvl": 9349.571302207274,
+   "snapshots": 222,
+   "tvl": 9339.007837957382,
    "base_fee_pct": 0.8,
    "bin_step": 80,
-   "fee_yield_day": 0.00998773914355911,
-   "fee_yield_year": 3.6455247873990753,
-   "turnover_day": 1.3453961944064898,
-   "sigma": 2.6030323871797534,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.02781169888016955,
+   "fee_yield_day": 0.010000208770702393,
+   "fee_yield_year": 3.6500762013063732,
+   "turnover_day": 1.348653532740003,
+   "sigma": 2.5975153984229893,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.02775275346297686,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 0.010763169555251919,
-   "fee_agreement": 0.9279551987254131,
+   "fee_yield_implied_by_volume": 0.010789228261920025,
+   "fee_agreement": 0.926869700773462,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.002320471783803673,
-   "breakeven_amplification": 4.304184697814941,
-   "breakeven_half_width": 0.6968879558860153,
+   "lvr_day_cpmm": 0.002310645974330322,
+   "breakeven_amplification": 4.3278844452147975,
+   "breakeven_half_width": 0.691277368777464,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 3.003682772326547,
+   "days_to_recover_entry": 2.999937370096811,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.9316679745167651,
-     "net_day": -0.921680235373206
+     "lvr_day": 0.9277229181390405,
+     "net_day": -0.9177227093683381
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.46757217825964703,
-     "net_day": -0.4575844391160879
+     "lvr_day": 0.4655922898719985,
+     "net_day": -0.4555920811012961
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.23552214217326214,
-     "net_day": -0.22553440302970304
+     "lvr_day": 0.23452484683362368,
+     "net_day": -0.22452463806292128
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.09628542770474662,
-     "net_day": -0.08629768856118751
+     "lvr_day": 0.09587771653398798,
+     "net_day": -0.0858775077632856
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.049862503009665,
-     "net_day": -0.03987476386610589
+     "lvr_day": 0.0496513651462973,
+     "net_day": -0.0396511563755949
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.02197982421592878,
-     "net_day": -0.01199208507236967
+     "lvr_day": 0.021886752812729275,
+     "net_day": -0.011886544042026883
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.012645387184255901,
-     "net_day": -0.0026576480406967917
+     "lvr_day": 0.012591841536316333,
+     "net_day": -0.0025916327656139403
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.007922586235366591,
-     "net_day": 0.0020651529081925184
+     "lvr_day": 0.007889038823401383,
+     "net_day": 0.0021111699473010097
     }
    ],
    "address": "At5v892Xr2KQmAsSQr1fsXHzLUJxMPKEZThjTHwhLaz9"
@@ -1858,75 +1858,75 @@
   {
    "pool": "ANTHROPIC-USDC",
    "symbol": "ANTHROPIC",
-   "snapshots": 221,
-   "tvl": 9261.608119040086,
+   "snapshots": 222,
+   "tvl": 9261.610452702193,
    "base_fee_pct": 0.01,
    "bin_step": 80,
-   "fee_yield_day": 7.627543111060958e-07,
-   "fee_yield_year": 0.000278405323553725,
-   "turnover_day": 0.006051639503620544,
-   "sigma": 0.6354247160030554,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.006789097573096722,
+   "fee_yield_day": 7.633123427511086e-07,
+   "fee_yield_year": 0.00027860900510415465,
+   "turnover_day": 0.006200253552010445,
+   "sigma": 0.6358175744355249,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.006793295008549385,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 6.051639503620544e-07,
-   "fee_agreement": 1.2604093661721902,
+   "fee_yield_implied_by_volume": 6.200253552010445e-07,
+   "fee_agreement": 1.231098593546393,
    "never_traded": true,
    "corroborated": false,
-   "lvr_day_cpmm": 0.00013827553757108342,
-   "breakeven_amplification": 0.0055161912548268785,
+   "lvr_day_cpmm": 0.00013844657121954597,
+   "breakeven_amplification": 0.00551340734571651,
    "breakeven_half_width": null,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 39331.144463144345,
+   "days_to_recover_entry": 39302.390803579634,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.055517542127962255,
-     "net_day": -0.05551677937365115
+     "lvr_day": 0.055586212031190345,
+     "net_day": -0.055585448718847595
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.027862348835009692,
-     "net_day": -0.027861586080698587
+     "lvr_day": 0.02789681190244516,
+     "net_day": -0.02789604859010241
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.014034624788894366,
-     "net_day": -0.01403386203458326
+     "lvr_day": 0.014051984280852324,
+     "net_day": -0.014051220968509573
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.005737591540247735,
-     "net_day": -0.0057368287859366285
+     "lvr_day": 0.005744688393615685,
+     "net_day": -0.005743925081272933
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.002971276986182278,
-     "net_day": -0.0029705142318711716
+     "lvr_day": 0.0029749521723537896,
+     "net_day": -0.0029741888600110385
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0013097646911239542,
-     "net_day": -0.0013090019368128482
+     "lvr_day": 0.0013113847450950712,
+     "net_day": -0.0013106214327523202
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.000753531123671449,
-     "net_day": -0.000752768369360343
+     "lvr_day": 0.0007544631697844165,
+     "net_day": -0.0007536998574416653
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.00047210221571962355,
-     "net_day": -0.00047133946140851744
+     "lvr_day": 0.00047268616112182654,
+     "net_day": -0.00047192284877907545
     }
    ],
    "address": "HhABC2WjgUq6xYUSA92diUuQ8A9rxoXaWbN38KQkhZSt"
@@ -1934,75 +1934,75 @@
   {
    "pool": "NEURALINK-SOL",
    "symbol": "NEURALINK",
-   "snapshots": 205,
-   "tvl": 9213.987630650929,
+   "snapshots": 206,
+   "tvl": 9215.970244925642,
    "base_fee_pct": 1.5,
    "bin_step": 125,
-   "fee_yield_day": 0.0054459484200508335,
-   "fee_yield_year": 1.9877711733185541,
-   "turnover_day": 0.4051710286261698,
-   "sigma": 0.8156960753289078,
-   "sigma_observations": 204,
-   "sigma_hourly": 0.008715179164314062,
+   "fee_yield_day": 0.005436824034793076,
+   "fee_yield_year": 1.9844407726994728,
+   "turnover_day": 0.4029960967708751,
+   "sigma": 0.8137158644272191,
+   "sigma_observations": 205,
+   "sigma_hourly": 0.008694021905730483,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 0.006077565429392548,
-   "fee_agreement": 0.8960740091275587,
+   "fee_yield_implied_by_volume": 0.006044941451563126,
+   "fee_agreement": 0.8994006109665793,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 0.0002278630435982819,
-   "breakeven_amplification": 23.900095136322037,
-   "breakeven_half_width": 0.08924277076972031,
+   "lvr_day_cpmm": 0.00022675805069196451,
+   "breakeven_amplification": 23.976321979318097,
+   "breakeven_half_width": 0.08894039127756992,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 5.508682360917398,
+   "days_to_recover_entry": 5.517927342877814,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.0914868699452361,
-     "net_day": -0.08604092152518526
+     "lvr_day": 0.09104321598224904,
+     "net_day": -0.08560639194745596
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.045914119871554436,
-     "net_day": -0.0404681714515036
+     "lvr_day": 0.04569146517530927,
+     "net_day": -0.04025464114051619
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.023127534893967638,
-     "net_day": -0.017681586473916804
+     "lvr_day": 0.023015380849174413,
+     "net_day": -0.017578556814381335
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.00945492669383053,
-     "net_day": -0.004008978273779697
+     "lvr_day": 0.009409076226982328,
+     "net_day": -0.003972252192189251
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.004896341242549684,
-     "net_day": 0.0005496071775011498
+     "lvr_day": 0.004872597057207083,
+     "net_day": 0.0005642269775859932
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0021583497280829225,
-     "net_day": 0.003287598691967911
+     "lvr_day": 0.002147883085044974,
+     "net_day": 0.0032889409497481024
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0012417373188481934,
-     "net_day": 0.00420421110120264
+     "lvr_day": 0.0012357156713393685,
+     "net_day": 0.0042011083634537075
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0007779730938168661,
-     "net_day": 0.004667975326233967
+     "lvr_day": 0.0007742004120497912,
+     "net_day": 0.004662623622743285
     }
    ],
    "address": "5QoihX1SDB6B9Cb8fbkgZLonx5PwUKpS5LNP13deaaxQ"
@@ -2010,75 +2010,75 @@
   {
    "pool": "POLYMARKET-USDC",
    "symbol": "POLYMARKET",
-   "snapshots": 221,
+   "snapshots": 222,
    "tvl": 9203.464243165216,
    "base_fee_pct": 2.0,
    "bin_step": 80,
-   "fee_yield_day": 0.0003633388903515049,
-   "fee_yield_year": 0.13261869497829928,
-   "turnover_day": 0.020286258453256652,
-   "sigma": 0.20066424390586493,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.002143966227624746,
+   "fee_yield_day": 0.0003135500740250283,
+   "fee_yield_year": 0.11444577701913533,
+   "turnover_day": 0.01746982185283665,
+   "sigma": 0.20021180598802396,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.00213913222433115,
    "quantisation_dominates": true,
-   "fee_yield_implied_by_volume": 0.00040572516906513305,
-   "fee_agreement": 0.8955295802543035,
+   "fee_yield_implied_by_volume": 0.00034939643705673295,
+   "fee_agreement": 0.8974048981905213,
    "never_traded": false,
    "corroborated": true,
-   "lvr_day_cpmm": 1.3789773555586456e-05,
-   "breakeven_amplification": 26.348430515330005,
-   "breakeven_half_width": 0.08045666468325474,
+   "lvr_day_cpmm": 1.3727660019515805e-05,
+   "breakeven_amplification": 22.840751707084284,
+   "breakeven_half_width": 0.09366829481536576,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 82.56754450638934,
+   "days_to_recover_entry": 95.6784975837873,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.005536585485438966,
-     "net_day": -0.005173246595087461
+     "lvr_day": 0.0055116469394308094,
+     "net_day": -0.005198096865405781
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.0027786222198849003,
-     "net_day": -0.002415283329533395
+     "lvr_day": 0.002766106419622784,
+     "net_day": -0.0024525563455977555
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.0013996278819526074,
-     "net_day": -0.0010362889916011025
+     "lvr_day": 0.0013933235117915808,
+     "net_day": -0.0010797734377665526
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.0005721915060629683,
-     "net_day": -0.0002088526157114634
+     "lvr_day": 0.0005696141731134533,
+     "net_day": -0.00025606409908842504
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.000296315874305069,
-     "net_day": 6.702301604643592e-05
+     "lvr_day": 0.0002949811731460715,
+     "net_day": 1.8568900878956776e-05
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.00013061860990717285,
-     "net_day": 0.00023272028044433207
+     "lvr_day": 0.00013003026204886587,
+     "net_day": 0.00018351981197616243
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 7.514722954647111e-05,
-     "net_day": 0.0002881916608050338
+     "lvr_day": 7.48087424687661e-05,
+     "net_day": 0.0002387413315562622
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 4.708123189553715e-05,
-     "net_day": 0.0003162576584559678
+     "lvr_day": 4.686916301827778e-05,
+     "net_day": 0.00026668091100675055
     }
    ],
    "address": "81N58bYbx2N6BkEvkcjFT9GZgWRzXmvhKoAjdVPjpuDN"
@@ -2086,75 +2086,75 @@
   {
    "pool": "ANDURIL-USDC",
    "symbol": "ANDURIL",
-   "snapshots": 221,
-   "tvl": 8784.405729457976,
+   "snapshots": 222,
+   "tvl": 8784.28603920782,
    "base_fee_pct": 0.01,
    "bin_step": 80,
-   "fee_yield_day": 2.737263382021634e-05,
-   "fee_yield_year": 0.009991011344378964,
-   "turnover_day": 0.147681531399887,
-   "sigma": 0.8606562484617625,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.009195549213849253,
+   "fee_yield_day": 2.6879652532706906e-05,
+   "fee_yield_year": 0.009811073174438021,
+   "turnover_day": 0.14757295005987656,
+   "sigma": 0.8587068848221722,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.009174721538089532,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 1.4768153139988698e-05,
-   "fee_agreement": 1.8534906538921012,
+   "fee_yield_implied_by_volume": 1.4757295005987657e-05,
+   "fee_agreement": 1.8214484783153482,
    "never_traded": false,
    "corroborated": false,
-   "lvr_day_cpmm": 0.0002536743760329709,
-   "breakeven_amplification": 0.10790460687546397,
+   "lvr_day_cpmm": 0.0002525265459044518,
+   "breakeven_amplification": 0.1064428788523379,
    "breakeven_half_width": null,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 1095.9851433018912,
+   "days_to_recover_entry": 1116.0858557786892,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.10185010382588566,
-     "net_day": -0.10182273119206545
+     "lvr_day": 0.10138925074489116,
+     "net_day": -0.10136237109235846
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.05111507125329832,
-     "net_day": -0.0510876986194781
+     "lvr_day": 0.05088378491005996,
+     "net_day": -0.05085690525752725
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.025747321245086004,
-     "net_day": -0.025719948611265787
+     "lvr_day": 0.025630819328274632,
+     "net_day": -0.025603939675741927
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.010525939580283148,
-     "net_day": -0.010498566946462931
+     "lvr_day": 0.010478311629955007,
+     "net_day": -0.0104514319774223
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.005450977437736892,
-     "net_day": -0.005423604803916676
+     "lvr_day": 0.005426312762373311,
+     "net_day": -0.005399433109840604
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.002402838178083987,
-     "net_day": -0.0023754655442637706
+     "lvr_day": 0.0023919657750534093,
+     "net_day": -0.0023650861225207025
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0013823959101985977,
-     "net_day": -0.0013550232763783815
+     "lvr_day": 0.0013761408216867754,
+     "net_day": -0.0013492611691540684
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0008660984950783019,
-     "net_day": -0.0008387258612580855
+     "lvr_day": 0.0008621795578862114,
+     "net_day": -0.0008352999053535045
     }
    ],
    "address": "Gug9TrrLMoz8NpC4pE8ANQ6H7XzMMZYPuu1EJCn59ZwM"
@@ -2162,75 +2162,75 @@
   {
    "pool": "KALSHI-SOL",
    "symbol": "KALSHI",
-   "snapshots": 221,
-   "tvl": 6231.205554889533,
+   "snapshots": 222,
+   "tvl": 6231.938362289061,
    "base_fee_pct": 0.01,
    "bin_step": 80,
-   "fee_yield_day": 0.0003749161830688388,
-   "fee_yield_year": 0.13684440682012616,
-   "turnover_day": 0.2007269026165628,
-   "sigma": 0.8913009385495773,
-   "sigma_observations": 220,
-   "sigma_hourly": 0.009522967688239356,
+   "fee_yield_day": 0.0003454855848163955,
+   "fee_yield_year": 0.12610223845798435,
+   "turnover_day": 0.2006914298286131,
+   "sigma": 0.8892870527538489,
+   "sigma_observations": 221,
+   "sigma_hourly": 0.009501450635433674,
    "quantisation_dominates": false,
-   "fee_yield_implied_by_volume": 2.007269026165628e-05,
-   "fee_agreement": 18.677923994324757,
+   "fee_yield_implied_by_volume": 2.006914298286131e-05,
+   "fee_agreement": 17.214765229956956,
    "never_traded": false,
    "corroborated": false,
-   "lvr_day_cpmm": 0.00027206074077375247,
-   "breakeven_amplification": 1.3780605830983221,
-   "breakeven_half_width": 12.286598812825167,
+   "lvr_day_cpmm": 0.0002708326925327489,
+   "breakeven_amplification": 1.2756421006102119,
+   "breakeven_half_width": 20.417392030857325,
    "transfer_fee_bps": 300,
    "entry_exit_cost": 0.03,
-   "days_to_recover_entry": 80.01788494281044,
+   "days_to_recover_entry": 86.83430313291701,
    "net_by_width": [
     {
      "half_width": 0.005,
      "amplification": 401.4993765576381,
-     "lvr_day": 0.1092322178064708,
-     "net_day": -0.10885730162340196
+     "lvr_day": 0.10873915720332517,
+     "net_day": -0.10839367161850877
     },
     {
      "half_width": 0.01,
      "amplification": 201.4987562112096,
-     "lvr_day": 0.054819900879811444,
-     "net_day": -0.0544449846967426
+     "lvr_day": 0.05457245068668186,
+     "net_day": -0.05422696510186546
     },
     {
      "half_width": 0.02,
      "amplification": 101.49752469181018,
-     "lvr_day": 0.027613491754356113,
-     "net_day": -0.027238575571287275
+     "lvr_day": 0.02748884789769212,
+     "net_day": -0.027143362312875723
     },
     {
      "half_width": 0.05,
      "amplification": 41.49390153191924,
-     "lvr_day": 0.011288861588367092,
-     "net_day": -0.010913945405298253
+     "lvr_day": 0.011237905075578442,
+     "net_day": -0.010892419490762046
     },
     {
      "half_width": 0.1,
      "amplification": 21.48808848170148,
-     "lvr_day": 0.005846065270143643,
-     "net_day": -0.005471149087074804
+     "lvr_day": 0.005819676860881161,
+     "net_day": -0.0054741912760647654
     },
     {
      "half_width": 0.25,
      "amplification": 9.472135954999578,
-     "lvr_day": 0.0025769963246268803,
-     "net_day": -0.0022020801415580417
+     "lvr_day": 0.0025653640847287966,
+     "net_day": -0.002219878499912401
     },
     {
      "half_width": 0.5,
      "amplification": 5.449489742783178,
-     "lvr_day": 0.0014825922162605572,
-     "net_day": -0.0011076760331917184
+     "lvr_day": 0.0014758999799675653,
+     "net_day": -0.0011304143951511698
     },
     {
      "half_width": 1.0,
      "amplification": 3.414213562373096,
-     "lvr_day": 0.0009288734709390168,
-     "net_day": -0.0005539572878701781
+     "lvr_day": 0.000924680651979334,
+     "net_day": -0.0005791950671629385
     }
    ],
    "address": "94SNe8W4faZzReJktCc5QpayyqrEQuQ1XT7P9WAjWQ2R"
