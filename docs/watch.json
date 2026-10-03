@@ -27,9 +27,9 @@
   ],
   "reads": 12
  },
- "read_at": 1791061290,
+ "read_at": 1791064887,
  "epoch": 1048,
- "hours_to_next_epoch": 13.3,
+ "hours_to_next_epoch": 11.8,
  "tokens": {
   "ANDURIL": {
    "transfer_fee_bps": 300,
@@ -39,7 +39,15 @@
    "paused": false,
    "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "permanent_delegate": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
-   "pending": [],
+   "pending": [
+    {
+     "what": "transfer fee",
+     "from": "3.00%",
+     "to": "1.00%",
+     "when": "epoch 1050",
+     "epochs_away": 2
+    }
+   ],
    "mint_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "fee_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "multiplier_naive": 1.0,
@@ -56,25 +64,25 @@
    "exposure": [
     {
      "power": "The transfer fee it charges today",
-     "costs": 12997.990449030065,
+     "costs": 13008.830124648495,
      "detail": "3.00% of every transfer, charged again when you sell",
      "severity": "now"
     },
     {
      "power": "The fee has no ceiling",
-     "costs": 433266.3483010022,
+     "costs": 433627.67082161654,
      "detail": "The maximum fee on this mint is set to the largest number it can hold, so the issuer may raise the fee to 100% and take the whole balance on your next transfer",
      "severity": "worst"
     },
     {
      "power": "A permanent delegate can move your tokens",
-     "costs": 433266.3483010022,
+     "costs": 433627.67082161654,
      "detail": "This authority can transfer your balance out of your wallet without your signature",
      "severity": "worst"
     },
     {
      "power": "A freeze authority can stop you selling",
-     "costs": 433266.3483010022,
+     "costs": 433627.67082161654,
      "detail": "Your account can be frozen, which does not take the balance but does end your ability to act on it",
      "severity": "worst"
     },
@@ -86,16 +94,16 @@
     },
     {
      "power": "Transfers can be paused for everyone",
-     "costs": 433266.3483010022,
+     "costs": 433627.67082161654,
      "detail": "The mint carries a pause switch that is currently off",
      "severity": "worst"
     }
    ],
    "mint": "PresTj4Yc2bAR197Er7wz4UUKSfqt6FryBEdAriBoQB",
    "company": "Anduril",
-   "token_price": 162.76098199259485,
-   "holders": 11654,
-   "liquidity": 433266.3483010022
+   "token_price": 161.6240339173293,
+   "holders": 11647,
+   "liquidity": 433627.67082161654
   },
   "ANTHROPIC": {
    "transfer_fee_bps": 500,
@@ -109,7 +117,7 @@
     {
      "what": "transfer fee",
      "from": "5.00%",
-     "to": "3.00%",
+     "to": "1.00%",
      "when": "epoch 1050",
      "epochs_away": 2
     }
@@ -130,25 +138,25 @@
    "exposure": [
     {
      "power": "The transfer fee it charges today",
-     "costs": 56921.04416231201,
+     "costs": 56550.9529454009,
      "detail": "5.00% of every transfer, charged again when you sell",
      "severity": "now"
     },
     {
      "power": "The fee has no ceiling",
-     "costs": 1138420.8832462402,
+     "costs": 1131019.058908018,
      "detail": "The maximum fee on this mint is set to the largest number it can hold, so the issuer may raise the fee to 100% and take the whole balance on your next transfer",
      "severity": "worst"
     },
     {
      "power": "A permanent delegate can move your tokens",
-     "costs": 1138420.8832462402,
+     "costs": 1131019.058908018,
      "detail": "This authority can transfer your balance out of your wallet without your signature",
      "severity": "worst"
     },
     {
      "power": "A freeze authority can stop you selling",
-     "costs": 1138420.8832462402,
+     "costs": 1131019.058908018,
      "detail": "Your account can be frozen, which does not take the balance but does end your ability to act on it",
      "severity": "worst"
     },
@@ -160,16 +168,16 @@
     },
     {
      "power": "Transfers can be paused for everyone",
-     "costs": 1138420.8832462402,
+     "costs": 1131019.058908018,
      "detail": "The mint carries a pause switch that is currently off",
      "severity": "worst"
     }
    ],
    "mint": "Pren1FvFX6J3E4kXhJuCiAD5aDmGEb7qJRncwA8Lkhw",
    "company": "Anthropic",
-   "token_price": 1117.1998186419673,
-   "holders": 57054,
-   "liquidity": 1138420.8832462402
+   "token_price": 1118.581452107374,
+   "holders": 56976,
+   "liquidity": 1131019.058908018
   },
   "FIGUREAI": {
    "transfer_fee_bps": 300,
@@ -179,7 +187,15 @@
    "paused": false,
    "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "permanent_delegate": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
-   "pending": [],
+   "pending": [
+    {
+     "what": "transfer fee",
+     "from": "3.00%",
+     "to": "1.00%",
+     "when": "epoch 1050",
+     "epochs_away": 2
+    }
+   ],
    "mint_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "fee_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "multiplier_naive": 1.0,
@@ -196,25 +212,25 @@
    "exposure": [
     {
      "power": "The transfer fee it charges today",
-     "costs": 2617.070372831481,
+     "costs": 2643.810784046854,
      "detail": "3.00% of every transfer, charged again when you sell",
      "severity": "now"
     },
     {
      "power": "The fee has no ceiling",
-     "costs": 87235.6790943827,
+     "costs": 88127.02613489515,
      "detail": "The maximum fee on this mint is set to the largest number it can hold, so the issuer may raise the fee to 100% and take the whole balance on your next transfer",
      "severity": "worst"
     },
     {
      "power": "A permanent delegate can move your tokens",
-     "costs": 87235.6790943827,
+     "costs": 88127.02613489515,
      "detail": "This authority can transfer your balance out of your wallet without your signature",
      "severity": "worst"
     },
     {
      "power": "A freeze authority can stop you selling",
-     "costs": 87235.6790943827,
+     "costs": 88127.02613489515,
      "detail": "Your account can be frozen, which does not take the balance but does end your ability to act on it",
      "severity": "worst"
     },
@@ -226,16 +242,16 @@
     },
     {
      "power": "Transfers can be paused for everyone",
-     "costs": 87235.6790943827,
+     "costs": 88127.02613489515,
      "detail": "The mint carries a pause switch that is currently off",
      "severity": "worst"
     }
    ],
    "mint": "PreZad18qfPtbxNpMtMuAuX2zVpvkEU8DnJx56faCWd",
    "company": "Figure AI",
-   "token_price": 178.67724568144118,
-   "holders": 927,
-   "liquidity": 87235.6790943827
+   "token_price": 178.50454245181032,
+   "holders": 928,
+   "liquidity": 88127.02613489515
   },
   "KALSHI": {
    "transfer_fee_bps": 300,
@@ -245,7 +261,15 @@
    "paused": false,
    "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "permanent_delegate": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
-   "pending": [],
+   "pending": [
+    {
+     "what": "transfer fee",
+     "from": "3.00%",
+     "to": "1.00%",
+     "when": "epoch 1050",
+     "epochs_away": 2
+    }
+   ],
    "mint_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "fee_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "multiplier_naive": 1.0,
@@ -262,25 +286,25 @@
    "exposure": [
     {
      "power": "The transfer fee it charges today",
-     "costs": 2226.8144687772956,
+     "costs": 2236.5953936060605,
      "detail": "3.00% of every transfer, charged again when you sell",
      "severity": "now"
     },
     {
      "power": "The fee has no ceiling",
-     "costs": 74227.14895924319,
+     "costs": 74553.17978686868,
      "detail": "The maximum fee on this mint is set to the largest number it can hold, so the issuer may raise the fee to 100% and take the whole balance on your next transfer",
      "severity": "worst"
     },
     {
      "power": "A permanent delegate can move your tokens",
-     "costs": 74227.14895924319,
+     "costs": 74553.17978686868,
      "detail": "This authority can transfer your balance out of your wallet without your signature",
      "severity": "worst"
     },
     {
      "power": "A freeze authority can stop you selling",
-     "costs": 74227.14895924319,
+     "costs": 74553.17978686868,
      "detail": "Your account can be frozen, which does not take the balance but does end your ability to act on it",
      "severity": "worst"
     },
@@ -292,16 +316,16 @@
     },
     {
      "power": "Transfers can be paused for everyone",
-     "costs": 74227.14895924319,
+     "costs": 74553.17978686868,
      "detail": "The mint carries a pause switch that is currently off",
      "severity": "worst"
     }
    ],
    "mint": "PreLWGkkeqG1s4HEfFZSy9moCrJ7btsHuUtfcCeoRua",
    "company": "Kalshi",
-   "token_price": 915.1966222430059,
-   "holders": 4637,
-   "liquidity": 74227.14895924319
+   "token_price": 915.2988740801313,
+   "holders": 4604,
+   "liquidity": 74553.17978686868
   },
   "NEURALINK": {
    "transfer_fee_bps": 300,
@@ -311,7 +335,15 @@
    "paused": false,
    "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "permanent_delegate": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
-   "pending": [],
+   "pending": [
+    {
+     "what": "transfer fee",
+     "from": "3.00%",
+     "to": "1.00%",
+     "when": "epoch 1050",
+     "epochs_away": 2
+    }
+   ],
    "mint_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "fee_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "multiplier_naive": 1.0,
@@ -328,25 +360,25 @@
    "exposure": [
     {
      "power": "The transfer fee it charges today",
-     "costs": 5557.338129148511,
+     "costs": 5562.360465234949,
      "detail": "3.00% of every transfer, charged again when you sell",
      "severity": "now"
     },
     {
      "power": "The fee has no ceiling",
-     "costs": 185244.60430495036,
+     "costs": 185412.01550783162,
      "detail": "The maximum fee on this mint is set to the largest number it can hold, so the issuer may raise the fee to 100% and take the whole balance on your next transfer",
      "severity": "worst"
     },
     {
      "power": "A permanent delegate can move your tokens",
-     "costs": 185244.60430495036,
+     "costs": 185412.01550783162,
      "detail": "This authority can transfer your balance out of your wallet without your signature",
      "severity": "worst"
     },
     {
      "power": "A freeze authority can stop you selling",
-     "costs": 185244.60430495036,
+     "costs": 185412.01550783162,
      "detail": "Your account can be frozen, which does not take the balance but does end your ability to act on it",
      "severity": "worst"
     },
@@ -358,16 +390,16 @@
     },
     {
      "power": "Transfers can be paused for everyone",
-     "costs": 185244.60430495036,
+     "costs": 185412.01550783162,
      "detail": "The mint carries a pause switch that is currently off",
      "severity": "worst"
     }
    ],
    "mint": "PrekqLJvJ3qVdXmBGDiexvwUTF4rLFDa6HWS4HJbw9S",
    "company": "Neuralink",
-   "token_price": 415.72445984754626,
-   "holders": 8010,
-   "liquidity": 185244.60430495036
+   "token_price": 395.94016569552997,
+   "holders": 7970,
+   "liquidity": 185412.01550783162
   },
   "OPENAI": {
    "transfer_fee_bps": 500,
@@ -381,7 +413,7 @@
     {
      "what": "transfer fee",
      "from": "5.00%",
-     "to": "3.00%",
+     "to": "1.00%",
      "when": "epoch 1050",
      "epochs_away": 2
     }
@@ -402,25 +434,25 @@
    "exposure": [
     {
      "power": "The transfer fee it charges today",
-     "costs": 41766.04549209237,
+     "costs": 41686.337128496496,
      "detail": "5.00% of every transfer, charged again when you sell",
      "severity": "now"
     },
     {
      "power": "The fee has no ceiling",
-     "costs": 835320.9098418474,
+     "costs": 833726.7425699298,
      "detail": "The maximum fee on this mint is set to the largest number it can hold, so the issuer may raise the fee to 100% and take the whole balance on your next transfer",
      "severity": "worst"
     },
     {
      "power": "A permanent delegate can move your tokens",
-     "costs": 835320.9098418474,
+     "costs": 833726.7425699298,
      "detail": "This authority can transfer your balance out of your wallet without your signature",
      "severity": "worst"
     },
     {
      "power": "A freeze authority can stop you selling",
-     "costs": 835320.9098418474,
+     "costs": 833726.7425699298,
      "detail": "Your account can be frozen, which does not take the balance but does end your ability to act on it",
      "severity": "worst"
     },
@@ -432,16 +464,16 @@
     },
     {
      "power": "Transfers can be paused for everyone",
-     "costs": 835320.9098418474,
+     "costs": 833726.7425699298,
      "detail": "The mint carries a pause switch that is currently off",
      "severity": "worst"
     }
    ],
    "mint": "PreweJYECqtQwBtpxHL171nL2K6umo692gTm7Q3rpgF",
    "company": "OpenAI",
-   "token_price": 1407.888035466252,
-   "holders": 49889,
-   "liquidity": 835320.9098418474
+   "token_price": 1460.7913595199561,
+   "holders": 49839,
+   "liquidity": 833726.7425699298
   },
   "POLYMARKET": {
    "transfer_fee_bps": 300,
@@ -451,7 +483,15 @@
    "paused": false,
    "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "permanent_delegate": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
-   "pending": [],
+   "pending": [
+    {
+     "what": "transfer fee",
+     "from": "3.00%",
+     "to": "1.00%",
+     "when": "epoch 1050",
+     "epochs_away": 2
+    }
+   ],
    "mint_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "fee_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc",
    "multiplier_naive": 1.0,
@@ -468,25 +508,25 @@
    "exposure": [
     {
      "power": "The transfer fee it charges today",
-     "costs": 4647.931711581931,
+     "costs": 4641.7728840442705,
      "detail": "3.00% of every transfer, charged again when you sell",
      "severity": "now"
     },
     {
      "power": "The fee has no ceiling",
-     "costs": 154931.05705273105,
+     "costs": 154725.76280147568,
      "detail": "The maximum fee on this mint is set to the largest number it can hold, so the issuer may raise the fee to 100% and take the whole balance on your next transfer",
      "severity": "worst"
     },
     {
      "power": "A permanent delegate can move your tokens",
-     "costs": 154931.05705273105,
+     "costs": 154725.76280147568,
      "detail": "This authority can transfer your balance out of your wallet without your signature",
      "severity": "worst"
     },
     {
      "power": "A freeze authority can stop you selling",
-     "costs": 154931.05705273105,
+     "costs": 154725.76280147568,
      "detail": "Your account can be frozen, which does not take the balance but does end your ability to act on it",
      "severity": "worst"
     },
@@ -498,16 +538,16 @@
     },
     {
      "power": "Transfers can be paused for everyone",
-     "costs": 154931.05705273105,
+     "costs": 154725.76280147568,
      "detail": "The mint carries a pause switch that is currently off",
      "severity": "worst"
     }
    ],
    "mint": "Pre8AREmFPtoJFT8mQSXQLh56cwJmM7CFDRuoGBZiUP",
    "company": "Polymarket",
-   "token_price": 148.64430098953804,
-   "holders": 9611,
-   "liquidity": 154931.05705273105
+   "token_price": 146.23022849724168,
+   "holders": 9568,
+   "liquidity": 154725.76280147568
   },
   "SPACEX": {
    "transfer_fee_bps": 100,
@@ -534,25 +574,25 @@
    "exposure": [
     {
      "power": "The transfer fee it charges today",
-     "costs": 1656.5158199876878,
+     "costs": 1753.6810856930827,
      "detail": "1.00% of every transfer, charged again when you sell",
      "severity": "now"
     },
     {
      "power": "The fee has no ceiling",
-     "costs": 165651.5819987688,
+     "costs": 175368.10856930827,
      "detail": "The maximum fee on this mint is set to the largest number it can hold, so the issuer may raise the fee to 100% and take the whole balance on your next transfer",
      "severity": "worst"
     },
     {
      "power": "A permanent delegate can move your tokens",
-     "costs": 165651.5819987688,
+     "costs": 175368.10856930827,
      "detail": "This authority can transfer your balance out of your wallet without your signature",
      "severity": "worst"
     },
     {
      "power": "A freeze authority can stop you selling",
-     "costs": 165651.5819987688,
+     "costs": 175368.10856930827,
      "detail": "Your account can be frozen, which does not take the balance but does end your ability to act on it",
      "severity": "worst"
     },
@@ -564,16 +604,16 @@
     },
     {
      "power": "Transfers can be paused for everyone",
-     "costs": 165651.5819987688,
+     "costs": 175368.10856930827,
      "detail": "The mint carries a pause switch that is currently off",
      "severity": "worst"
     }
    ],
    "mint": "PreANxuXjsy2pvisWWMNB6YaJNzr7681wJJr2rHsfTh",
    "company": "SpaceX",
-   "token_price": 111.09140722076536,
-   "holders": 9857,
-   "liquidity": 165651.5819987688
+   "token_price": 117.13276293382103,
+   "holders": 9856,
+   "liquidity": 175368.10856930827
   }
  },
  "amendments": [
