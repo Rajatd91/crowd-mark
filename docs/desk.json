@@ -1,11 +1,11 @@
 {
- "read_at": "2026-10-21T00:00:00+00:00",
- "built_at": "2026-10-21T00:00:42+00:00",
+ "read_at": "2026-10-21T01:59:59+00:00",
+ "built_at": "2026-10-21T02:00:35+00:00",
  "epoch": 1063,
  "spacex": {
-  "prestocks_token_usd": 125.07797801839828,
-  "listed_token_usd": 159.33667180313935,
-  "discount": 0.21500821748723187
+  "prestocks_token_usd": 121.30394543592547,
+  "listed_token_usd": 161.1761601332785,
+  "discount": 0.24738283046563592
  },
  "fee_history": [
   {
@@ -87,13 +87,13 @@
    "symbol": "ANDURIL",
    "company": "Anduril",
    "mint": "PresTj4Yc2bAR197Er7wz4UUKSfqt6FryBEdAriBoQB",
-   "token_price": 143.37901165972414,
-   "mark_price": 138.18210408,
-   "premium_to_mark": 0.03760912177683595,
-   "shares": 884699057.2905452,
-   "token_implied_value": 126847276450.60805,
+   "token_price": 143.26526187611103,
+   "mark_price": 138.19058096,
+   "premium_to_mark": 0.03672233578336215,
+   "shares": 884699057.2851558,
+   "token_implied_value": 126746642123.5064,
    "covered": true,
-   "read_at": "2026-10-21T00:00:00+00:00",
+   "read_at": "2026-10-21T01:59:59+00:00",
    "sources": {
     "ladder": "will-andurils-valuation-hit-by-december-31"
    },
@@ -129,14 +129,14 @@
     ],
     [
      175000000000.0,
-     0.12
+     0.135
     ],
     [
      200000000000.0,
      0.06
     ]
    ],
-   "crowd_odds_at_token_price": 0.42522178839513564,
+   "crowd_odds_at_token_price": 0.42602686301194886,
    "assumptions": [
     "these markets price whether the valuation REACHES a level by 31 December, so they are touch odds, not a distribution over a final value"
    ],
@@ -152,31 +152,30 @@
     "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc"
    },
    "depth": {
-    "holders": 11005,
-    "liquidity": 556197.1759591965,
-    "volume24h": 11640.527349636295,
-    "traders24h": 146,
+    "holders": 11113,
+    "liquidity": 555717.7686200588,
+    "volume24h": 11939.69055514675,
+    "traders24h": 144,
     "organic_buyers24h": 3,
-    "price": 143.37901165972414
+    "price": 143.26526187611103
    },
    "round_trip": [
     {
      "size": 1000,
-     "cost": 0.02597839699999993,
-     "impact_in": 0.025043607490641506,
-     "impact_out": 0.0009588013541328938
+     "cost": 0.02597861300000004,
+     "impact_in": 0.025423932120183554,
+     "impact_out": 0.000569150934542392
     },
     {
      "size": 10000,
-     "cost": 0.036265919799999935,
-     "impact_in": 0.030308240920041838,
-     "impact_out": 0.006143889358831716
+     "cost": 0.03622407449999987,
+     "impact_in": 0.030697982761599317,
+     "impact_out": 0.00570110413485453
     },
     {
      "size": 50000,
-     "cost": 0.07790299383999999,
-     "impact_in": 0.051361080804852584,
-     "impact_out": 0.027978941721752613
+     "cost": null,
+     "note": "no route"
     }
    ]
   },
@@ -184,13 +183,13 @@
    "symbol": "ANTHROPIC",
    "company": "Anthropic",
    "mint": "Pren1FvFX6J3E4kXhJuCiAD5aDmGEb7qJRncwA8Lkhw",
-   "token_price": 1001.0268649709449,
-   "mark_price": 977.22696475,
-   "premium_to_mark": 0.02435452671635341,
-   "shares": 1638343693.9468672,
-   "token_implied_value": 1640026051696.5498,
+   "token_price": 1011.6907202299103,
+   "mark_price": 977.57138197,
+   "premium_to_mark": 0.03490214514172174,
+   "shares": 1638343693.9474056,
+   "token_implied_value": 1657497111713.7825,
    "covered": true,
-   "read_at": "2026-10-21T00:00:00+00:00",
+   "read_at": "2026-10-21T01:59:59+00:00",
    "sources": {
     "timing": "anthropic-ipo-by",
     "month": "in-which-month-will-anthropic-ipo",
@@ -199,21 +198,21 @@
     "cap_c": "anthropic-ipo-closing-market-cap-119"
    },
    "kind": "ipo",
-   "crowd_value": 1749023982152.8167,
-   "crowd_per_token": 1067.5562085140475,
-   "crowd_low": 1746723368655.884,
-   "crowd_high": 1752858337981.0374,
-   "gap": 0.06646109697069291,
-   "p_listing": 0.8965,
-   "open_top_mass": 0.012269938650306749,
+   "crowd_value": 1762044967880.0854,
+   "crowd_per_token": 1075.50386063051,
+   "crowd_low": 1759635974304.0684,
+   "crowd_high": 1766059957173.4475,
+   "gap": 0.06307573957592294,
+   "p_listing": 0.934,
+   "open_top_mass": 0.01284796573875803,
    "timing": [
     [
      "October 31, 2026",
-     0.0025
+     0.003
     ],
     [
      "November 15, 2026",
-     0.0225
+     0.0805
     ],
     [
      "November 30, 2026",
@@ -239,40 +238,40 @@
     {
      "low": 0.0,
      "high": 1250000000000.0,
-     "p": 0.010596765197992191
+     "p": 0.010171306209850106
     },
     {
      "low": 1250000000000.0,
      "high": 1500000000000.0,
-     "p": 0.07752370329057447
+     "p": 0.07548179871520341
     },
     {
      "low": 1500000000000.0,
      "high": 1750000000000.0,
-     "p": 0.49804796430563303
+     "p": 0.47965738758029974
     },
     {
      "low": 1750000000000.0,
      "high": 2000000000000.0,
-     "p": 0.2788622420524261
+     "p": 0.27301927194860814
     },
     {
      "low": 2000000000000.0,
      "high": 2250000000000.0,
-     "p": 0.08923591745677636
+     "p": 0.11616702355460384
     },
     {
      "low": 2250000000000.0,
      "high": 2500000000000.0,
-     "p": 0.03346346904629113
+     "p": 0.032655246252676656
     },
     {
      "low": 2500000000000.0,
      "high": 3125000000000.0,
-     "p": 0.012269938650306749
+     "p": 0.01284796573875803
     }
    ],
-   "spacex_scenario": 838.0228510540145,
+   "spacex_scenario": 809.4426714110156,
    "powers": {
     "transfer_fee_bps": 100,
     "transfer_fee_changes_at_epoch": null,
@@ -283,31 +282,30 @@
     "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc"
    },
    "depth": {
-    "holders": 62699,
-    "liquidity": 1592100.2924920793,
-    "volume24h": 2156825.886336267,
-    "traders24h": 5242,
-    "organic_buyers24h": 140,
-    "price": 1000.1162567084938
+    "holders": 62777,
+    "liquidity": 1578964.4174162387,
+    "volume24h": 2175829.416318442,
+    "traders24h": 5147,
+    "organic_buyers24h": 141,
+    "price": 997.6248933376397
    },
    "round_trip": [
     {
      "size": 1000,
-     "cost": 0.022092893000000058,
-     "impact_in": 0.021915460454194152,
-     "impact_out": 0.0001814081898158249
+     "cost": 0.023909742000000067,
+     "impact_in": 0.023740908531493098,
+     "impact_out": 0.0001729392022899792
     },
     {
      "size": 10000,
-     "cost": 0.026106702000000093,
-     "impact_in": 0.024536713613840876,
-     "impact_out": 0.0016094797293453552
+     "cost": 0.026320697599999998,
+     "impact_in": 0.024913932127795947,
+     "impact_out": 0.0014427090269824511
     },
     {
      "size": 50000,
-     "cost": 0.03737740642000009,
-     "impact_in": 0.03079575805299149,
-     "impact_out": 0.006790775444592372
+     "cost": null,
+     "note": "no route"
     }
    ]
   },
@@ -315,13 +313,13 @@
    "symbol": "FIGUREAI",
    "company": "Figure AI",
    "mint": "PreZad18qfPtbxNpMtMuAuX2zVpvkEU8DnJx56faCWd",
-   "token_price": 179.35100852090204,
-   "mark_price": 186.29515257,
-   "premium_to_mark": -0.03727495832984007,
-   "shares": 218026984.04478404,
-   "token_implied_value": 39103359473.20264,
+   "token_price": 179.12739622771954,
+   "mark_price": 186.30288966,
+   "premium_to_mark": -0.03851520202062153,
+   "shares": 218026984.04801542,
+   "token_implied_value": 39054605959.90355,
    "covered": false,
-   "read_at": "2026-10-21T00:00:00+00:00",
+   "read_at": "2026-10-21T01:59:59+00:00",
    "sources": {},
    "kind": "unpriced",
    "powers": {
@@ -334,31 +332,30 @@
     "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc"
    },
    "depth": {
-    "holders": 1430,
-    "liquidity": 118231.85901023206,
-    "volume24h": 99797.48083732763,
-    "traders24h": 290,
-    "organic_buyers24h": 10,
-    "price": 179.35100852090204
+    "holders": 1425,
+    "liquidity": 117604.90568646551,
+    "volume24h": 97570.25770704943,
+    "traders24h": 275,
+    "organic_buyers24h": 9,
+    "price": 179.12739622771954
    },
    "round_trip": [
     {
      "size": 1000,
-     "cost": 0.02729536499999996,
-     "impact_in": 0.02540006200731093,
-     "impact_out": 0.0019446984540063533
+     "cost": 0.027297974999999974,
+     "impact_in": 0.025244103017259573,
+     "impact_out": 0.002107062895539267
     },
     {
      "size": 10000,
-     "cost": 0.05180637009999989,
-     "impact_in": 0.03414656082947106,
-     "impact_out": 0.018284150114633448
+     "cost": 0.05240290440000006,
+     "impact_in": 0.03474197683484736,
+     "impact_out": 0.01829658717286923
     },
     {
      "size": 50000,
-     "cost": 0.12889758332,
-     "impact_in": 0.05225102989694331,
-     "impact_out": 0.08087220966826508
+     "cost": null,
+     "note": "no route"
     }
    ]
   },
@@ -366,13 +363,13 @@
    "symbol": "KALSHI",
    "company": "Kalshi",
    "mint": "PreLWGkkeqG1s4HEfFZSy9moCrJ7btsHuUtfcCeoRua",
-   "token_price": 932.856040145471,
-   "mark_price": 978.49006126,
-   "premium_to_mark": -0.046637184087251926,
-   "shares": 36371914.73173615,
-   "token_implied_value": 33929760349.15611,
+   "token_price": 936.016076246197,
+   "mark_price": 978.54514104,
+   "premium_to_mark": -0.043461525697836456,
+   "shares": 36371914.731673196,
+   "token_implied_value": 34044696912.701996,
    "covered": false,
-   "read_at": "2026-10-21T00:00:00+00:00",
+   "read_at": "2026-10-21T01:59:59+00:00",
    "sources": {},
    "kind": "unpriced",
    "powers": {
@@ -385,31 +382,30 @@
     "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc"
    },
    "depth": {
-    "holders": 4669,
-    "liquidity": 197151.35624556,
-    "volume24h": 12906.319076043728,
-    "traders24h": 146,
-    "organic_buyers24h": 4,
-    "price": 932.856040145471
+    "holders": 4845,
+    "liquidity": 197195.35997352938,
+    "volume24h": 11624.258532705371,
+    "traders24h": 141,
+    "organic_buyers24h": 3,
+    "price": 936.016076246197
    },
    "round_trip": [
     {
      "size": 1000,
-     "cost": 0.025806996999999998,
-     "impact_in": 0.018764414525637135,
-     "impact_out": 0.007177259547673498
+     "cost": 0.022976106999999968,
+     "impact_in": 0.015453369503201723,
+     "impact_out": 0.007640813816002127
     },
     {
      "size": 10000,
-     "cost": 0.036893303399999966,
-     "impact_in": 0.025307528260991967,
-     "impact_out": 0.01188659549030593
+     "cost": 0.03607186579999999,
+     "impact_in": 0.02213053676110956,
+     "impact_out": 0.014256840573295026
     },
     {
      "size": 50000,
-     "cost": 0.08649703832,
-     "impact_in": 0.052602755311187355,
-     "impact_out": 0.035776210242141615
+     "cost": null,
+     "note": "no route"
     }
    ]
   },
@@ -417,13 +413,13 @@
    "symbol": "NEURALINK",
    "company": "Neuralink",
    "mint": "PrekqLJvJ3qVdXmBGDiexvwUTF4rLFDa6HWS4HJbw9S",
-   "token_price": 393.281541524267,
-   "mark_price": 327.59414232,
-   "premium_to_mark": 0.20051457190007493,
-   "shares": 190495049.50562146,
-   "token_implied_value": 74918186722.31238,
+   "token_price": 386.01155409900474,
+   "mark_price": 327.76534959,
+   "premium_to_mark": 0.1777070229719664,
+   "shares": 190495049.50447923,
+   "token_implied_value": 73533290107.39087,
    "covered": true,
-   "read_at": "2026-10-21T00:00:00+00:00",
+   "read_at": "2026-10-21T01:59:59+00:00",
    "sources": {
     "ladder": "will-neuralinks-valuation-hit-by-december-31"
    },
@@ -455,18 +451,18 @@
     ],
     [
      60000000000.0,
-     0.56
+     0.565
     ],
     [
      75000000000.0,
-     0.145
+     0.15
     ],
     [
      100000000000.0,
-     0.0205
+     0.0165
     ]
    ],
-   "crowd_odds_at_token_price": 0.1472635006826909,
+   "crowd_odds_at_token_price": 0.1905789736955193,
    "assumptions": [
     "these markets price whether the valuation REACHES a level by 31 December, so they are touch odds, not a distribution over a final value"
    ],
@@ -482,31 +478,31 @@
     "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc"
    },
    "depth": {
-    "holders": 10733,
-    "liquidity": 399339.4162242117,
-    "volume24h": 757138.1899488014,
-    "traders24h": 2152,
-    "organic_buyers24h": 55,
-    "price": 387.4202501320905
+    "holders": 10861,
+    "liquidity": 395772.57158741914,
+    "volume24h": 232975.35736108304,
+    "traders24h": 993,
+    "organic_buyers24h": 29,
+    "price": 385.9666941230767
    },
    "round_trip": [
     {
      "size": 1000,
-     "cost": 0.026619638999999973,
-     "impact_in": 0.025712905507627625,
-     "impact_out": 0.000930663556458998
+     "cost": 0.026623065,
+     "impact_in": 0.02566303330312281,
+     "impact_out": 0.0009853179440905489
     },
     {
      "size": 10000,
-     "cost": 0.041434340899999866,
-     "impact_in": 0.03357569010755712,
-     "impact_out": 0.008131677475411913
+     "cost": 0.041383129500000004,
+     "impact_in": 0.03381711484251775,
+     "impact_out": 0.007830830760626678
     },
     {
      "size": 50000,
-     "cost": 0.09205052037999994,
-     "impact_in": 0.05801034690199221,
-     "impact_out": 0.03614183594298702
+     "cost": 0.092445726,
+     "impact_in": 0.05833359952510656,
+     "impact_out": 0.03622527729320096
     }
    ]
   },
@@ -514,26 +510,26 @@
    "symbol": "OPENAI",
    "company": "OpenAI",
    "mint": "PreweJYECqtQwBtpxHL171nL2K6umo692gTm7Q3rpgF",
-   "token_price": 1585.8331511869812,
-   "mark_price": 1051.8543474222088,
-   "premium_to_mark": 0.5076547005518399,
-   "shares": 1238930297.8475144,
-   "token_implied_value": 1964736738336.549,
+   "token_price": 1581.823850679134,
+   "mark_price": 1054.160969345511,
+   "premium_to_mark": 0.500552474126631,
+   "shares": 1238930297.8470795,
+   "token_implied_value": 1959769494463.5137,
    "covered": true,
-   "read_at": "2026-10-21T00:00:00+00:00",
+   "read_at": "2026-10-21T01:59:59+00:00",
    "sources": {
     "timing": "openai-ipo-by",
     "cap_a": "what-will-openais-ipo-valuation-be",
     "cap_b": "openai-ipo-closing-market-cap-554"
    },
    "kind": "ipo",
-   "crowd_value": 1444249602964.5315,
-   "crowd_per_token": 1165.7230479178156,
-   "crowd_low": 1440974060349.391,
-   "crowd_high": 1449708840656.432,
-   "gap": -0.26491444131730824,
-   "p_listing": 0.9445,
-   "open_top_mass": 0.017469560614081524,
+   "crowd_value": 1438698721363.8784,
+   "crowd_per_token": 1161.2426654380326,
+   "crowd_low": 1435402237613.2126,
+   "crowd_high": 1444192860948.3218,
+   "gap": -0.26588370447223353,
+   "p_listing": 0.9385,
+   "open_top_mass": 0.017581246670218435,
    "timing": [
     [
      "December 31, 2026",
@@ -558,45 +554,45 @@
     {
      "low": 0.0,
      "high": 1000000000000.0,
-     "p": 0.2366331392271043
+     "p": 0.23814597762386788
     },
     {
      "low": 1000000000000.0,
      "high": 1250000000000.0,
-     "p": 0.05982001058761249
+     "p": 0.0607352157698455
     },
     {
      "low": 1250000000000.0,
      "high": 1500000000000.0,
-     "p": 0.13340391741662255
+     "p": 0.13372402770378264
     },
     {
      "low": 1500000000000.0,
      "high": 1750000000000.0,
-     "p": 0.24351508734780308
+     "p": 0.24507192328183272
     },
     {
      "low": 1750000000000.0,
      "high": 2000000000000.0,
-     "p": 0.15352038115404976
+     "p": 0.15450186467767713
     },
     {
      "low": 2000000000000.0,
      "high": 2250000000000.0,
-     "p": 0.10852302805717311
+     "p": 0.10708577517314864
     },
     {
      "low": 2250000000000.0,
      "high": 2500000000000.0,
-     "p": 0.0471148755955532
+     "p": 0.043153969099627064
     },
     {
      "low": 2500000000000.0,
      "high": 3125000000000.0,
-     "p": 0.017469560614081524
+     "p": 0.017581246670218435
     }
    ],
-   "spacex_scenario": 915.0830133012231,
+   "spacex_scenario": 873.9711680045126,
    "powers": {
     "transfer_fee_bps": 100,
     "transfer_fee_changes_at_epoch": null,
@@ -607,31 +603,31 @@
     "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc"
    },
    "depth": {
-    "holders": 63243,
-    "liquidity": 1434383.3569997437,
-    "volume24h": 6412442.981561615,
-    "traders24h": 13816,
-    "organic_buyers24h": 344,
-    "price": 1582.9366150059361
+    "holders": 63140,
+    "liquidity": 1416307.1749556945,
+    "volume24h": 5780819.418913998,
+    "traders24h": 12241,
+    "organic_buyers24h": 329,
+    "price": 1581.818040422258
    },
    "round_trip": [
     {
      "size": 1000,
-     "cost": 0.024073482000000035,
-     "impact_in": 0.02393600908449,
-     "impact_out": 0.00014084416266709667
+     "cost": 0.024073568000000045,
+     "impact_in": 0.023927068127588498,
+     "impact_out": 0.00015009111269018513
     },
     {
      "size": 10000,
-     "cost": 0.025822121800000097,
-     "impact_in": 0.024623667603017256,
-     "impact_out": 0.002535205348154298
+     "cost": 0.026047161799999996,
+     "impact_in": 0.02481872348740552,
+     "impact_out": 0.0012597025211431192
     },
     {
      "size": 50000,
-     "cost": 0.03502239285999997,
-     "impact_in": 0.028771721547369365,
-     "impact_out": 0.005121880740710774
+     "cost": 0.03591430007999996,
+     "impact_in": 0.030217959456669566,
+     "impact_out": 0.005873835960231849
     }
    ]
   },
@@ -639,13 +635,13 @@
    "symbol": "OURA",
    "company": "Oura",
    "mint": "Pre9atBqkocK1QngFy7Q7zvyQictEFpXdLi6bZ2qnYy",
-   "token_price": 70.33285623143371,
-   "mark_price": 71.53807329,
-   "premium_to_mark": -0.016847211605498513,
-   "shares": 205338809.03462055,
-   "token_implied_value": 14442064934.565788,
+   "token_price": 70.58787465958454,
+   "mark_price": 71.52998303,
+   "premium_to_mark": -0.01317081775372897,
+   "shares": 205338809.03955808,
+   "token_implied_value": 14494430115.23269,
    "covered": false,
-   "read_at": "2026-10-21T00:00:00+00:00",
+   "read_at": "2026-10-21T01:59:59+00:00",
    "sources": {},
    "kind": "unpriced",
    "powers": {
@@ -658,31 +654,31 @@
     "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc"
    },
    "depth": {
-    "holders": 1398,
-    "liquidity": 72639.85502298336,
-    "volume24h": 4375.20764121926,
-    "traders24h": 78,
+    "holders": 1395,
+    "liquidity": 74088.62662529471,
+    "volume24h": 6113.761545199088,
+    "traders24h": 67,
     "organic_buyers24h": null,
-    "price": 70.33285623143371
+    "price": 70.58787465958454
    },
    "round_trip": [
     {
      "size": 1000,
-     "cost": 0.029470268000000077,
-     "impact_in": 0.027187953716928424,
-     "impact_out": 0.0023460999396459595
+     "cost": 0.029489538000000093,
+     "impact_in": 0.027129092222042985,
+     "impact_out": 0.0024262682325944837
     },
     {
      "size": 10000,
-     "cost": 0.051044970199999984,
-     "impact_in": 0.0425159864669594,
-     "impact_out": 0.008907703536030142
+     "cost": 0.051570290200000035,
+     "impact_in": 0.04115710698065751,
+     "impact_out": 0.010839133443912533
     },
     {
      "size": 50000,
-     "cost": 0.16792881372000001,
-     "impact_in": 0.09720058603448897,
-     "impact_out": 0.07834323615125098
+     "cost": 0.16742540843999998,
+     "impact_in": 0.09622448902774787,
+     "impact_out": 0.07878164272857593
     }
    ]
   },
@@ -690,13 +686,13 @@
    "symbol": "POLYMARKET",
    "company": "Polymarket",
    "mint": "Pre8AREmFPtoJFT8mQSXQLh56cwJmM7CFDRuoGBZiUP",
-   "token_price": 141.76658377006632,
-   "mark_price": 140.86636667,
-   "premium_to_mark": 0.006390575134057608,
-   "shares": 104112224.64732859,
-   "token_implied_value": 14759634416.953472,
+   "token_price": 141.9872130233077,
+   "mark_price": 140.91632049,
+   "premium_to_mark": 0.007599492589530854,
+   "shares": 104112224.65208437,
+   "token_implied_value": 14782604620.00597,
    "covered": false,
-   "read_at": "2026-10-21T00:00:00+00:00",
+   "read_at": "2026-10-21T01:59:59+00:00",
    "sources": {},
    "kind": "unpriced",
    "powers": {
@@ -709,31 +705,31 @@
     "freeze_authority": "WV9PJN7XTmTLVwbutCLFxp8TyePee6Xq5mRq6Fti5Wc"
    },
    "depth": {
-    "holders": 9836,
-    "liquidity": 255526.28722403623,
-    "volume24h": 81131.5073172356,
-    "traders24h": 377,
+    "holders": 9984,
+    "liquidity": 257010.6191392988,
+    "volume24h": 76635.45534388963,
+    "traders24h": 346,
     "organic_buyers24h": 9,
-    "price": 141.74971441115537
+    "price": 141.9872130233077
    },
    "round_trip": [
     {
      "size": 1000,
-     "cost": 0.025677021999999994,
-     "impact_in": 0.02520986213076891,
-     "impact_out": 0.00047924148089171657
+     "cost": 0.025676739000000004,
+     "impact_in": 0.02417380268308205,
+     "impact_out": 0.0015401680350971801
     },
     {
      "size": 10000,
-     "cost": 0.036075160499999925,
-     "impact_in": 0.03071097813267664,
-     "impact_out": 0.00553414125849618
+     "cost": 0.03610786079999995,
+     "impact_in": 0.030171010022816063,
+     "impact_out": 0.006121543940776204
     },
     {
      "size": 50000,
-     "cost": 0.08768709854000001,
-     "impact_in": 0.055756880760366494,
-     "impact_out": 0.033815674299375154
+     "cost": 0.08435403229999994,
+     "impact_in": 0.05530684534011489,
+     "impact_out": 0.030747747897403657
     }
    ]
   }
