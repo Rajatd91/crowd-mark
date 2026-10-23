@@ -1,0 +1,49 @@
+# Copy to config.toml and edit. Anything left out keeps its default
+# (see trendbot/config.py for every option and what it does).
+
+universe = ["SPY", "QQQ", "IWM", "EFA", "EEM", "TLT", "IEF", "GLD", "DBC", "VNQ"]
+benchmark = "SPY"
+
+[strategy]
+lookbacks = [21, 63, 126, 252]   # trading days: about 1, 3, 6, 12 months
+target_vol = 0.10                # 10% a year; lower it to take less risk
+max_weight = 0.25
+max_gross = 1.0                  # no leverage
+long_only = true
+
+[execution]
+rebalance = "weekly"             # daily, weekly or monthly
+band = 0.05                      # skip trades that change a weight by less than 5 points
+commission_per_order = 1.0       # set to your broker's real fee
+slippage_bps = 5.0
+fractional = false
+min_trade_value = 50.0
+
+[risk]
+max_order_fraction = 0.30
+max_daily_loss = 0.03
+max_staleness_days = 4
+max_price_jump = 0.25
+
+[backtest]
+initial_capital = 10000.0
+start = "2005-01-01"
+
+[data]
+source = "yfinance"
+
+[broker]
+kind = "paper"                   # paper (local simulation) or alpaca
+state_dir = "state"
+allow_live = false               # keep false until months of paper results
+
+
+# --- UK investors -------------------------------------------------------------
+# UK retail accounts usually cannot buy US-listed ETFs such as SPY (they lack the
+# KID document UK rules require). Use the UCITS versions listed in London. Yahoo
+# tickers end in .L. Their history is shorter, so research the US versions,
+# which track the same indices, and trade the UCITS ones. Check every ticker
+# and its currency on Yahoo and with your broker before relying on it.
+#
+# universe = ["CSPX.L", "EQQQ.L", "IWDA.L", "EIMI.L", "IDTL.L", "IGLT.L", "SGLN.L", "CMOD.L", "IWDP.L"]
+# benchmark = "CSPX.L"
