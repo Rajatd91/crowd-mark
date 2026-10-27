@@ -132,6 +132,13 @@ def main():
     print(f"copied {len(FILES)} files and {len(served)} api files to docs"
           + (f", removed {len(stale)} no longer used" if stale else ""))
 
+    # Crowd Mark, the private-company site, lives in docs/pulse. Rebuilding it
+    # here keeps its fallback snapshot as fresh as this hour's fetch. The
+    # cleanup above only removes loose files, so the folder is left alone.
+    pulse = os.path.join(HERE, "..", "pulse", "build.py")
+    if os.path.exists(pulse):
+        subprocess.run([sys.executable, pulse], check=False)
+
 
 if __name__ == "__main__":
     main()

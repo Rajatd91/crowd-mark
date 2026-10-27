@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crowd Mark · What private companies are worth</title>
+  <meta name="description" content="Live valuations and IPO timelines for the biggest private companies, built from prediction-market odds, and a calculator for what your own equity could be worth.">
+  <meta property="og:title" content="Crowd Mark · What private companies are worth">
+  <meta property="og:description" content="Live valuation ranges and IPO odds for OpenAI, Anthropic, Anduril and more, from the people betting real money on them.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-in">
+      <a class="brand" href="#/" aria-label="Crowd Mark home">
+        <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect width="32" height="32" rx="8" class="brand-bg"/><path d="M5 23 C10 23 11 9 16 9 S22 23 27 23" class="brand-curve"/><line x1="16" y1="7" x2="16" y2="25" class="brand-tick"/></svg>
+        <span>Crowd Mark</span>
+      </a>
+      <nav class="nav">
+        <a href="#/">Board</a>
+        <a href="#/equity">My equity</a>
+        <a href="#/method">How it works</a>
+      </nav>
+      <form class="search mini" id="nav-search" role="search">
+        <input name="q" type="search" placeholder="Search a company" aria-label="Search a company" autocomplete="off">
+      </form>
+    </div>
+  </header>
+
+  <div class="wrap statusbar"><p id="status" class="status small"></p></div>
+
+  <main class="wrap" id="view" tabindex="-1"></main>
+
+  <footer class="footer">
+    <div class="wrap footer-in">
+      <p><b>Crowd Mark</b> reads public prediction-market prices and shows the working. It is not investment advice.</p>
+      <p class="muted small">Market data: Polymarket. Open source on <a href="https://github.com/Rajatd91/crowd-mark" target="_blank" rel="noopener">GitHub</a>.</p>
+    </div>
+  </footer>
+
+  <noscript><div class="wrap"><p>Crowd Mark computes everything in your browser, so it needs JavaScript.</p></div></noscript>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

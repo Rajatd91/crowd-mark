@@ -51,12 +51,13 @@ def snapshot():
 
     # Prediction markets, one call per event, keyed by the slug so nothing is guessed later.
     snap["polymarket"] = {}
-    for sym, cfg in S.TOKENS.items():
-        for role, slug in cfg["polymarket"].items():
-            if slug in snap["polymarket"]:
-                continue
-            attempt(snap["polymarket"], slug, lambda s=slug: get(S.POLYMARKET_EVENT.format(slug=s)))
-            time.sleep(0.4)
+    slugs = [slug for cfg in S.TOKENS.values() for slug in cfg["polymarket"].values()]
+    slugs += S.EXTRA_POLYMARKET
+    for slug in slugs:
+        if slug in snap["polymarket"]:
+            continue
+        attempt(snap["polymarket"], slug, lambda s=slug: get(S.POLYMARKET_EVENT.format(slug=s)))
+        time.sleep(0.4)
 
     snap["kalshi"] = {}
     for sym, cfg in S.TOKENS.items():

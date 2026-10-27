@@ -52,6 +52,11 @@ TOKENS = {
     },
 }
 
+# Events fetched only for Crowd Mark, the private-company site in pulse/, so its
+# fallback snapshot covers companies that have no token. Add a company's slugs
+# here when you add it to pulse/js/companies.js.
+EXTRA_POLYMARKET = []
+
 PRESTOCKS_API = "https://prestocks.com/api/prestocks"
 PRESTOCKS_METRICS = "https://prestocks.com/api/metrics"
 POLYMARKET_EVENT = "https://gamma-api.polymarket.com/events?slug={slug}"
