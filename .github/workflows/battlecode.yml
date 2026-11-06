@@ -1,0 +1,24 @@
+name: battlecode
+
+on:
+  push:
+    paths: ["battlecode/**", ".github/workflows/battlecode.yml"]
+  pull_request:
+    paths: ["battlecode/**", ".github/workflows/battlecode.yml"]
+
+jobs:
+  models:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: battlecode
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pytest
+      - name: Unit tests for the decision models
+        run: python -m pytest research/tests -q
+      - name: Bot sources compile
+        run: python -m py_compile bots/velvet/src/*.py
